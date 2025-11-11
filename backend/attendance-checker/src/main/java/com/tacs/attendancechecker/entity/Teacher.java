@@ -1,12 +1,8 @@
 package com.tacs.attendancechecker.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
 
 @Entity
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "teacher")
 public class Teacher {
 
@@ -18,4 +14,21 @@ public class Teacher {
     private User user;
 
     private String specialization;
+
+    public Teacher() {}
+
+    public Teacher(String teacherId, User user, String specialization) {
+        this.teacherId = teacherId;
+        this.user = user;
+        this.specialization = specialization;
+    }
+
+    public String getTeacherId() { return teacherId; }
+    public void setTeacherId(String teacherId) { this.teacherId = teacherId; }
+
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
+
+    public String getSpecialization() { return specialization; }
+    public void setSpecialization(String specialization) { this.specialization = specialization; }
 }
