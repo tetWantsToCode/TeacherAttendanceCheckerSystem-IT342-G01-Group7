@@ -1,4 +1,4 @@
-package com.tacs.attendancechecker.config;
+package com.tacs.attendancechecker.util;
 
 import com.tacs.attendancechecker.util.JwtUtil;
 import jakarta.servlet.FilterChain;
@@ -29,6 +29,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
+
+        // Skip JWT validation for auth endpoints
+        String path = request.getRequestURI();
+        if (path.startsWith("/api/auth/")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         String header = request.getHeader("Authorization");
         String token = null;
