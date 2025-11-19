@@ -3,4 +3,5 @@
 
 # ERD 
 
-![ERD](./assets/tacs_erd.png)
+![ERD](./backend/attendance-checker/assets/tacs_erd.png)
+
