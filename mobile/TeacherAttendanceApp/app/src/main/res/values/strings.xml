@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Teacher Attendance</string>
+    <string name="login_title">Teacher Attendance Check In System</string>
+    <string name="login_subtitle">Enter your credentials to continue</string>
+    <string name="email_hint">Email Address</string>
+    <string name="password_hint">Password</string>
+    <string name="login_button">Login</string>
+    <string name="register_link">Don\'t have an account? Register</string>
+    <string name="loading">Loading...</string>
+    <string name="error_email_required">Email is required</string>
+    <string name="error_invalid_email">Invalid email format</string>
+    <string name="error_password_required">Password is required</string>
+    <string name="error_password_short">Password must be at least 6 characters</string>
+    <string name="error_login_failed">Login failed. Please check your credentials and try again.</string>
+    <string name="success_login">Login successful!</string>
+</resources>
