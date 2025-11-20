@@ -20,8 +20,8 @@ export default function Login({ onNavigate }) {
 					<div className="brand">
 					<div className="logo" aria-hidden>
 						<svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-							<rect width="24" height="24" rx="6" fill="#2B6CB0" />
-							<path d="M7 13c1.5-2 3-3 5-3s3.5 1 5 3" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+							<rect width="24" height="24" rx="6" fill="var(--accent)" />
+							<path d="M7 13c1.5-2 3-3 5-3s3.5 1 5 3" stroke="var(--accent-2)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
 							<circle cx="12" cy="9" r="1.5" fill="#fff" />
 						</svg>
 					</div>
