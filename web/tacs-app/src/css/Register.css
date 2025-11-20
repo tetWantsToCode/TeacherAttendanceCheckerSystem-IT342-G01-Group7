@@ -1,13 +1,13 @@
 .register-page{
-	--bg-1: #f5f7fb;
-	--accent: #2b6cb0;
-	--accent-2: #2c7a7b;
-	--card: #ffffff;
-	--muted: #6b7280;
-	--success: #10b981;
-	font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-	color: #0f172a;
-	background: linear-gradient(180deg, #eef2f7 0%, #f7fbff 100%);
+    --bg-1: #f7f9fb;
+    --accent: #25364a;
+    --accent-2: #ffd700;
+    --card: #ffffff;
+    --muted: #334155;
+    --success: #10b981;
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    color: #0f172a;
+    background: var(--bg-1);
 }
 
 .register-page *{box-sizing: border-box}
@@ -44,7 +44,7 @@
 .register-card .image-caption{max-width:240px;text-align:center;color:var(--muted);font-size:13px;margin:0}
 
 .brand{display:flex;align-items:center;gap:14px;margin-bottom:18px}
-.logo{width:48px;height:48px;display:flex;align-items:center;justify-content:center;border-radius:10px;background:linear-gradient(180deg,var(--accent),#276fb3);box-shadow:inset 0 -6px 18px rgba(255,255,255,0.05)}
+.logo{width:48px;height:48px;display:flex;align-items:center;justify-content:center;border-radius:10px;background:linear-gradient(180deg,var(--accent),#1f2a36);box-shadow:inset 0 -6px 18px rgba(255,255,255,0.03)}
 .brand-text h1{font-size:18px;margin:0 0 2px 0}
 .muted{color:var(--muted);font-size:13px;margin:0}
 
@@ -53,7 +53,7 @@
 .form-group{position:relative}
 .input{width:100%;padding:12px 14px;border-radius:10px;border:1px solid #e6eef6;background:#fff;font-size:14px;color:#0f172a;outline:none;transition:box-shadow .14s ease,border-color .14s ease}
 .input::placeholder{color:#94a3b8}
-.register-page .input:focus{box-shadow:0 6px 18px rgba(43,108,176,0.12);border-color:var(--accent)}
+.register-page .input:focus{box-shadow:0 6px 18px rgba(37,54,74,0.12);border-color:var(--accent)}
 
 .password-group{display:flex;align-items:center;gap:8px}
 .password-toggle{background:transparent;border:none;color:var(--accent);font-weight:600;cursor:pointer;padding:8px 10px;border-radius:8px;font-size:13px}
@@ -65,7 +65,7 @@
 .forgot{font-size:13px;color:var(--accent);text-decoration:none}
 .forgot:hover{text-decoration:underline}
 
-.btn-primary{margin-top:16px;width:100%;padding:12px 14px;border-radius:10px;border:none;background:linear-gradient(90deg,var(--accent),#2c7bd3);color:white;font-weight:700;cursor:pointer;font-size:15px;box-shadow:0 8px 20px rgba(43,108,176,0.12)}
+.btn-primary{margin-top:16px;width:100%;padding:12px 14px;border-radius:10px;border:none;background:linear-gradient(90deg,var(--accent),#2f4256);color:white;font-weight:700;cursor:pointer;font-size:15px;box-shadow:0 8px 20px rgba(37,54,74,0.12)}
 .btn-primary:active{opacity:0.98}
 .register-page .btn-primary:focus{outline:3px solid rgba(43,108,176,0.12)}
 
