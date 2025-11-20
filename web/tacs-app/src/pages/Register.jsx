@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "../css/Register.css";
+import { GoogleLogin } from "@react-oauth/google";
 
 export default function Register({ onNavigate }) {
     const [fname, setFname] = useState("");
@@ -8,11 +9,33 @@ export default function Register({ onNavigate }) {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
+    const [error, setError] = useState(null);
 
-    function handleSubmit(e) {
+    async function handleSubmit(e) {
         e.preventDefault();
-        // UI-only: just log values. Replace with real auth call later.
-        console.log({ fname, lname, email, password, confirmPassword });
+        setError(null);
+
+        if (password !== confirmPassword) {
+            setError("Passwords do not match");
+            return;
+        }
+
+        try {
+            const response = await fetch("http://localhost:8080/api/auth/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ fname, lname, email, password, role: "TEACHER" })
+            });
+            if (response.ok) {
+                onNavigate && onNavigate('login');
+            } else {
+                const msg = await response.text();
+                setError(msg || "Registration failed");
+            }
+        } catch (err) {
+            setError("Registration error. Check your network or backend.");
+            console.error(err);
+        }
     }
 
     return (
@@ -34,6 +57,7 @@ export default function Register({ onNavigate }) {
                     </div>
 
                     <form className="register-form" onSubmit={handleSubmit} noValidate>
+                        {error && <div className="error-message">{error}</div>}
                         <label className="form-label" htmlFor="fname">First name</label>
                         <div className="form-group">
                             <input
@@ -117,8 +141,43 @@ export default function Register({ onNavigate }) {
                         <div className="divider">or</div>
 
                         <div className="alt-actions">
-                            <button type="button" className="btn-outline">Sign up with Google</button>
-                            <p className="signup-text">Already have an account? <a href="#" onClick={(e) => { e.preventDefault(); onNavigate && onNavigate('login') }}>Sign in</a></p>
+                            <GoogleLogin
+                                text="signup_with"
+                                onSuccess={credentialResponse => {
+                                    fetch("http://localhost:8080/api/auth/google", {
+                                        method: "POST",
+                                        headers: { "Content-Type": "application/json" },
+                                        body: JSON.stringify({ credential: credentialResponse.credential })
+                                    })
+                                    .then(async res => {
+                                        if (res.ok) {
+                                            onNavigate && onNavigate("login");
+                                        } else {
+                                            const msg = await res.text();
+                                            alert(msg || "Google registration failed (server-side)");
+                                        }
+                                    })
+                                    .catch(err => {
+                                        alert("Google registration failed (network/backend error)");
+                                        console.error(err);
+                                    });
+                                }}
+                                onError={() => {
+                                    alert("Google Sign Up Failed (client-side).");
+                                }}
+                            />
+                            <p className="signup-text">
+                                Already have an account?{" "}
+                                <a
+                                    href="#"
+                                    onClick={e => {
+                                        e.preventDefault();
+                                        onNavigate && onNavigate("login");
+                                    }}
+                                >
+                                    Sign in
+                                </a>
+                            </p>
                         </div>
                     </form>
                 </div>
