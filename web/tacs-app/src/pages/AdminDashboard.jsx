@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import '../css/AdminDashboard.css';
 import Teachers from './Teachers';
@@ -6,6 +5,10 @@ import Students from './Students';
 import Attendance from './Attendance';
 import Statistics from './Statistics';
 import Settings from './Settings';
+import TeacherList from './TeacherList';
+import AddTeacherForm from './AddTeacherForm';
+import AddStudentForm from './AddStudentForm';
+import StudentList from './StudentList';
 
 const sections = [
   { key: 'dashboard', label: 'Dashboard', icon: '🏠' },
@@ -19,13 +22,48 @@ const sections = [
 
 const AdminDashboard = () => {
   const [activeSection, setActiveSection] = useState('dashboard');
-
+  const [teachers, setTeachers] = useState([
+    { id: 1, name: 'Alice Smith', email: 'alice@school.edu' },
+    { id: 2, name: 'Bob Johnson', email: 'bob@school.edu' }
+  ]);
+  const [students, setStudents] = useState([
+    { id: 1, name: 'Charlie Brown', email: 'charlie@school.edu', password: 'student123' },
+    { id: 2, name: 'Dana White', email: 'dana@school.edu', password: 'student123' }
+  ]);
+  function handleAddTeacher(newTeacher) {
+    setTeachers([
+      ...teachers,
+      { id: Date.now(), ...newTeacher }
+    ]);
+  }
+  function handleRemoveTeacher(id) {
+    setTeachers(teachers.filter(t => t.id !== id));
+  }
+  function handleAddStudent(newStudent) {
+    setStudents([
+      ...students,
+      { id: Date.now(), ...newStudent }
+    ]);
+  }
+  function handleRemoveStudent(id) {
+    setStudents(students.filter(s => s.id !== id));
+  }
   const renderSection = () => {
     switch (activeSection) {
       case 'teachers':
-        return <Teachers />;
+        return (
+          <>
+            <AddTeacherForm onAdd={handleAddTeacher} />
+            <TeacherList teachers={teachers} onRemove={handleRemoveTeacher} />
+          </>
+        );
       case 'students':
-        return <Students />;
+        return (
+          <>
+            <AddStudentForm onAdd={handleAddStudent} />
+            <StudentList students={students} onRemove={handleRemoveStudent} />
+          </>
+        );
       case 'attendance':
         return <Attendance />;
       case 'statistics':
