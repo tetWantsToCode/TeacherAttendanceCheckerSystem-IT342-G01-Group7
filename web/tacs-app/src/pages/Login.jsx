@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "../css/Login.css";
 
-export default function Login() {
+export default function Login({ onNavigate }) {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [showPassword, setShowPassword] = useState(false);
@@ -86,7 +86,7 @@ export default function Login() {
 
 					<div className="alt-actions">
 						<button type="button" className="btn-outline">Sign in with Google</button>
-						<p className="signup-text">Don't have an account? <a href="#">Register</a></p>
+						<p className="signup-text">Don't have an account? <a href="#" onClick={(e) => { e.preventDefault(); onNavigate && onNavigate('register') }}>Register</a></p>
 					</div>
 					</form>
 				</div>
