@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import '../css/Profile.css';
+import '../css/StudentProfile.css';
 
-export default function Profile() {
+export default function StudentProfile() {
   const [showPasswordForm, setShowPasswordForm] = useState(false);
   const [passwordData, setPasswordData] = useState({
     currentPassword: '',
@@ -13,10 +13,10 @@ export default function Profile() {
     new: false,
     confirm: false
   });
+  const [profileImage, setProfileImage] = useState('https://via.placeholder.com/150');
 
   // Mock student data - replace with actual data from your backend
   const studentData = {
-    image: 'https://via.placeholder.com/150',
     firstName: 'Juan',
     lastName: 'Dela Cruz',
     email: 'juan.delacruz@student.edu'
@@ -57,9 +57,35 @@ export default function Profile() {
     setShowPasswords(prev => ({ ...prev, [field]: !prev[field] }));
   };
 
-  const handleFormSubmit = (e) => {
-    e.preventDefault();
-    handleSubmitPassword(e);
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        alert('Please select an image file!');
+        return;
+      }
+
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert('Image size should be less than 5MB!');
+        return;
+      }
+
+      // Create a preview URL
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfileImage(reader.result);
+        // Here you would typically upload to your backend
+        console.log('Image ready to upload:', file);
+        alert('Profile image updated successfully!');
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const triggerFileInput = () => {
+    document.getElementById('profile-image-input').click();
   };
 
   return (
@@ -68,11 +94,27 @@ export default function Profile() {
       
       <div className="profile-card">
         <div className="profile-image-container">
-          <img 
-            src={studentData.image} 
-            alt="Profile" 
-            className="profile-image"
-          />
+          <div className="profile-image-wrapper">
+            <img 
+              src={profileImage} 
+              alt="Profile" 
+              className="profile-image"
+            />
+            <button 
+              className="profile-image-edit-btn"
+              onClick={triggerFileInput}
+              title="Change profile picture"
+            >
+              📷
+            </button>
+            <input
+              id="profile-image-input"
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              style={{ display: 'none' }}
+            />
+          </div>
         </div>
 
         <div className="profile-info-container">

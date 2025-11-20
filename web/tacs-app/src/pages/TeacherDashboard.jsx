@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import '../css/TeacherDashboard.css';
 import MyClasses from './MyClasses';
 import TeacherAttendance from './TeacherAttendance';
-import TeacherProfile from './TeacherProfile';
+import TeacherProfile from './Profile';
 import TeacherSettings from './TeacherSettings';
 
 const sections = [
