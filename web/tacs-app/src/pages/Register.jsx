@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import "../css/Register.css";
 
 export default function Register({ onNavigate }) {
-    const [fullName, setFullName] = useState("");
+    const [fname, setFname] = useState("");
+    const [lname, setLname] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
@@ -11,7 +12,7 @@ export default function Register({ onNavigate }) {
     function handleSubmit(e) {
         e.preventDefault();
         // UI-only: just log values. Replace with real auth call later.
-        console.log({ fullName, email, password, confirmPassword });
+        console.log({ fname, lname, email, password, confirmPassword });
     }
 
     return (
@@ -33,15 +34,29 @@ export default function Register({ onNavigate }) {
                     </div>
 
                     <form className="register-form" onSubmit={handleSubmit} noValidate>
-                        <label className="form-label" htmlFor="name">Full name</label>
+                        <label className="form-label" htmlFor="fname">First name</label>
                         <div className="form-group">
                             <input
-                                id="name"
+                                id="fname"
                                 className="input"
                                 type="text"
-                                placeholder="Jane Teacher"
-                                value={fullName}
-                                onChange={(e) => setFullName(e.target.value)}
+                                placeholder="Jane"
+                                value={fname}
+                                onChange={(e) => setFname(e.target.value)}
+                                required
+                                aria-required="true"
+                            />
+                        </div>
+
+                        <label className="form-label" htmlFor="lname">Last name</label>
+                        <div className="form-group">
+                            <input
+                                id="lname"
+                                className="input"
+                                type="text"
+                                placeholder="Teacher"
+                                value={lname}
+                                onChange={(e) => setLname(e.target.value)}
                                 required
                                 aria-required="true"
                             />
