@@ -6,18 +6,40 @@ import TeacherProfile from './Profile';
 import TeacherSettings from './TeacherSettings';
 
 const sections = [
-  { name: 'My Classes', key: 'classes' },
-  { name: 'Attendance', key: 'attendance' },
-  { name: 'Profile', key: 'profile' },
-  { name: 'Settings', key: 'settings' }
+  { key: 'classes', name: 'My Classes' },
+  { key: 'attendance', name: 'Attendance' },
+  { key: 'profile', name: 'Profile' },
+  { key: 'settings', name: 'Settings' },
+  { key: 'logout', name: 'Logout' }
 ];
 
 export default function TeacherDashboard() {
   const [activeSection, setActiveSection] = useState('classes');
 
+  function handleLogout() {
+    localStorage.clear();
+    sessionStorage.clear();
+    window.location.href = '/';
+  }
+
+  const renderSection = () => {
+    switch (activeSection) {
+      case 'classes':
+        return <MyClasses />;
+      case 'attendance':
+        return <TeacherAttendance />;
+      case 'profile':
+        return <TeacherProfile />;
+      case 'settings':
+        return <TeacherSettings />;
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className="teacher-dashboard">
-      <header className="dashboard-header">
+      <header className="dashboard-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <span className="logo">Teacher Dashboard</span>
         <span>Welcome, Teacher!</span>
       </header>
@@ -29,7 +51,11 @@ export default function TeacherDashboard() {
                 <li
                   key={section.key}
                   className={activeSection === section.key ? 'active' : ''}
-                  onClick={() => setActiveSection(section.key)}
+                  onClick={
+                    section.key === 'logout'
+                      ? handleLogout
+                      : () => setActiveSection(section.key)
+                  }
                 >
                   {section.name}
                 </li>
@@ -38,10 +64,7 @@ export default function TeacherDashboard() {
           </nav>
         </aside>
         <main className="main-content">
-          {activeSection === 'classes' && <MyClasses />}
-          {activeSection === 'attendance' && <TeacherAttendance />}
-          {activeSection === 'profile' && <TeacherProfile />}
-          {activeSection === 'settings' && <TeacherSettings />}
+          {renderSection()}
         </main>
       </div>
     </div>

@@ -30,6 +30,7 @@ const AdminDashboard = () => {
     { id: 1, name: 'Charlie Brown', email: 'charlie@school.edu', password: 'student123' },
     { id: 2, name: 'Dana White', email: 'dana@school.edu', password: 'student123' }
   ]);
+  
   function handleAddTeacher(newTeacher) {
     setTeachers([
       ...teachers,
@@ -48,6 +49,15 @@ const AdminDashboard = () => {
   function handleRemoveStudent(id) {
     setStudents(students.filter(s => s.id !== id));
   }
+
+  function handleLogout() {
+    // Clear local/session storage as needed
+    localStorage.clear();
+    sessionStorage.clear();
+    // Redirect to login/home page
+    window.location.href = '/';
+  }
+
   const renderSection = () => {
     switch (activeSection) {
       case 'teachers':
@@ -83,9 +93,6 @@ const AdminDashboard = () => {
             <p>Select an option from the sidebar to get started.</p>
           </div>
         );
-      case 'logout':
-        window.location.href = '/';
-        return null;
       default:
         return null;
     }
@@ -105,7 +112,11 @@ const AdminDashboard = () => {
                 <li
                   key={section.key}
                   className={activeSection === section.key ? 'active' : ''}
-                  onClick={() => setActiveSection(section.key)}
+                  onClick={
+                    section.key === 'logout'
+                      ? handleLogout
+                      : () => setActiveSection(section.key)
+                  }
                 >
                   <span className="icon">{section.icon}</span>
                   {section.label}

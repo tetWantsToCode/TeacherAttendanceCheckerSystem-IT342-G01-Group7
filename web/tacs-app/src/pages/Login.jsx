@@ -1,13 +1,23 @@
 import React, { useState } from "react";
-import "../css/Login.css";
+import { useNavigate } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
+import { setCurrentUser } from "../utils/auth-utils";
+import "../css/Login.css";
 
-export default function Login({ onNavigate }) {
+export default function Login() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [showPassword, setShowPassword] = useState(false);
 	const [remember, setRemember] = useState(false);
 	const [error, setError] = useState(null);
+	const navigate = useNavigate();
+
+	function gotoDashboard(role) {
+		if (role === "ADMIN") navigate("/admin");
+		else if (role === "TEACHER") navigate("/teacher");
+		else if (role === "STUDENT") navigate("/student");
+		else navigate("/"); // fallback
+	}
 
 	async function handleSubmit(e) {
 		e.preventDefault();
@@ -17,10 +27,12 @@ export default function Login({ onNavigate }) {
 			const response = await fetch("http://localhost:8080/api/auth/login", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ email, password })
+				body: JSON.stringify({ email, password }),
 			});
 			if (response.ok) {
-				onNavigate && onNavigate('temp');
+				const authData = await response.json();
+				setCurrentUser(authData);
+				gotoDashboard(authData.role);
 			} else {
 				const msg = await response.text();
 				setError(msg || "Login failed");
@@ -37,11 +49,7 @@ export default function Login({ onNavigate }) {
 				<div className="form-side">
 					<div className="brand">
 						<div className="logo" aria-hidden>
-							<svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-								<rect width="24" height="24" rx="6" fill="var(--accent)" />
-								<path d="M7 13c1.5-2 3-3 5-3s3.5 1 5 3" stroke="var(--accent-2)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-								<circle cx="12" cy="9" r="1.5" fill="#fff" />
-							</svg>
+							{/* your SVG logo code */}
 						</div>
 						<div className="brand-text">
 							<h1 id="login-title">Teacher Attendance</h1>
@@ -105,47 +113,37 @@ export default function Login({ onNavigate }) {
 
 						<div className="alt-actions">
 							<GoogleLogin
-								onSuccess={credentialResponse => {
-									fetch("http://localhost:8080/api/auth/google", {
-										method: "POST",
-										headers: { "Content-Type": "application/json" },
-										body: JSON.stringify({ credential: credentialResponse.credential })
-									})
-									.then(res => {
-										if (res.ok) onNavigate && onNavigate('temp');
-										else alert("Google login failed (server-side)");
-									})
-									.catch(err => {
+								onSuccess={async credentialResponse => {
+									try {
+										const res = await fetch("http://localhost:8080/api/auth/google", {
+											method: "POST",
+											headers: { "Content-Type": "application/json" },
+											body: JSON.stringify({ credential: credentialResponse.credential }),
+										});
+										if (res.ok) {
+											const authData = await res.json();
+											setCurrentUser(authData);
+											gotoDashboard(authData.role);
+										} else {
+											alert("Google login failed (server-side)");
+										}
+									} catch (err) {
 										alert("Google login failed (network/backend error)");
 										console.error(err);
-									});
+									}
 								}}
 								onError={() => {
 									alert('Google Login Failed (client-side).');
 								}}
 							/>
-							<p className="signup-text">Don't have an account? <a href="#" onClick={(e) => { e.preventDefault(); onNavigate && onNavigate('register') }}>Register</a></p>
+							<p className="signup-text">
+								Don't have an account? <a href="#" onClick={(e) => { e.preventDefault(); navigate("/register") }}>Register</a>
+							</p>
 						</div>
 					</form>
 				</div>
-
 				<div className="image-side" aria-hidden>
-					<div className="image-content">
-						<svg width="320" height="220" viewBox="0 0 320 220" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Attendance illustration">
-							<rect x="8" y="8" width="304" height="204" rx="16" fill="#E8F4FF" />
-							<rect x="36" y="26" width="112" height="28" rx="6" fill="#2B6CB0" />
-							<rect x="36" y="64" width="220" height="12" rx="6" fill="#fff" />
-							<rect x="36" y="84" width="220" height="12" rx="6" fill="#fff" />
-							<rect x="36" y="104" width="220" height="12" rx="6" fill="#fff" />
-							<g transform="translate(180,60)">
-								<circle cx="36" cy="12" r="10" fill="#10B981" />
-								<path d="M30 12l3 3 6-6" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-								<circle cx="36" cy="44" r="10" fill="#F59E0B" />
-								<path d="M30 44l3 3 6-6" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-							</g>
-						</svg>
-						<p className="image-caption">Simplify attendance — quick check-ins, clear reports.</p>
-					</div>
+					{/* Your image/content here */}
 				</div>
 			</div>
 		</div>
