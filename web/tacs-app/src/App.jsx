@@ -6,6 +6,9 @@ import TeacherDashboard from './pages/TeacherDashboard';
 import StudentDashboard from './pages/StudentDashboard';
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
+import RequireRole from './components/RequireRole.jsx';
+import UnauthorizedPage from './pages/UnauthorizedPage';
+import HomeRedirector from './pages/HomeRedirector'; 
 import './App.css';
 
 export default function App() {
@@ -21,17 +24,25 @@ export default function App() {
           <Link to="/register">Register</Link>
         </nav>
         <Routes>
-          <Route path="/" element={
-            <div style={{ padding: '2rem' }}>
-              <h1>Welcome to Teacher Attendance Checker System</h1>
-              <p>This is the home page. Please log in or go to the admin dashboard.</p>
-            </div>
+          <Route path="/" element={<HomeRedirector />} /> {/* smart landing route */}
+          <Route path="/admin" element={
+              <RequireRole role="ADMIN">
+                <AdminDashboard />
+              </RequireRole>
           } />
-          <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/teacher" element={<TeacherDashboard />} />
-          <Route path="/student" element={<StudentDashboard />} />
+          <Route path="/teacher" element={
+              <RequireRole role="TEACHER">
+                <TeacherDashboard />
+              </RequireRole>
+          } />
+          <Route path="/student" element={
+              <RequireRole role="STUDENT">
+                <StudentDashboard />
+              </RequireRole>
+          } />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/unauthorized" element={<UnauthorizedPage />} />
         </Routes>
       </Router>
     </GoogleOAuthProvider>
