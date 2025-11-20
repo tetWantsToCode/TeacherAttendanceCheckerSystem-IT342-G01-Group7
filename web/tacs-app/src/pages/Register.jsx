@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import "../css/Register.css";
 import { GoogleLogin } from "@react-oauth/google";
+import { useNavigate } from "react-router-dom";
+import { setCurrentUser } from "../utils/auth-utils";
 
-export default function Register({ onNavigate }) {
+export default function Register() {
     const [fname, setFname] = useState("");
     const [lname, setLname] = useState("");
     const [email, setEmail] = useState("");
@@ -10,6 +12,15 @@ export default function Register({ onNavigate }) {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState(null);
+
+    const navigate = useNavigate();
+
+    function gotoDashboard(role) {
+        if (role === "ADMIN") navigate("/admin");
+        else if (role === "TEACHER") navigate("/teacher");
+        else if (role === "STUDENT") navigate("/student");
+        else navigate("/");
+    }
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -27,7 +38,9 @@ export default function Register({ onNavigate }) {
                 body: JSON.stringify({ fname, lname, email, password, role: "TEACHER" })
             });
             if (response.ok) {
-                onNavigate && onNavigate('login');
+                const authData = await response.json();
+                setCurrentUser(authData);
+                gotoDashboard(authData.role);
             } else {
                 const msg = await response.text();
                 setError(msg || "Registration failed");
@@ -143,24 +156,25 @@ export default function Register({ onNavigate }) {
                         <div className="alt-actions">
                             <GoogleLogin
                                 text="signup_with"
-                                onSuccess={credentialResponse => {
-                                    fetch("http://localhost:8080/api/auth/google", {
-                                        method: "POST",
-                                        headers: { "Content-Type": "application/json" },
-                                        body: JSON.stringify({ credential: credentialResponse.credential })
-                                    })
-                                    .then(async res => {
+                                onSuccess={async credentialResponse => {
+                                    try {
+                                        const res = await fetch("http://localhost:8080/api/auth/google", {
+                                            method: "POST",
+                                            headers: { "Content-Type": "application/json" },
+                                            body: JSON.stringify({ credential: credentialResponse.credential })
+                                        });
                                         if (res.ok) {
-                                            onNavigate && onNavigate("login");
+                                            const authData = await res.json();
+                                            setCurrentUser(authData);
+                                            gotoDashboard(authData.role);
                                         } else {
                                             const msg = await res.text();
                                             alert(msg || "Google registration failed (server-side)");
                                         }
-                                    })
-                                    .catch(err => {
+                                    } catch (err) {
                                         alert("Google registration failed (network/backend error)");
                                         console.error(err);
-                                    });
+                                    }
                                 }}
                                 onError={() => {
                                     alert("Google Sign Up Failed (client-side).");
@@ -172,7 +186,7 @@ export default function Register({ onNavigate }) {
                                     href="#"
                                     onClick={e => {
                                         e.preventDefault();
-                                        onNavigate && onNavigate("login");
+                                        navigate("/login");
                                     }}
                                 >
                                     Sign in

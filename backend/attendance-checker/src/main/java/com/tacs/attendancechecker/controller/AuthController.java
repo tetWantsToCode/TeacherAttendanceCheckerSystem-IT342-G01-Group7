@@ -16,10 +16,15 @@ public class AuthController {
     private final AuthService authService;
     public AuthController(AuthService s) { this.authService = s; }
 
+    // Updated: returns AuthResponse after successful registration
     @PostMapping("/register")
-    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest req) {
+    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest req) {
+        // Register user
         authService.register(req);
-        return ResponseEntity.ok("Registered");
+        // Immediately log in the user for AuthResponse
+        LoginRequest loginReq = new LoginRequest(req.getEmail(), req.getPassword());
+        AuthResponse resp = authService.login(loginReq);
+        return ResponseEntity.ok(resp);
     }
 
     @PostMapping("/login")
