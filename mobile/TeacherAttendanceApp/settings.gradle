@@ -1,0 +1,23 @@
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+dependencyResolution {
+    eachArtifact { details ->
+        if (details.requested.group == 'org.jetbrains.kotlin') {
+            details.useVersion '1.9.10'
+        }
+    }
+}
+dependencyManagement {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+rootProject.name = "Teacher Attendance"
+include ':app'

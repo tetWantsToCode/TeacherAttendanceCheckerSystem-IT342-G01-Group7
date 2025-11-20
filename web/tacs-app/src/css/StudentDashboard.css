@@ -1,0 +1,133 @@
+.student-dashboard {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #f7f9fb;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  font-family: "Segoe UI", "Roboto", "Arial", sans-serif;
+  z-index: 10;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #25364a;
+  color: #fff;
+  padding: 1.2rem 2.5rem 1.2rem 2rem;
+  font-size: 1.25rem;
+  box-shadow: 0 2px 8px rgba(44, 62, 80, 0.07);
+  width: 100%;
+  border-radius: 0;
+  box-sizing: border-box;
+}
+
+.logo {
+  font-weight: 700;
+  font-size: 1.5rem;
+  letter-spacing: 1.5px;
+  padding-left: 3rem;
+  text-shadow: 0 2px 8px rgba(44, 62, 80, 0.1);
+}
+
+.dashboard-body {
+  display: flex;
+  flex: 1;
+  width: 100vw;
+  min-height: 0;
+  margin-top: 0;
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.sidebar {
+  width: 220px;
+  background: #f4f6fa;
+  color: #25364a;
+  padding: 2rem 1rem;
+  box-shadow: 1px 0 8px rgba(44, 62, 80, 0.04);
+  height: calc(100vh - 64px);
+  min-height: 0;
+  border-radius: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.sidebar nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar li {
+  margin: 1rem 0;
+  cursor: pointer;
+  padding: 0.7rem 1.2rem;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  font-size: 1.08rem;
+  font-weight: 500;
+  transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+  box-shadow: none;
+}
+
+.sidebar li.active,
+.sidebar li:hover {
+  background: #25364a;
+  color: #ffd700;
+  box-shadow: 0 2px 8px rgba(44, 62, 80, 0.07);
+  transform: none;
+}
+
+.main-content {
+  flex: 1;
+  padding: 2.5rem 3rem;
+  background: #fff;
+  border-radius: 16px;
+  margin: 2rem 2rem 2rem 0;
+  box-shadow: 0 2px 12px rgba(44, 62, 80, 0.07);
+  height: calc(100vh - 64px - 4rem);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  font-size: 1.08rem;
+  z-index: 20;
+  position: relative;
+}
+
+@media (max-width: 900px) {
+  .dashboard-header,
+  .dashboard-body {
+    width: 100vw;
+    border-radius: 0;
+  }
+  .dashboard-body {
+    flex-direction: column;
+    min-height: auto;
+    box-shadow: none;
+  }
+  .sidebar {
+    width: 100vw;
+    min-height: unset;
+    padding: 1rem;
+    box-shadow: none;
+    border-radius: 0;
+  }
+  .main-content {
+    margin: 0;
+    padding: 1.2rem;
+    min-height: auto;
+    height: auto;
+    border-radius: 0;
+    box-shadow: none;
+  }
+}
