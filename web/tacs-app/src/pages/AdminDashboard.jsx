@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import './AdminDashboard.css';
+import '../css/AdminDashboard.css';
 import Teachers from './Teachers';
 import Students from './Students';
 import Attendance from './Attendance';

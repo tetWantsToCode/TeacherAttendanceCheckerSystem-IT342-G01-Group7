@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './StudentDashboard.css';
+import '../css/StudentDashboard.css';
 import StudentAttendance from './StudentAttendance';
 import StudentClasses from './StudentClasses';
 import StudentProfile from './StudentProfile';
