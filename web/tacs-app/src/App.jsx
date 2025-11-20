@@ -11,6 +11,9 @@ export default function App() {
     window.scrollTo(0, 0)
   }
 
+export default function App() {
+  // Optionally, you can use state for navigation between login/register and dashboards
+  // For now, use routing for all main pages
   return (
     <>
       {page === 'login' && <Login onNavigate={navigate} />}
