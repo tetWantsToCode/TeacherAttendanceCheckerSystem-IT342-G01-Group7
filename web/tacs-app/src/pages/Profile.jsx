@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../css/StudentProfile.css';
+import '../css/Profile.css';
 
 export default function StudentProfile() {
   const [showPasswordForm, setShowPasswordForm] = useState(false);
