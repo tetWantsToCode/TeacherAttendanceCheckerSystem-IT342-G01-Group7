@@ -15,13 +15,15 @@ ALTER TABLE student ADD COLUMN user_id_temp VARCHAR(255);
 -- This matches the current student foreign key (which contains email) to users.email
 -- and fills in the UUID from users.user_id
 -- 
--- OPTION A: If the column is lowercase 'userid' (most common), use this:
-UPDATE student s
-SET user_id_temp = u.user_id
-FROM users u
-WHERE s.userid = u.email;
+-- UNCOMMENT THE CORRECT OPTION BASED ON YOUR COLUMN NAME CHECK:
+-- 
+-- OPTION A: If the column is lowercase 'userid' (most common):
+-- UPDATE student s
+-- SET user_id_temp = u.user_id
+-- FROM users u
+-- WHERE s.userid = u.email;
 
--- OPTION B: If the column is 'userId' with quotes, use this instead:
+-- OPTION B: If the column is 'userId' with quotes:
 -- UPDATE student s
 -- SET user_id_temp = u.user_id
 -- FROM users u
@@ -29,20 +31,26 @@ WHERE s.userid = u.email;
 
 -- Step 3: Verify that all students have been matched (optional but recommended)
 -- This should return 0 rows if all students are properly matched
--- Use the appropriate column name based on your schema:
+-- 
+-- UNCOMMENT THE CORRECT OPTION BASED ON YOUR COLUMN NAME CHECK:
+-- 
 -- OPTION A (lowercase):
-SELECT s.student_id, s.userid AS old_user_id_value
-FROM student s
-WHERE s.user_id_temp IS NULL;
+-- SELECT s.student_id, s.userid AS old_user_id_value
+-- FROM student s
+-- WHERE s.user_id_temp IS NULL;
+
 -- OPTION B (camelCase with quotes):
 -- SELECT s.student_id, s."userId" AS old_user_id_value
 -- FROM student s
 -- WHERE s.user_id_temp IS NULL;
 
 -- Step 4: Drop the old foreign key column
--- Use the appropriate column name based on your schema:
+-- 
+-- UNCOMMENT THE CORRECT OPTION BASED ON YOUR COLUMN NAME CHECK:
+-- 
 -- OPTION A (lowercase):
-ALTER TABLE student DROP COLUMN userid;
+-- ALTER TABLE student DROP COLUMN userid;
+
 -- OPTION B (camelCase with quotes):
 -- ALTER TABLE student DROP COLUMN "userId";
 
@@ -53,12 +61,15 @@ ALTER TABLE student RENAME COLUMN user_id_temp TO user_id;
 ALTER TABLE student ALTER COLUMN user_id SET NOT NULL;
 
 -- Step 7: Now we need to update the users table to make user_id the primary key
--- First, we need to drop any existing foreign key constraints on the student table
--- Find existing constraints with this query:
+-- 
+-- IMPORTANT: First, check for and drop any existing foreign key constraints on the student table
+-- Run this query to find existing constraints:
 -- SELECT constraint_name FROM information_schema.table_constraints 
 -- WHERE table_name = 'student' AND constraint_type = 'FOREIGN KEY';
--- Then drop them with the appropriate names:
--- ALTER TABLE student DROP CONSTRAINT IF EXISTS <constraint_name>;
+-- 
+-- Then uncomment and run the following for each constraint found:
+-- ALTER TABLE student DROP CONSTRAINT IF EXISTS student_userid_fkey;
+-- (Replace 'student_userid_fkey' with the actual constraint name from your database)
 
 -- Drop the current primary key on users (email)
 ALTER TABLE users DROP CONSTRAINT users_pkey;

@@ -21,15 +21,24 @@ SELECT column_name FROM information_schema.columns WHERE table_name = 'student';
 
 ### Running the Migration
 
-**IMPORTANT**: Before running the migration script, you must edit it to use the correct column name for your database schema. The script provides two options (Option A for lowercase `userid` and Option B for `"userId"`). Choose the appropriate one based on your column names check above.
+**IMPORTANT**: The migration script has all critical operations commented out by default to prevent accidental execution with wrong parameters. You must edit it before running:
 
-After editing the script with the correct column names, execute it:
+1. **Uncomment the correct UPDATE statement** (Step 2) based on your column name
+2. **Uncomment the correct SELECT statement** (Step 3) to verify the migration
+3. **Uncomment the correct DROP COLUMN statement** (Step 4) based on your column name
+4. **Check for existing foreign key constraints** (Step 7) and uncomment the DROP CONSTRAINT if needed
+
+The script provides two options throughout:
+- Option A for lowercase `userid` (most common)
+- Option B for `"userId"` with quotes
+
+After editing the script, execute it:
 
 ```bash
 psql -h localhost -U tacs_user -d attendance_checker -f migrate_student_user_id.sql
 ```
 
-**Note**: The migration script contains commented alternatives. Uncomment the correct option for your schema.
+**Review each step's output** before proceeding to the next section to ensure no errors occur.
 
 ### What the Migration Does
 
