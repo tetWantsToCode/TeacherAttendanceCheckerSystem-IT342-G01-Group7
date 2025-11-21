@@ -7,9 +7,10 @@ import jakarta.persistence.*;
 public class User {
 
     @Id
+    @Column(name = "user_id")
+    private String userId;
 
-
-    @Column(name = "email")
+    @Column(name = "email", unique = true, nullable = false)
     private String email;
 
     @Column(name = "password")
@@ -20,9 +21,6 @@ public class User {
 
     @Column(name = "lname")
     private String lname;
-
-    @Column(name = "user_id")
-    private String userId;
 
 
     @Enumerated(EnumType.STRING)
