@@ -29,15 +29,22 @@ WHERE s.userid = u.email;
 
 -- Step 3: Verify that all students have been matched (optional but recommended)
 -- This should return 0 rows if all students are properly matched
+-- Use the appropriate column name based on your schema:
+-- OPTION A (lowercase):
 SELECT s.student_id, s.userid AS old_user_id_value
 FROM student s
 WHERE s.user_id_temp IS NULL;
--- If using quoted column, use: s."userId" instead
+-- OPTION B (camelCase with quotes):
+-- SELECT s.student_id, s."userId" AS old_user_id_value
+-- FROM student s
+-- WHERE s.user_id_temp IS NULL;
 
 -- Step 4: Drop the old foreign key column
 -- Use the appropriate column name based on your schema:
+-- OPTION A (lowercase):
 ALTER TABLE student DROP COLUMN userid;
--- OR if quoted: ALTER TABLE student DROP COLUMN "userId";
+-- OPTION B (camelCase with quotes):
+-- ALTER TABLE student DROP COLUMN "userId";
 
 -- Step 5: Rename the temporary column to user_id
 ALTER TABLE student RENAME COLUMN user_id_temp TO user_id;
@@ -46,9 +53,12 @@ ALTER TABLE student RENAME COLUMN user_id_temp TO user_id;
 ALTER TABLE student ALTER COLUMN user_id SET NOT NULL;
 
 -- Step 7: Now we need to update the users table to make user_id the primary key
--- First, drop any existing foreign key constraints on student table
--- (This may vary depending on constraint names in your database)
--- ALTER TABLE student DROP CONSTRAINT IF EXISTS fk_student_user;
+-- First, we need to drop any existing foreign key constraints on the student table
+-- Find existing constraints with this query:
+-- SELECT constraint_name FROM information_schema.table_constraints 
+-- WHERE table_name = 'student' AND constraint_type = 'FOREIGN KEY';
+-- Then drop them with the appropriate names:
+-- ALTER TABLE student DROP CONSTRAINT IF EXISTS <constraint_name>;
 
 -- Drop the current primary key on users (email)
 ALTER TABLE users DROP CONSTRAINT users_pkey;
