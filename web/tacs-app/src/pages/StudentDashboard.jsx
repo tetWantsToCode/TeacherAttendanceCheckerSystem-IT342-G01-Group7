@@ -9,11 +9,33 @@ const sections = [
   { name: 'My Attendance', key: 'attendance' },
   { name: 'My Classes', key: 'classes' },
   { name: 'Profile', key: 'profile' },
-  { name: 'Settings', key: 'settings' }
+  { name: 'Settings', key: 'settings' },
+  { name: 'Logout', key: 'logout' } // <-- Added logout item
 ];
 
 export default function StudentDashboard() {
   const [activeSection, setActiveSection] = useState('attendance');
+
+  function handleLogout() {
+    localStorage.clear();
+    sessionStorage.clear();
+    window.location.href = '/';
+  }
+
+  const renderSection = () => {
+    switch (activeSection) {
+      case 'attendance':
+        return <StudentAttendance />;
+      case 'classes':
+        return <StudentClasses />;
+      case 'profile':
+        return <StudentProfile />;
+      case 'settings':
+        return <StudentSettings />;
+      default:
+        return null;
+    }
+  };
 
   return (
     <div className="student-dashboard">
@@ -29,7 +51,11 @@ export default function StudentDashboard() {
                 <li
                   key={section.key}
                   className={activeSection === section.key ? 'active' : ''}
-                  onClick={() => setActiveSection(section.key)}
+                  onClick={
+                    section.key === 'logout'
+                      ? handleLogout
+                      : () => setActiveSection(section.key)
+                  }
                 >
                   {section.name}
                 </li>
@@ -38,10 +64,7 @@ export default function StudentDashboard() {
           </nav>
         </aside>
         <main className="main-content">
-          {activeSection === 'attendance' && <StudentAttendance />}
-          {activeSection === 'classes' && <StudentClasses />}
-          {activeSection === 'profile' && <StudentProfile />}
-          {activeSection === 'settings' && <StudentSettings />}
+          {renderSection()}
         </main>
       </div>
     </div>
