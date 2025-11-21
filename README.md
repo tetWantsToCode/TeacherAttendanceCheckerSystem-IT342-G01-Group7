@@ -76,7 +76,7 @@ A group project aimed at streamlining the process of tracking teacher attendance
 ## 🌐 Deployed Link
 
 *No deployed link available at this time.*  
->If you deploy (e.g., on Vercel/Netlify/Heroku), update this section with the live URL!
+
 
 ---
 
