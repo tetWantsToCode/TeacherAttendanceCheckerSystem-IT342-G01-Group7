@@ -3,25 +3,41 @@
 
 -- IMPORTANT: Back up your database before running this migration!
 
+-- IMPORTANT: First, check your actual column name!
+-- Run this query to see the actual column names in your student table:
+-- SELECT column_name FROM information_schema.columns WHERE table_name = 'student';
+-- The old foreign key column might be named: "userid" (lowercase) or "userId" (camelCase with quotes)
+
 -- Step 1: Add a temporary column to store the UUID
 ALTER TABLE student ADD COLUMN user_id_temp VARCHAR(255);
 
 -- Step 2: Populate the temporary column by joining with users table
--- This matches the current student.user_id (which contains email) to users.email
+-- This matches the current student foreign key (which contains email) to users.email
 -- and fills in the UUID from users.user_id
+-- 
+-- OPTION A: If the column is lowercase 'userid' (most common), use this:
 UPDATE student s
 SET user_id_temp = u.user_id
 FROM users u
-WHERE s."userId" = u.email;
+WHERE s.userid = u.email;
+
+-- OPTION B: If the column is 'userId' with quotes, use this instead:
+-- UPDATE student s
+-- SET user_id_temp = u.user_id
+-- FROM users u
+-- WHERE s."userId" = u.email;
 
 -- Step 3: Verify that all students have been matched (optional but recommended)
 -- This should return 0 rows if all students are properly matched
-SELECT s.student_id, s."userId"
+SELECT s.student_id, s.userid AS old_user_id_value
 FROM student s
 WHERE s.user_id_temp IS NULL;
+-- If using quoted column, use: s."userId" instead
 
--- Step 4: Drop the old user_id column (currently named "userId" in camelCase)
-ALTER TABLE student DROP COLUMN "userId";
+-- Step 4: Drop the old foreign key column
+-- Use the appropriate column name based on your schema:
+ALTER TABLE student DROP COLUMN userid;
+-- OR if quoted: ALTER TABLE student DROP COLUMN "userId";
 
 -- Step 5: Rename the temporary column to user_id
 ALTER TABLE student RENAME COLUMN user_id_temp TO user_id;

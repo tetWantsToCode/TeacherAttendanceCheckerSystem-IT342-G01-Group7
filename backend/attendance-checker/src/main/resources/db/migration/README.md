@@ -9,16 +9,27 @@ This migration fixes the improper user_id referencing in the student table. Prev
 1. **IMPORTANT**: Back up your database before running this migration!
 2. Stop the application server
 3. Connect to your PostgreSQL database
+4. **Check your column names** - The old foreign key column might be named `userid` (lowercase) or `"userId"` (camelCase with quotes)
+
+### Determining Your Column Names
+
+Before running the migration, check your actual column names:
+
+```sql
+SELECT column_name FROM information_schema.columns WHERE table_name = 'student';
+```
 
 ### Running the Migration
 
-Execute the migration script:
+**IMPORTANT**: Before running the migration script, you must edit it to use the correct column name for your database schema. The script provides two options (Option A for lowercase `userid` and Option B for `"userId"`). Choose the appropriate one based on your column names check above.
+
+After editing the script with the correct column names, execute it:
 
 ```bash
 psql -h localhost -U tacs_user -d attendance_checker -f migrate_student_user_id.sql
 ```
 
-Or manually run the SQL commands in the `migrate_student_user_id.sql` file.
+**Note**: The migration script contains commented alternatives. Uncomment the correct option for your schema.
 
 ### What the Migration Does
 
