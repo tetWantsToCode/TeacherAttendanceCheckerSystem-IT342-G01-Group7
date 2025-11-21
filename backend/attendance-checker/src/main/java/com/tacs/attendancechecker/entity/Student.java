@@ -11,7 +11,7 @@ public class Student {
     private Integer studentId;
 
     @ManyToOne
-    @JoinColumn(name = "userId", nullable = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
     private User user;
 
     private Integer yearLevel;
