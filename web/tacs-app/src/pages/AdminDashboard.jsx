@@ -1,54 +1,98 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../css/AdminDashboard.css';
 import Teachers from './Teachers';
 import Students from './Students';
-import Attendance from './Attendance';
-import Statistics from './Statistics';
 import Settings from './Settings';
+
 import TeacherList from './TeacherList';
 import AddTeacherForm from './AddTeacherForm';
 import AddStudentForm from './AddStudentForm';
 import StudentList from './StudentList';
 
+import ClassList from './ClassList';
+import AddClassForm from './AddClassForm';
+
 const sections = [
   { key: 'dashboard', label: 'Dashboard', icon: '🏠' },
   { key: 'teachers', label: 'Teachers', icon: '👩‍🏫' },
   { key: 'students', label: 'Students', icon: '🧑‍🎓' },
-  { key: 'attendance', label: 'Attendance', icon: '📝' },
-  { key: 'statistics', label: 'Statistics', icon: '📊' },
+  { key: 'classes', label: 'Classes', icon: '🏫' },
   { key: 'settings', label: 'Settings', icon: '⚙️' },
   { key: 'logout', label: 'Logout', icon: '🚪' },
 ];
 
 const AdminDashboard = () => {
   const [activeSection, setActiveSection] = useState('dashboard');
-  const [teachers, setTeachers] = useState([
-    { id: 1, name: 'Alice Smith', email: 'alice@school.edu' },
-    { id: 2, name: 'Bob Johnson', email: 'bob@school.edu' }
-  ]);
-  const [students, setStudents] = useState([
-    { id: 1, name: 'Charlie Brown', email: 'charlie@school.edu', password: 'student123' },
-    { id: 2, name: 'Dana White', email: 'dana@school.edu', password: 'student123' }
-  ]);
-  function handleAddTeacher(newTeacher) {
-    setTeachers([
-      ...teachers,
-      { id: Date.now(), ...newTeacher }
-    ]);
-  }
-  function handleRemoveTeacher(id) {
-    setTeachers(teachers.filter(t => t.id !== id));
-  }
-  function handleAddStudent(newStudent) {
-    setStudents([
-      ...students,
-      { id: Date.now(), ...newStudent }
-    ]);
-  }
-  function handleRemoveStudent(id) {
-    setStudents(students.filter(s => s.id !== id));
-  }
+  const [teachers, setTeachers] = useState([]);
+  const [students, setStudents] = useState([]);
+  const [classes, setClasses] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Load initial data
+  useEffect(() => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setTeachers([
+        { id: 1, name: 'Alice Smith', email: 'alice@school.edu', subject: 'Mathematics' },
+        { id: 2, name: 'Bob Johnson', email: 'bob@school.edu', subject: 'Science' }
+      ]);
+
+      setStudents([
+        { id: 1, name: 'Charlie Brown', email: 'charlie@school.edu', grade: '10th' },
+        { id: 2, name: 'Dana White', email: 'dana@school.edu', grade: '11th' }
+      ]);
+
+      setClasses([
+        { id: 1, className: 'Math 101', room: 'Room A', teacher: 'Alice Smith' }
+      ]);
+
+      setIsLoading(false);
+    }, 500);
+  }, []);
+
+  // HANDLERS
+  const handleAddTeacher = (newTeacher) => {
+    setTeachers(prev => [...prev, { id: Date.now(), ...newTeacher }]);
+  };
+
+  const handleRemoveTeacher = (id) => {
+    if (window.confirm('Remove this teacher?'))
+      setTeachers(prev => prev.filter(t => t.id !== id));
+  };
+
+  const handleAddStudent = (newStudent) => {
+    setStudents(prev => [...prev, { id: Date.now(), ...newStudent }]);
+  };
+
+  const handleRemoveStudent = (id) => {
+    if (window.confirm('Remove this student?'))
+      setStudents(prev => prev.filter(s => s.id !== id));
+  };
+
+  const handleAddClass = (newClass) => {
+    setClasses(prev => [...prev, { id: Date.now(), ...newClass }]);
+  };
+
+  const handleRemoveClass = (id) => {
+    if (window.confirm('Remove this class?'))
+      setClasses(prev => prev.filter(c => c.id !== id));
+  };
+
+  const handleLogout = () => {
+    if (window.confirm('Logout?')) window.location.href = '/';
+  };
+
+  const handleSectionChange = (key) => {
+    if (key === 'logout') return handleLogout();
+    setActiveSection(key);
+  };
+
+  // RENDER SECTIONS
   const renderSection = () => {
+    if (isLoading && activeSection === 'dashboard') {
+      return <div className="loading">Loading dashboard...</div>;
+    }
+
     switch (activeSection) {
       case 'teachers':
         return (
@@ -57,6 +101,7 @@ const AdminDashboard = () => {
             <TeacherList teachers={teachers} onRemove={handleRemoveTeacher} />
           </>
         );
+
       case 'students':
         return (
           <>
@@ -64,28 +109,26 @@ const AdminDashboard = () => {
             <StudentList students={students} onRemove={handleRemoveStudent} />
           </>
         );
-      case 'attendance':
-        return <Attendance />;
-      case 'statistics':
-        return <Statistics />;
+
+      case 'classes':
+        return (
+          <>
+            <AddClassForm teachers={teachers} onAdd={handleAddClass} />
+            <ClassList classes={classes} onRemove={handleRemoveClass} />
+          </>
+        );
+
       case 'settings':
         return <Settings />;
+
       case 'dashboard':
         return (
           <div className="dashboard-welcome">
             <h1>Welcome, Admin!</h1>
-            <div className="dashboard-cards">
-              <div className="card">Teachers Overview</div>
-              <div className="card">Students Overview</div>
-              <div className="card">Attendance Summary</div>
-              <div className="card">Statistics</div>
-            </div>
-            <p>Select an option from the sidebar to get started.</p>
+            <p>Use the sidebar to manage teachers, students, and classes.</p>
           </div>
         );
-      case 'logout':
-        window.location.href = '/';
-        return null;
+
       default:
         return null;
     }
@@ -95,8 +138,11 @@ const AdminDashboard = () => {
     <div className="admin-dashboard">
       <header className="dashboard-header">
         <span className="logo">TACS Admin</span>
-        <span className="admin-info">Admin User</span>
+        <div className="admin-info">
+          <span>Admin User</span>
+        </div>
       </header>
+
       <div className="dashboard-body">
         <aside className="sidebar">
           <nav>
@@ -105,15 +151,16 @@ const AdminDashboard = () => {
                 <li
                   key={section.key}
                   className={activeSection === section.key ? 'active' : ''}
-                  onClick={() => setActiveSection(section.key)}
+                  onClick={() => handleSectionChange(section.key)}
                 >
                   <span className="icon">{section.icon}</span>
-                  {section.label}
+                  <span className="label">{section.label}</span>
                 </li>
               ))}
             </ul>
           </nav>
         </aside>
+
         <main className="main-content">
           {renderSection()}
         </main>
