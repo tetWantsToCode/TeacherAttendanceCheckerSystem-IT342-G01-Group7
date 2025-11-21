@@ -46,7 +46,7 @@ public class AuthService {
         u.setLname(req.getLname());
         u.setEmail(req.getEmail());
         u.setPassword(encoder.encode(req.getPassword()));
-        u.setRole(User.Role.valueOf(req.getRole().toUpperCase()));
+        u.setRole(User.Role.STUDENT);
         userRepo.save(u);
     }
 
@@ -74,8 +74,8 @@ public class AuthService {
         u.setFname(req.getFname());
         u.setLname(req.getLname());
         u.setEmail(req.getEmail());
-        u.setPassword(""); // No password for Google users
-        u.setRole(User.Role.valueOf(req.getRole().toUpperCase()));
+        u.setPassword(""); //
+        u.setRole(User.Role.STUDENT);
         userRepo.save(u);
         return u;
     }
