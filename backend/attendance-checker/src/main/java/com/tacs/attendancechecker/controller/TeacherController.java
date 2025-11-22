@@ -4,23 +4,40 @@ import com.tacs.attendancechecker.dto.TeacherRegistrationRequest;
 import com.tacs.attendancechecker.entity.Teacher;
 import com.tacs.attendancechecker.service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/teachers")
+@CrossOrigin
 public class TeacherController {
 
     @Autowired
     private TeacherService teacherService;
 
     @PostMapping
-    public Teacher addTeacher(@RequestBody TeacherRegistrationRequest request) {
-        return teacherService.addTeacher(
-                request.getFname(),
-                request.getLname(),
-                request.getEmail(),
-                request.getPassword(),
-                request.getSpecialization()
-        );
+    public ResponseEntity<?> addTeacher(@RequestBody TeacherRegistrationRequest request) {
+        try {
+            Teacher teacher = teacherService.addTeacher(
+                    request.getFname(),
+                    request.getLname(),
+                    request.getEmail(),
+                    request.getPassword(),
+                    request.getSpecialization()
+            );
+            return ResponseEntity.ok(teacher);
+        } catch (IllegalArgumentException e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        } catch (Exception e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("message", "Error adding teacher: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        }
     }
 }

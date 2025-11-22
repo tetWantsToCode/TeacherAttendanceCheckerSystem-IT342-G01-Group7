@@ -10,7 +10,7 @@ import java.util.function.Function;
 
 @Component
 public class JwtUtil {
-    // Use a secure key and move to config/env for production
+
     private final Key key = Keys.hmacShaKeyFor("change_this_to_a_very_long_secret_key_at_least_256_bits".getBytes());
     private final long validityInMillis = 1000L * 60 * 60 * 24; // 24h
 

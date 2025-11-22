@@ -20,9 +20,13 @@ export default function AddStudentForm({ onAdd }) {
     }
 
     try {
+      const token = localStorage.getItem("token");
       const response = await fetch('http://localhost:8080/api/students', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        },
         body: JSON.stringify({
           fname,
           lname,
