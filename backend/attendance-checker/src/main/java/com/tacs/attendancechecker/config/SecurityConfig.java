@@ -4,6 +4,7 @@ import com.tacs.attendancechecker.util.JwtAuthenticationFilter;
 import com.tacs.attendancechecker.util.JwtUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -38,11 +39,13 @@ public class SecurityConfig {
         JwtAuthenticationFilter jwtFilter = new JwtAuthenticationFilter(jwtUtil, userDetailsService);
 
         http
-                .cors(withDefaults()) // Enable CORS with global configuration
+                .cors(withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**", "/api/students/**", "/api/teachers/**").permitAll() // Allow both endpoints for testing
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/teachers/**").permitAll()
+                        .requestMatchers("/api/students/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())

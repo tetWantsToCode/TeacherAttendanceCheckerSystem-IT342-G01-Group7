@@ -19,10 +19,14 @@ export default function AddTeacherForm({ onAdd }) {
     }
 
     try {
+      const token = localStorage.getItem("token");
       const response = await fetch('http://localhost:8080/api/teachers', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fname, lname, email, password, specialization }),
+        headers: { 
+          'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        },
+        body: JSON.stringify({ fname, lname, email, password, specialization })
       });
       if (!response.ok) {
         const err = await response.json();

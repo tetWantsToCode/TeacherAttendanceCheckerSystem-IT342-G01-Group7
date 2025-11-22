@@ -9,8 +9,8 @@ public class Teacher {
     @Id
     private String teacherId;
 
-    @ManyToOne
-    @JoinColumn(name = "userId", nullable = false)
+    @OneToOne
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 
     private String specialization;

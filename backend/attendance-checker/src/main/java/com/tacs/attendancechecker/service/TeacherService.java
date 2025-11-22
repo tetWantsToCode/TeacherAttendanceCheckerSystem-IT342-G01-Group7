@@ -23,6 +23,10 @@ public class TeacherService {
     private PasswordEncoder passwordEncoder;
 
     public Teacher addTeacher(String fname, String lname, String email, String password, String specialization) {
+        // Prevent duplicate users by email
+        if (userRepository.existsByEmail(email)) {
+            throw new IllegalArgumentException("A user with that email already exists.");
+        }
         // Create user
         User user = new User();
         user.setUserId(UUID.randomUUID().toString());
