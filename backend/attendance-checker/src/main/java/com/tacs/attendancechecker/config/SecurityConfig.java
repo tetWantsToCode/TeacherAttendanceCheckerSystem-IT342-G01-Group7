@@ -41,17 +41,23 @@ public class SecurityConfig {
         http
                 .cors(cors -> cors.configurationSource(request -> {
                     var corsConfig = new org.springframework.web.cors.CorsConfiguration();
-                    corsConfig.addAllowedOrigin("http://localhost:5173");
-                    corsConfig.addAllowedOrigin("http://localhost:5174");
-                    corsConfig.addAllowedMethod("*");
+                    corsConfig.addAllowedOriginPattern("http://localhost:*");
+                    corsConfig.addAllowedMethod("GET");
+                    corsConfig.addAllowedMethod("POST");
+                    corsConfig.addAllowedMethod("PUT");
+                    corsConfig.addAllowedMethod("DELETE");
+                    corsConfig.addAllowedMethod("OPTIONS");
                     corsConfig.addAllowedHeader("*");
+                    corsConfig.addExposedHeader("*");
                     corsConfig.setAllowCredentials(true);
+                    corsConfig.setMaxAge(3600L);
                     return corsConfig;
                 }))
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/api/**").permitAll()
                         .requestMatchers("/api/**").authenticated()
                         .anyRequest().authenticated()
                 )
