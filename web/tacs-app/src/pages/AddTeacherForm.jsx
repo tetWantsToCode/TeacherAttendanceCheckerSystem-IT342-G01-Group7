@@ -5,7 +5,6 @@ export default function AddTeacherForm({ onAdd }) {
   const [lname, setLName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [specialization, setSpecialization] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
@@ -13,20 +12,21 @@ export default function AddTeacherForm({ onAdd }) {
     e.preventDefault();
     setError('');
     setSuccess('');
-    if (!fname || !lname || !email || !password || !specialization) {
+    if (!fname || !lname || !email || !password) {
       setError('Please fill out all fields.');
       return;
     }
 
     try {
-      const token = localStorage.getItem("token");
+      const authData = JSON.parse(localStorage.getItem('auth'));
+      const token = authData?.token;
       const response = await fetch('http://localhost:8080/api/teachers', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
           ...(token ? { 'Authorization': `Bearer ${token}` } : {})
         },
-        body: JSON.stringify({ fname, lname, email, password, specialization })
+        body: JSON.stringify({ fname, lname, email, password, specialization: '' })
       });
       if (!response.ok) {
         const err = await response.json();
@@ -40,7 +40,6 @@ export default function AddTeacherForm({ onAdd }) {
       setLName('');
       setEmail('');
       setPassword('');
-      setSpecialization('');
     } catch (err) {
       setError('Server error. Please try again.');
     }
@@ -84,15 +83,6 @@ export default function AddTeacherForm({ onAdd }) {
           placeholder="Base Password (set by admin)"
           value={password}
           onChange={e => setPassword(e.target.value)}
-          style={{ padding: '0.5rem', borderRadius: '6px', border: '1px solid #ccc', width: '60%' }}
-        />
-      </div>
-      <div style={{ marginBottom: '1rem' }}>
-        <input
-          type="text"
-          placeholder="Specialization"
-          value={specialization}
-          onChange={e => setSpecialization(e.target.value)}
           style={{ padding: '0.5rem', borderRadius: '6px', border: '1px solid #ccc', width: '60%' }}
         />
       </div>

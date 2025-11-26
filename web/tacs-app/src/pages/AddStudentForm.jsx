@@ -20,7 +20,8 @@ export default function AddStudentForm({ onAdd }) {
     }
 
     try {
-      const token = localStorage.getItem("token");
+      const authData = JSON.parse(localStorage.getItem('auth'));
+      const token = authData?.token;
       const response = await fetch('http://localhost:8080/api/students', {
         method: 'POST',
         headers: { 

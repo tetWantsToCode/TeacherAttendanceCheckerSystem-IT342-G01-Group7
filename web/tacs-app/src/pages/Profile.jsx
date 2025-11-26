@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../css/Profile.css';
 
 export default function StudentProfile() {
@@ -14,12 +14,45 @@ export default function StudentProfile() {
     confirm: false
   });
   const [profileImage, setProfileImage] = useState('https://via.placeholder.com/150');
+  const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
-  // Mock student data - replace with actual data from your backend
-  const studentData = {
-    firstName: 'Juan',
-    lastName: 'Dela Cruz',
-    email: 'juan.delacruz@student.edu'
+  // Fetch user profile data on component mount
+  useEffect(() => {
+    fetchUserProfile();
+  }, []);
+
+  const fetchUserProfile = async () => {
+    try {
+      const authData = JSON.parse(localStorage.getItem('auth'));
+      const token = authData?.token;
+      
+      if (!token) {
+        setError('Please login to view your profile');
+        setLoading(false);
+        return;
+      }
+
+      const response = await fetch('http://localhost:8080/api/users/profile', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch profile data');
+      }
+
+      const data = await response.json();
+      setUserData(data);
+      setLoading(false);
+    } catch (err) {
+      setError('Error loading profile: ' + err.message);
+      setLoading(false);
+    }
   };
 
   const handlePasswordChange = (e) => {
@@ -27,30 +60,61 @@ export default function StudentProfile() {
     setPasswordData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmitPassword = (e) => {
+  const handleSubmitPassword = async (e) => {
     e.preventDefault();
+    setError('');
+    setSuccessMessage('');
     
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      alert('New passwords do not match!');
+      setError('New passwords do not match!');
       return;
     }
 
     if (passwordData.newPassword.length < 8) {
-      alert('Password must be at least 8 characters long!');
+      setError('Password must be at least 8 characters long!');
       return;
     }
 
-    // Add your password change logic here
-    console.log('Changing password...');
-    alert('Password changed successfully!');
-    
-    // Reset form
-    setPasswordData({
-      currentPassword: '',
-      newPassword: '',
-      confirmPassword: ''
-    });
-    setShowPasswordForm(false);
+    try {
+      const authData = JSON.parse(localStorage.getItem('auth'));
+      const token = authData?.token;
+      
+      const response = await fetch('http://localhost:8080/api/users/change-password', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          currentPassword: passwordData.currentPassword,
+          newPassword: passwordData.newPassword
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.message || 'Failed to change password');
+        return;
+      }
+
+      setSuccessMessage('Password changed successfully!');
+      
+      // Reset form
+      setPasswordData({
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: ''
+      });
+      
+      // Close form after 2 seconds
+      setTimeout(() => {
+        setShowPasswordForm(false);
+        setSuccessMessage('');
+      }, 2000);
+    } catch (err) {
+      setError('Error changing password: ' + err.message);
+    }
   };
 
   const togglePasswordVisibility = (field) => {
@@ -62,13 +126,13 @@ export default function StudentProfile() {
     if (file) {
       // Validate file type
       if (!file.type.startsWith('image/')) {
-        alert('Please select an image file!');
+        setError('Please select an image file!');
         return;
       }
 
       // Validate file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
-        alert('Image size should be less than 5MB!');
+        setError('Image size should be less than 5MB!');
         return;
       }
 
@@ -76,9 +140,8 @@ export default function StudentProfile() {
       const reader = new FileReader();
       reader.onloadend = () => {
         setProfileImage(reader.result);
-        // Here you would typically upload to your backend
-        console.log('Image ready to upload:', file);
-        alert('Profile image updated successfully!');
+        setSuccessMessage('Profile image updated locally (backend storage not implemented)');
+        setTimeout(() => setSuccessMessage(''), 3000);
       };
       reader.readAsDataURL(file);
     }
@@ -88,9 +151,55 @@ export default function StudentProfile() {
     document.getElementById('profile-image-input').click();
   };
 
+  if (loading) {
+    return (
+      <div className="profile-container">
+        <div style={{ textAlign: 'center', padding: '2rem' }}>
+          <p>Loading profile...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!userData) {
+    return (
+      <div className="profile-container">
+        <div style={{ textAlign: 'center', padding: '2rem' }}>
+          <p style={{ color: 'red' }}>{error || 'Failed to load profile'}</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="profile-container">
       <h2 className="profile-title">My Profile</h2>
+      
+      {error && (
+        <div style={{ 
+          background: '#fee', 
+          color: '#c33', 
+          padding: '1rem', 
+          borderRadius: '6px', 
+          marginBottom: '1rem',
+          border: '1px solid #fcc'
+        }}>
+          {error}
+        </div>
+      )}
+
+      {successMessage && (
+        <div style={{ 
+          background: '#efe', 
+          color: '#3c3', 
+          padding: '1rem', 
+          borderRadius: '6px', 
+          marginBottom: '1rem',
+          border: '1px solid #cfc'
+        }}>
+          {successMessage}
+        </div>
+      )}
       
       <div className="profile-card">
         <div className="profile-image-container">
@@ -122,7 +231,7 @@ export default function StudentProfile() {
             <span className="profile-icon">👤</span>
             <div>
               <label className="profile-label">First Name</label>
-              <p className="profile-value">{studentData.firstName}</p>
+              <p className="profile-value">{userData.fname}</p>
             </div>
           </div>
 
@@ -130,7 +239,7 @@ export default function StudentProfile() {
             <span className="profile-icon">👤</span>
             <div>
               <label className="profile-label">Last Name</label>
-              <p className="profile-value">{studentData.lastName}</p>
+              <p className="profile-value">{userData.lname}</p>
             </div>
           </div>
 
@@ -138,7 +247,15 @@ export default function StudentProfile() {
             <span className="profile-icon">📧</span>
             <div>
               <label className="profile-label">Email</label>
-              <p className="profile-value">{studentData.email}</p>
+              <p className="profile-value">{userData.email}</p>
+            </div>
+          </div>
+
+          <div className="profile-info-item">
+            <span className="profile-icon">🎭</span>
+            <div>
+              <label className="profile-label">Role</label>
+              <p className="profile-value">{userData.role}</p>
             </div>
           </div>
         </div>

@@ -22,6 +22,10 @@ public class TeacherService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    public java.util.List<Teacher> getAllTeachers() {
+        return teacherRepository.findAll();
+    }
+
     public Teacher addTeacher(String fname, String lname, String email, String password, String specialization) {
         // Prevent duplicate users by email
         if (userRepository.existsByEmail(email)) {
