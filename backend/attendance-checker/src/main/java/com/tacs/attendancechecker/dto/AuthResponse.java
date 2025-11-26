@@ -6,6 +6,8 @@ public class AuthResponse {
     private String fname;
     private String lname;
     private String role;
+    private String teacherId;
+    private Integer studentId;
 
     public AuthResponse(String token) {
         this.token = token;
@@ -17,6 +19,16 @@ public class AuthResponse {
         this.fname = fname;
         this.lname = lname;
         this.role = role;
+    }
+
+    public AuthResponse(String token, String email, String fname, String lname, String role, String teacherId, Integer studentId) {
+        this.token = token;
+        this.email = email;
+        this.fname = fname;
+        this.lname = lname;
+        this.role = role;
+        this.teacherId = teacherId;
+        this.studentId = studentId;
     }
 
     public String getToken() {
@@ -34,6 +46,12 @@ public class AuthResponse {
     public String getRole() {
         return role;
     }
+    public String getTeacherId() {
+        return teacherId;
+    }
+    public Integer getStudentId() {
+        return studentId;
+    }
 
     public void setToken(String token) {
         this.token = token;
@@ -49,5 +67,11 @@ public class AuthResponse {
     }
     public void setRole(String role) {
         this.role = role;
+    }
+    public void setTeacherId(String teacherId) {
+        this.teacherId = teacherId;
+    }
+    public void setStudentId(Integer studentId) {
+        this.studentId = studentId;
     }
 }

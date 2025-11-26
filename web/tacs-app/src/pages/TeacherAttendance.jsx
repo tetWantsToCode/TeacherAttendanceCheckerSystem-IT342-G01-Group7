@@ -14,35 +14,13 @@ export default function TeacherAttendance() {
   useEffect(() => {
     // Get teacher ID from auth
     const authData = JSON.parse(localStorage.getItem('auth'));
-    if (authData && authData.email) {
-      fetchTeacherId(authData.email);
+    if (authData && authData.teacherId) {
+      setTeacherId(authData.teacherId);
+      fetchTeacherCourses(authData.teacherId);
+    } else {
+      setError('Teacher ID not found. Please log in again.');
     }
   }, []);
-
-  const fetchTeacherId = async (email) => {
-    try {
-      // First get user info to find teacher ID
-      const authData = JSON.parse(localStorage.getItem('auth'));
-      const token = authData?.token;
-
-      const response = await fetch('http://localhost:8080/api/users/profile', {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-
-      if (response.ok) {
-        const userData = await response.json();
-        // For now, use email as teacher ID (you may need to adjust based on your setup)
-        // Or create an endpoint to get teacher by user email
-        fetchTeacherCourses(userData.userId);
-        setTeacherId(userData.userId);
-      }
-    } catch (err) {
-      setError('Error loading teacher information');
-    }
-  };
 
   const fetchTeacherCourses = async (tId) => {
     setLoading(true);

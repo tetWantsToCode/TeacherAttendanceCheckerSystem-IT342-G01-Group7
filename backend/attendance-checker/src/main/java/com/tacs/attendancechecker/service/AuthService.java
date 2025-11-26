@@ -1,7 +1,11 @@
 package com.tacs.attendancechecker.service;
 
 import com.tacs.attendancechecker.dto.*;
+import com.tacs.attendancechecker.entity.Student;
+import com.tacs.attendancechecker.entity.Teacher;
 import com.tacs.attendancechecker.entity.User;
+import com.tacs.attendancechecker.repository.StudentRepository;
+import com.tacs.attendancechecker.repository.TeacherRepository;
 import com.tacs.attendancechecker.repository.UserRepository;
 import com.tacs.attendancechecker.util.JwtUtil;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,13 +28,18 @@ import java.util.UUID;
 public class AuthService {
 
     private final UserRepository userRepo;
+    private final TeacherRepository teacherRepo;
+    private final StudentRepository studentRepo;
     private final PasswordEncoder encoder;
     private final AuthenticationManager authManager;
     private final JwtUtil jwtUtil;
 
-    public AuthService(UserRepository repo, PasswordEncoder encoder,
+    public AuthService(UserRepository repo, TeacherRepository teacherRepo,
+                       StudentRepository studentRepo, PasswordEncoder encoder,
                        AuthenticationManager authManager, JwtUtil jwtUtil) {
         this.userRepo = repo;
+        this.teacherRepo = teacherRepo;
+        this.studentRepo = studentRepo;
         this.encoder = encoder;
         this.authManager = authManager;
         this.jwtUtil = jwtUtil;
@@ -54,7 +63,24 @@ public class AuthService {
         authManager.authenticate(new UsernamePasswordAuthenticationToken(req.getEmail(), req.getPassword()));
         User user = userRepo.findByEmail(req.getEmail()).orElseThrow();
         String token = jwtUtil.generateToken(user.getEmail());
-        return new AuthResponse(token, user.getEmail(), user.getFname(), user.getLname(), user.getRole().name());
+        
+        String teacherId = null;
+        Integer studentId = null;
+        
+        if (user.getRole() == User.Role.TEACHER) {
+            Optional<Teacher> teacher = teacherRepo.findByUser(user);
+            if (teacher.isPresent()) {
+                teacherId = teacher.get().getTeacherId();
+            }
+        } else if (user.getRole() == User.Role.STUDENT) {
+            Optional<Student> student = studentRepo.findByUser(user);
+            if (student.isPresent()) {
+                studentId = student.get().getStudentId();
+            }
+        }
+        
+        return new AuthResponse(token, user.getEmail(), user.getFname(), user.getLname(), 
+                               user.getRole().name(), teacherId, studentId);
     }
 
     // Find user by email, or return null if not found
@@ -83,7 +109,24 @@ public class AuthService {
     // Used to generate "login" response for Google users
     public AuthResponse loginWithGoogle(User user) {
         String token = jwtUtil.generateToken(user.getEmail());
-        return new AuthResponse(token, user.getEmail(), user.getFname(), user.getLname(), user.getRole().name());
+        
+        String teacherId = null;
+        Integer studentId = null;
+        
+        if (user.getRole() == User.Role.TEACHER) {
+            Optional<Teacher> teacher = teacherRepo.findByUser(user);
+            if (teacher.isPresent()) {
+                teacherId = teacher.get().getTeacherId();
+            }
+        } else if (user.getRole() == User.Role.STUDENT) {
+            Optional<Student> student = studentRepo.findByUser(user);
+            if (student.isPresent()) {
+                studentId = student.get().getStudentId();
+            }
+        }
+        
+        return new AuthResponse(token, user.getEmail(), user.getFname(), user.getLname(), 
+                               user.getRole().name(), teacherId, studentId);
     }
 
     public Map<String, Object> verifyGoogleToken(String idTokenString) {
