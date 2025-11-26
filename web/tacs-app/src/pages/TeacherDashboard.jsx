@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../css/TeacherDashboard.css';
 import MyClasses from './MyClasses';
 import TeacherAttendance from './TeacherAttendance';
@@ -15,6 +15,15 @@ const sections = [
 
 export default function TeacherDashboard() {
   const [activeSection, setActiveSection] = useState('classes');
+  const [teacherName, setTeacherName] = useState('Teacher');
+
+  useEffect(() => {
+    // Get the teacher's first name from localStorage
+    const authData = JSON.parse(localStorage.getItem('auth'));
+    if (authData && authData.fname) {
+      setTeacherName(authData.fname);
+    }
+  }, []);
 
   function handleLogout() {
     localStorage.clear();
@@ -41,7 +50,7 @@ export default function TeacherDashboard() {
     <div className="teacher-dashboard">
       <header className="dashboard-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <span className="logo">Teacher Dashboard</span>
-        <span>Welcome, Teacher!</span>
+        <span>Welcome, Professor {teacherName}!</span>
       </header>
       <div className="dashboard-body">
         <aside className="sidebar">

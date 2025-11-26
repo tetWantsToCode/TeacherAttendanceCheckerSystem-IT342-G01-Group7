@@ -9,11 +9,16 @@ import TeacherList from './TeacherList';
 import AddTeacherForm from './AddTeacherForm';
 import AddStudentForm from './AddStudentForm';
 import StudentList from './StudentList';
+import AddCourseForm from './AddCourseForm';
+import CourseList from './CourseList';
+import EnrollStudentForm from './EnrollStudentForm';
 
 const sections = [
   { key: 'dashboard', label: 'Dashboard', icon: '🏠' },
   { key: 'teachers', label: 'Teachers', icon: '👩‍🏫' },
   { key: 'students', label: 'Students', icon: '🧑‍🎓' },
+  { key: 'courses', label: 'Courses', icon: '📚' },
+  { key: 'enrollments', label: 'Enrollments', icon: '📋' },
   { key: 'attendance', label: 'Attendance', icon: '📝' },
   { key: 'statistics', label: 'Statistics', icon: '📊' },
   { key: 'settings', label: 'Settings', icon: '⚙️' },
@@ -74,6 +79,15 @@ const AdminDashboard = () => {
             <StudentList students={students} onRemove={handleRemoveStudent} />
           </>
         );
+      case 'courses':
+        return (
+          <>
+            <AddCourseForm />
+            <CourseList />
+          </>
+        );
+      case 'enrollments':
+        return <EnrollStudentForm />;
       case 'attendance':
         return <Attendance />;
       case 'statistics':
@@ -87,8 +101,8 @@ const AdminDashboard = () => {
             <div className="dashboard-cards">
               <div className="card">Teachers Overview</div>
               <div className="card">Students Overview</div>
-              <div className="card">Attendance Summary</div>
-              <div className="card">Statistics</div>
+              <div className="card">Courses Management</div>
+              <div className="card">Enrollment Management</div>
             </div>
             <p>Select an option from the sidebar to get started.</p>
           </div>

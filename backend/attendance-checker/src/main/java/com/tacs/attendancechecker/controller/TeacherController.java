@@ -19,6 +19,17 @@ public class TeacherController {
     @Autowired
     private TeacherService teacherService;
 
+    @GetMapping
+    public ResponseEntity<?> getAllTeachers() {
+        try {
+            return ResponseEntity.ok(teacherService.getAllTeachers());
+        } catch (Exception e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("message", "Error fetching teachers: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        }
+    }
+
     @PostMapping
     public ResponseEntity<?> addTeacher(@RequestBody TeacherRegistrationRequest request) {
         try {
