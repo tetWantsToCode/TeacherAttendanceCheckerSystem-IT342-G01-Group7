@@ -77,7 +77,7 @@ export default function Register() {
                                 id="fname"
                                 className="input"
                                 type="text"
-                                placeholder="Jane"
+                                placeholder="Enter your first name"
                                 value={fname}
                                 onChange={(e) => setFname(e.target.value)}
                                 required
@@ -91,7 +91,7 @@ export default function Register() {
                                 id="lname"
                                 className="input"
                                 type="text"
-                                placeholder="Teacher"
+                                placeholder="Enter your last name"
                                 value={lname}
                                 onChange={(e) => setLname(e.target.value)}
                                 required
@@ -105,7 +105,7 @@ export default function Register() {
                                 id="email"
                                 className="input"
                                 type="email"
-                                placeholder="you@school.edu"
+                                placeholder="Enter your email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
