@@ -65,7 +65,7 @@ export default function Login() {
 								id="email"
 								className="input"
 								type="email"
-								placeholder="you@school.edu"
+								placeholder="Enter your email"
 								value={email}
 								onChange={(e) => setEmail(e.target.value)}
 								required

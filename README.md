@@ -1,7 +1,3 @@
-# TeacherAttendanceCheckerSystem-IT342-G01-Group7
-
-
-
 # Teacher Attendance Checker System
 
 A group project aimed at streamlining the process of tracking teacher attendance through a web and mobile platform. The system features an admin panel for user management, teacher registration, and attendance checking functionality for educational institutions.
@@ -55,7 +51,7 @@ A group project aimed at streamlining the process of tracking teacher attendance
 
 
 
----
+
 
 ## 👨‍💻 Team Members
 

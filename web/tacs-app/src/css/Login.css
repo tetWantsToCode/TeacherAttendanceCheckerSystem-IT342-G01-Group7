@@ -77,7 +77,8 @@
 .alt-actions{display:flex;flex-direction:column;gap:10px}
 .btn-outline{width:100%;padding:10px;border-radius:10px;border:1px solid #e2e8f0;background:#fff;color:#334155;cursor:pointer}
 .signup-text{font-size:13px;color:var(--muted);text-align:center;margin:6px 0 0}
-.signup-text a{color:var(--accent);text-decoration:none}
+.signup-text a{color:#6366f1;text-decoration:none}
+.signup-text a:hover{text-decoration:underline}
 
 @media (max-width:640px){
 	.login-card{width:100%;flex-direction:column;padding:18px;border-radius:12px}
