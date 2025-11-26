@@ -1,20 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import '../css/StudentDashboard.css';
-import StudentAttendance from './StudentAttendance';
 import StudentClasses from './StudentClasses';
 import StudentProfile from './Profile';
 import StudentSettings from './StudentSettings';
 
 const sections = [
-  { name: 'My Attendance', key: 'attendance' },
   { name: 'My Classes', key: 'classes' },
   { name: 'Profile', key: 'profile' },
   { name: 'Settings', key: 'settings' },
-  { name: 'Logout', key: 'logout' } // <-- Added logout item
+  { name: 'Logout', key: 'logout' }
 ];
 
 export default function StudentDashboard() {
-  const [activeSection, setActiveSection] = useState('attendance');
+  const [activeSection, setActiveSection] = useState('classes');
   const [studentName, setStudentName] = useState('Student');
 
   useEffect(() => {
@@ -33,8 +31,6 @@ export default function StudentDashboard() {
 
   const renderSection = () => {
     switch (activeSection) {
-      case 'attendance':
-        return <StudentAttendance />;
       case 'classes':
         return <StudentClasses />;
       case 'profile':

@@ -41,4 +41,39 @@ public class StudentController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
         }
     }
+
+    @GetMapping
+    public ResponseEntity<?> getAllStudents() {
+        try {
+            return ResponseEntity.ok(studentService.getAllStudents());
+        } catch (Exception e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("message", "Error fetching students: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        }
+    }
+
+    @GetMapping("/{studentId}")
+    public ResponseEntity<?> getStudentById(@PathVariable Integer studentId) {
+        try {
+            Student student = studentService.getStudentById(studentId);
+            return ResponseEntity.ok(student);
+        } catch (Exception e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("message", "Student not found: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+        }
+    }
+
+    @DeleteMapping("/{studentId}")
+    public ResponseEntity<?> deleteStudent(@PathVariable Integer studentId) {
+        try {
+            studentService.deleteStudent(studentId);
+            return ResponseEntity.ok("Student deleted successfully");
+        } catch (Exception e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("message", "Error deleting student: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        }
+    }
 }

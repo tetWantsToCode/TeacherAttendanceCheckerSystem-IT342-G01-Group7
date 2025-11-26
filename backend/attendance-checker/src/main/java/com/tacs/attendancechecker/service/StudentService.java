@@ -42,4 +42,18 @@ public class StudentService {
 
         return studentRepository.save(student);
     }
+
+    public java.util.List<Student> getAllStudents() {
+        return studentRepository.findAll();
+    }
+
+    public Student getStudentById(Integer studentId) {
+        return studentRepository.findById(studentId)
+                .orElseThrow(() -> new RuntimeException("Student not found with ID: " + studentId));
+    }
+
+    public void deleteStudent(Integer studentId) {
+        Student student = getStudentById(studentId);
+        studentRepository.delete(student);
+    }
 }

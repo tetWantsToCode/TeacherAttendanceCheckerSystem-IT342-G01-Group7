@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import '../css/TeacherDashboard.css';
 import MyClasses from './MyClasses';
-import TeacherAttendance from './TeacherAttendance';
 import TeacherProfile from './Profile';
 import TeacherSettings from './TeacherSettings';
 
 const sections = [
   { key: 'classes', name: 'My Classes' },
-  { key: 'attendance', name: 'Attendance' },
   { key: 'profile', name: 'Profile' },
   { key: 'settings', name: 'Settings' },
   { key: 'logout', name: 'Logout' }
@@ -35,8 +33,6 @@ export default function TeacherDashboard() {
     switch (activeSection) {
       case 'classes':
         return <MyClasses />;
-      case 'attendance':
-        return <TeacherAttendance />;
       case 'profile':
         return <TeacherProfile />;
       case 'settings':

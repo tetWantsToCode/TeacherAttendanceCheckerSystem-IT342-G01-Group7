@@ -39,7 +39,7 @@ public class AttendanceService {
     public List<EnrolledStudentResponse> getEnrolledStudents(Integer courseId) {
         List<Enrollment> enrollments = enrollmentRepository.findByCourseCourseId(courseId);
         return enrollments.stream()
-                .filter(e -> "ENROLLED".equalsIgnoreCase(e.getStatus()))
+                .filter(e -> "ACTIVE".equalsIgnoreCase(e.getStatus()))
                 .map(this::mapToEnrolledStudentResponse)
                 .collect(Collectors.toList());
     }

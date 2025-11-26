@@ -9,5 +9,4 @@ public class TeacherAttendanceCheckerSystemApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(TeacherAttendanceCheckerSystemApplication.class, args);
 	}
-
 }
