@@ -5,6 +5,7 @@ export default function AddStudentForm({ onAdd }) {
   const [lname, setLName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [studentNumber, setStudentNumber] = useState('');
   const [yearLevel, setYearLevel] = useState('');
   const [section, setSection] = useState('');
   const [error, setError] = useState('');
@@ -14,7 +15,7 @@ export default function AddStudentForm({ onAdd }) {
     e.preventDefault();
     setError('');
     setSuccess('');
-    if (!fname || !lname || !email || !password || !yearLevel || !section) {
+    if (!fname || !lname || !email || !password || !studentNumber || !yearLevel || !section) {
       setError('Please fill out all fields.');
       return;
     }
@@ -33,6 +34,7 @@ export default function AddStudentForm({ onAdd }) {
           lname,
           email,
           password,
+          studentNumber,
           yearLevel: Number(yearLevel),
           section
         }),
@@ -49,6 +51,7 @@ export default function AddStudentForm({ onAdd }) {
       setLName('');
       setEmail('');
       setPassword('');
+      setStudentNumber('');
       setYearLevel('');
       setSection('');
     } catch (err) {
@@ -94,6 +97,24 @@ export default function AddStudentForm({ onAdd }) {
           placeholder="Base Password (set by admin)"
           value={password}
           onChange={e => setPassword(e.target.value)}
+          style={{ padding: '0.5rem', borderRadius: '6px', border: '1px solid #ccc', width: '60%' }}
+        />
+      </div>
+      <div style={{ marginBottom: '1rem' }}>
+        <input
+          type="text"
+          placeholder="Student Number (e.g., 2021-12345)"
+          value={studentNumber}
+          onChange={e => setStudentNumber(e.target.value)}
+          style={{ padding: '0.5rem', borderRadius: '6px', border: '1px solid #ccc', width: '60%' }}
+        />
+      </div>
+      <div style={{ marginBottom: '1rem' }}>
+        <input
+          type="number"
+          placeholder="Year Level"
+          value={studentNumber}
+          onChange={e => setStudentNumber(e.target.value)}
           style={{ padding: '0.5rem', borderRadius: '6px', border: '1px solid #ccc', width: '60%' }}
         />
       </div>

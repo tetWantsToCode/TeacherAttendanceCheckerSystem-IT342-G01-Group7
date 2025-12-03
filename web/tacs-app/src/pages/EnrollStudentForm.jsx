@@ -4,7 +4,8 @@ export default function EnrollStudentForm() {
   const [formData, setFormData] = useState({
     studentId: '',
     courseId: '',
-    status: 'ACTIVE'
+    status: 'ACTIVE',
+    academicYear: ''
   });
   const [students, setStudents] = useState([]);
   const [courses, setCourses] = useState([]);
@@ -108,13 +109,14 @@ export default function EnrollStudentForm() {
         body: JSON.stringify({
           studentId: parseInt(formData.studentId),
           courseId: parseInt(formData.courseId),
-          status: formData.status
+          status: formData.status,
+          academicYear: formData.academicYear
         })
       });
 
       if (response.ok) {
         setSuccess('Student enrolled successfully!');
-        setFormData({ studentId: '', courseId: '', status: 'ACTIVE' });
+        setFormData({ studentId: '', courseId: '', status: 'ACTIVE', academicYear: '' });
         fetchEnrollments();
         setTimeout(() => setSuccess(''), 3000);
       } else {
@@ -270,6 +272,27 @@ export default function EnrollStudentForm() {
                 <option value="DROPPED">Dropped</option>
                 <option value="COMPLETED">Completed</option>
               </select>
+            </div>
+
+            <div>
+              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
+                Academic Year *
+              </label>
+              <input
+                type="text"
+                name="academicYear"
+                value={formData.academicYear}
+                onChange={handleChange}
+                placeholder="e.g., 2024-2025"
+                required
+                style={{
+                  width: '100%',
+                  padding: '10px',
+                  borderRadius: '6px',
+                  border: '1px solid #ccc',
+                  fontSize: '14px'
+                }}
+              />
             </div>
 
             <button

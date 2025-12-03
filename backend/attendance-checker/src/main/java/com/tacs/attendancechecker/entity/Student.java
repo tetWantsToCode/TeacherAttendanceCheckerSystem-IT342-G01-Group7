@@ -14,14 +14,16 @@ public class Student {
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false, unique = true)
     private User user;
 
+    private String studentNumber;
     private Integer yearLevel;
     private String section;
 
     public Student() {}
 
-    public Student(Integer studentId, User user, Integer yearLevel, String section) {
+    public Student(Integer studentId, User user, String studentNumber, Integer yearLevel, String section) {
         this.studentId = studentId;
         this.user = user;
+        this.studentNumber = studentNumber;
         this.yearLevel = yearLevel;
         this.section = section;
     }
@@ -40,6 +42,14 @@ public class Student {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public String getStudentNumber() {
+        return studentNumber;
+    }
+
+    public void setStudentNumber(String studentNumber) {
+        this.studentNumber = studentNumber;
     }
 
     public Integer getYearLevel() {

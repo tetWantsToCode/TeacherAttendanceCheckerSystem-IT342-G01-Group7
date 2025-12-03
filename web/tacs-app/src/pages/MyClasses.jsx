@@ -97,7 +97,8 @@ export default function MyClasses() {
         data.forEach(record => {
           records[record.studentId] = {
             status: record.status,
-            remarks: record.remarks || ''
+            remarks: record.remarks || '',
+            timeIn: record.timeIn || ''
           };
         });
         setAttendanceRecords(records);
@@ -126,7 +127,8 @@ export default function MyClasses() {
       ...prev,
       [studentId]: {
         ...prev[studentId],
-        status: status
+        status: status,
+        timeIn: status === 'PRESENT' || status === 'LATE' ? new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' }) : ''
       }
     }));
   };
@@ -137,6 +139,16 @@ export default function MyClasses() {
       [studentId]: {
         ...prev[studentId],
         remarks: remarks
+      }
+    }));
+  };
+
+  const handleTimeInChange = (studentId, timeIn) => {
+    setAttendanceRecords(prev => ({
+      ...prev,
+      [studentId]: {
+        ...prev[studentId],
+        timeIn: timeIn
       }
     }));
   };
@@ -176,7 +188,8 @@ export default function MyClasses() {
               courseId: selectedCourse.courseId,
               date: attendanceDate,
               status: record.status,
-              remarks: record.remarks || ''
+              remarks: record.remarks || '',
+              timeIn: record.timeIn || null
             })
           });
         }
@@ -351,6 +364,7 @@ export default function MyClasses() {
                       <th style={{ padding: '12px', textAlign: 'left' }}>Email</th>
                       <th style={{ padding: '12px', textAlign: 'left' }}>Year & Section</th>
                       <th style={{ padding: '12px', textAlign: 'left' }}>Status</th>
+                      <th style={{ padding: '12px', textAlign: 'left' }}>Time In</th>
                       <th style={{ padding: '12px', textAlign: 'left' }}>Remarks</th>
                     </tr>
                   </thead>
@@ -384,6 +398,21 @@ export default function MyClasses() {
                               <option value="ABSENT">✗ Absent</option>
                               <option value="EXCUSED">📝 Excused</option>
                             </select>
+                          </td>
+                          <td style={{ padding: '12px' }}>
+                            <input
+                              type="time"
+                              value={record.timeIn || ''}
+                              onChange={(e) => handleTimeInChange(student.studentId, e.target.value)}
+                              disabled={!record.status || record.status === 'ABSENT'}
+                              style={{
+                                padding: '6px 10px',
+                                borderRadius: '4px',
+                                border: '1px solid #ccc',
+                                fontSize: '14px',
+                                background: (!record.status || record.status === 'ABSENT') ? '#f0f0f0' : 'white'
+                              }}
+                            />
                           </td>
                           <td style={{ padding: '12px' }}>
                             <input

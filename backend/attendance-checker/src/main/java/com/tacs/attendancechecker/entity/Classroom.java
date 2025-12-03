@@ -14,5 +14,8 @@ public class Classroom {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer classroomId;
 
-    private String capacity;
+    private String roomNumber;
+    private String building;
+    private Integer capacity;
+    private String roomType;
 }
