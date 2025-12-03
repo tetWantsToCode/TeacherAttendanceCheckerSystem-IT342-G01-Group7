@@ -20,4 +20,5 @@ public class Course {
 
     private String courseName;
     private String description;
+    private Boolean isActive = true;
 }

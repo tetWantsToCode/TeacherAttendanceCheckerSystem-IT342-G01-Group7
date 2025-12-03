@@ -25,4 +25,5 @@ public class Enrollment {
 
     private String status;
     private LocalDate dateEnrolled;
+    private String academicYear;
 }

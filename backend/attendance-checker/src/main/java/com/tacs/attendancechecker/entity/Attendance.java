@@ -3,6 +3,7 @@ package com.tacs.attendancechecker.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Entity
 @Data
@@ -23,6 +24,7 @@ public class Attendance {
     private Course course;
 
     private LocalDate date;
+    private LocalTime timeIn;
 
     @Enumerated(EnumType.STRING)
     private Status status;

@@ -57,6 +57,21 @@ public class AuthService {
         u.setPassword(encoder.encode(req.getPassword()));
         u.setRole(User.Role.STUDENT);
         userRepo.save(u);
+        
+        // Automatically create Student record for new student users
+        Student student = new Student();
+        student.setUser(u);
+        student.setStudentNumber(generateStudentNumber());
+        student.setYearLevel(1); // Default to year 1
+        student.setSection("TBD"); // To be determined by admin
+        studentRepo.save(student);
+    }
+    
+    private String generateStudentNumber() {
+        // Generate student number in format: YYYY-XXXXX (e.g., 2025-00001)
+        int year = java.time.Year.now().getValue();
+        long count = studentRepo.count() + 1;
+        return String.format("%d-%05d", year, count);
     }
 
     public AuthResponse login(LoginRequest req) {
@@ -103,6 +118,15 @@ public class AuthService {
         u.setPassword(""); //
         u.setRole(User.Role.STUDENT);
         userRepo.save(u);
+        
+        // Automatically create Student record for Google-registered students
+        Student student = new Student();
+        student.setUser(u);
+        student.setStudentNumber(generateStudentNumber());
+        student.setYearLevel(1); // Default to year 1
+        student.setSection("TBD"); // To be determined by admin
+        studentRepo.save(student);
+        
         return u;
     }
 
