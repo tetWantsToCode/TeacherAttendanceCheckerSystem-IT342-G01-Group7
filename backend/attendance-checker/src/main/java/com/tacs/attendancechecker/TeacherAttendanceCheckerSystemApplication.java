@@ -8,5 +8,8 @@ public class TeacherAttendanceCheckerSystemApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(TeacherAttendanceCheckerSystemApplication.class, args);
+		System.out.println("-------------------------------------------------------");
+		System.out.println("Backend successfully started.");
+		System.out.println("-------------------------------------------------------");
 	}
 }
