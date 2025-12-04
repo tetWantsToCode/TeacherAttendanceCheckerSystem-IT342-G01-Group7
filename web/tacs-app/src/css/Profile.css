@@ -35,6 +35,22 @@
   box-shadow: 0 4px 12px rgba(37, 54, 74, 0.15);
 }
 
+.profile-initials-avatar {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #25364a 0%, #1a2838 100%);
+  border: 4px solid #25364a;
+  box-shadow: 0 4px 12px rgba(37, 54, 74, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  font-weight: 700;
+  color: #ffd700;
+  letter-spacing: 2px;
+}
+
 .profile-image-wrapper {
   position: relative;
   display: inline-block;
@@ -272,6 +288,12 @@
   .profile-image {
     width: 120px;
     height: 120px;
+  }
+
+  .profile-initials-avatar {
+    width: 120px;
+    height: 120px;
+    font-size: 2.5rem;
   }
 
   .profile-button-group {

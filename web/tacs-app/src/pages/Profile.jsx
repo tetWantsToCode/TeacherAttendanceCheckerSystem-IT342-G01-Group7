@@ -13,7 +13,7 @@ export default function StudentProfile() {
     new: false,
     confirm: false
   });
-  const [profileImage, setProfileImage] = useState('https://via.placeholder.com/150');
+  const [profileImage, setProfileImage] = useState(null);
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -53,6 +53,13 @@ export default function StudentProfile() {
       setError('Error loading profile: ' + err.message);
       setLoading(false);
     }
+  };
+
+  // Generate initial from first name only
+  const getInitials = () => {
+    if (!userData) return '';
+    const firstInitial = userData.fname?.charAt(0).toUpperCase() || '';
+    return firstInitial;
   };
 
   const handlePasswordChange = (e) => {
@@ -204,11 +211,17 @@ export default function StudentProfile() {
       <div className="profile-card">
         <div className="profile-image-container">
           <div className="profile-image-wrapper">
-            <img 
-              src={profileImage} 
-              alt="Profile" 
-              className="profile-image"
-            />
+            {profileImage ? (
+              <img 
+                src={profileImage} 
+                alt="Profile" 
+                className="profile-image"
+              />
+            ) : (
+              <div className="profile-initials-avatar">
+                {getInitials()}
+              </div>
+            )}
             <button 
               className="profile-image-edit-btn"
               onClick={triggerFileInput}
