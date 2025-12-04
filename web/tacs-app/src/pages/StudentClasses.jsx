@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import '../css/StudentClasses.css';
 
 export default function StudentClasses() {
   const [enrollments, setEnrollments] = useState([]);
@@ -144,7 +145,7 @@ export default function StudentClasses() {
 
     // Empty cells for days before month starts
     for (let i = 0; i < startingDayOfWeek; i++) {
-      days.push(<div key={`empty-${i}`} style={{ padding: '10px' }}></div>);
+      days.push(<div key={`empty-${i}`} className="student-calendar-day-empty"></div>);
     }
 
     // Days of the month
@@ -157,55 +158,20 @@ export default function StudentClasses() {
       days.push(
         <div
           key={day}
-          style={{
-            padding: '10px',
-            border: isToday ? '2px solid #25364a' : '1px solid #e0e0e0',
-            borderRadius: '8px',
-            minHeight: '80px',
-            background: config ? config.bg : 'white',
-            position: 'relative',
-            display: 'flex',
-            flexDirection: 'column'
-          }}
+          className={`student-calendar-day ${isToday ? 'student-calendar-day-today' : ''}`}
+          style={{ background: config ? config.bg : 'white' }}
         >
-          <div style={{
-            fontWeight: isToday ? 'bold' : 'normal',
-            fontSize: '14px',
-            color: isToday ? '#25364a' : (config ? config.color : '#666'),
-            marginBottom: '5px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between'
-          }}>
+          <div className={`student-calendar-day-number ${isToday ? 'today' : ''}`} style={{ color: config ? config.color : '#666' }}>
             <span>{day}</span>
             {isToday && (
-              <span style={{
-                fontSize: '10px',
-                background: '#25364a',
-                color: 'white',
-                padding: '2px 6px',
-                borderRadius: '4px',
-                fontWeight: 'bold'
-              }}>
+              <span className="student-calendar-today-badge">
                 TODAY
               </span>
             )}
           </div>
           {attendance && (
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flex: 1
-            }}>
-              <div style={{
-                fontSize: '11px',
-                fontWeight: 'bold',
-                color: config.color,
-                textTransform: 'uppercase',
-                letterSpacing: '0.5px',
-                textAlign: 'center'
-              }}>
+            <div className="student-calendar-attendance">
+              <div className="student-calendar-status" style={{ color: config.color }}>
                 {config.label}
               </div>
             </div>
@@ -215,129 +181,55 @@ export default function StudentClasses() {
     }
 
     return (
-      <div style={{ marginTop: '20px' }}>
+      <div className="student-calendar-wrapper">
         {/* Calendar Header */}
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: '20px',
-          background: '#f7f9fb',
-          padding: '15px',
-          borderRadius: '8px'
-        }}>
+        <div className="student-calendar-header">
           <button
             onClick={() => changeMonth(-1)}
-            style={{
-              padding: '8px 16px',
-              background: '#667eea',
-              color: 'white',
-              border: 'none',
-              borderRadius: '6px',
-              cursor: 'pointer',
-              fontSize: '14px',
-              fontWeight: 'bold'
-            }}
+            className="student-calendar-nav-button"
           >
             ← Previous
           </button>
-          <h3 style={{ margin: 0, color: '#25364a' }}>{monthName}</h3>
+          <h3 className="student-calendar-month">{monthName}</h3>
           <button
             onClick={() => changeMonth(1)}
-            style={{
-              padding: '8px 16px',
-              background: '#667eea',
-              color: 'white',
-              border: 'none',
-              borderRadius: '6px',
-              cursor: 'pointer',
-              fontSize: '14px',
-              fontWeight: 'bold'
-            }}
+            className="student-calendar-nav-button"
           >
             Next →
           </button>
         </div>
 
         {/* Day names */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(7, 1fr)',
-          gap: '10px',
-          marginBottom: '10px'
-        }}>
+        <div className="student-calendar-day-names">
           {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-            <div key={day} style={{
-              textAlign: 'center',
-              fontWeight: 'bold',
-              color: '#25364a',
-              padding: '10px',
-              fontSize: '14px'
-            }}>
+            <div key={day} className="student-calendar-day-name">
               {day}
             </div>
           ))}
         </div>
 
         {/* Calendar grid */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(7, 1fr)',
-          gap: '10px'
-        }}>
+        <div className="student-calendar-grid">
           {days}
         </div>
 
         {/* Legend */}
-        <div style={{
-          marginTop: '20px',
-          padding: '15px',
-          background: '#f7f9fb',
-          borderRadius: '8px',
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: '15px',
-          justifyContent: 'center'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-            <div style={{
-              width: '20px',
-              height: '20px',
-              background: '#e8f5e9',
-              border: '2px solid #4CAF50',
-              borderRadius: '4px'
-            }}></div>
-            <span style={{ fontSize: '13px' }}>Present</span>
+        <div className="student-calendar-legend">
+          <div className="student-legend-item">
+            <div className="student-legend-color" style={{ background: '#e8f5e9', border: '2px solid #4CAF50' }}></div>
+            <span className="student-legend-label">Present</span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-            <div style={{
-              width: '20px',
-              height: '20px',
-              background: '#fff3e0',
-              border: '2px solid #FF9800',
-              borderRadius: '4px'
-            }}></div>
-            <span style={{ fontSize: '13px' }}>Late</span>
+          <div className="student-legend-item">
+            <div className="student-legend-color" style={{ background: '#fff3e0', border: '2px solid #FF9800' }}></div>
+            <span className="student-legend-label">Late</span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-            <div style={{
-              width: '20px',
-              height: '20px',
-              background: '#ffebee',
-              border: '2px solid #f44336',
-              borderRadius: '4px'
-            }}></div>
-            <span style={{ fontSize: '13px' }}>Absent</span>
+          <div className="student-legend-item">
+            <div className="student-legend-color" style={{ background: '#ffebee', border: '2px solid #f44336' }}></div>
+            <span className="student-legend-label">Absent</span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-            <div style={{
-              width: '20px',
-              height: '20px',
-              background: '#e3f2fd',
-              border: '2px solid #2196F3',
-              borderRadius: '4px'
-            }}></div>
-            <span style={{ fontSize: '13px' }}>Excused</span>
+          <div className="student-legend-item">
+            <div className="student-legend-color" style={{ background: '#e3f2fd', border: '2px solid #2196F3' }}></div>
+            <span className="student-legend-label">Excused</span>
           </div>
         </div>
       </div>
@@ -356,17 +248,11 @@ export default function StudentClasses() {
   };
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div className="student-classes-container">
       <h2>My Classes & Attendance</h2>
 
       {error && (
-        <div style={{ 
-          background: '#fee', 
-          color: '#c33', 
-          padding: '10px', 
-          borderRadius: '6px', 
-          marginBottom: '15px' 
-        }}>
+        <div className="student-classes-error">
           {error}
         </div>
       )}
@@ -377,87 +263,42 @@ export default function StudentClasses() {
           {loading ? (
             <p>Loading your classes...</p>
           ) : enrollments.length === 0 ? (
-            <div style={{ 
-              background: '#f5f5f5', 
-              padding: '20px', 
-              borderRadius: '8px', 
-              textAlign: 'center',
-              color: '#666'
-            }}>
+            <div className="student-classes-empty">
               <p>You are not enrolled in any courses yet.</p>
-              <p style={{ fontSize: '14px' }}>Please contact your administrator for enrollment.</p>
+              <p>Please contact your administrator for enrollment.</p>
             </div>
           ) : (
             <>
-              <p style={{ color: '#666', marginBottom: '15px' }}>
+              <p className="student-classes-info">
                 Click on a course to view your attendance records
               </p>
-              <div style={{ display: 'grid', gap: '20px', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))' }}>
+              <div className="student-classes-grid">
                 {enrollments.map(enrollment => (
                   <div
                     key={enrollment.enrollmentId}
                     onClick={() => handleCourseClick(enrollment)}
-                    style={{
-                      background: 'white',
-                      padding: '20px',
-                      borderRadius: '8px',
-                      boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                      border: '1px solid #e0e0e0',
-                      position: 'relative',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,0,0,0.15)';
-                      e.currentTarget.style.transform = 'translateY(-2px)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
-                      e.currentTarget.style.transform = 'translateY(0)';
-                    }}
+                    className="student-course-card"
                   >
-                    <div style={{
-                      position: 'absolute',
-                      top: '10px',
-                      right: '10px',
-                      padding: '4px 12px',
-                      borderRadius: '12px',
-                      fontSize: '12px',
-                      fontWeight: 'bold',
-                      color: 'white',
-                      background: getStatusColor(enrollment.status)
-                    }}>
+                    <div 
+                      className="student-course-status"
+                      style={{ background: getStatusColor(enrollment.status) }}
+                    >
                       {enrollment.status}
                     </div>
                     
-                    <h3 style={{ 
-                      margin: '0 0 10px 0', 
-                      color: '#25364a',
-                      fontSize: '18px',
-                      paddingRight: '80px'
-                    }}>
+                    <h3>
                       {enrollment.course.courseName}
                     </h3>
                     
-                    <p style={{ 
-                      color: '#666', 
-                      fontSize: '14px',
-                      margin: '0 0 15px 0',
-                      lineHeight: '1.5'
-                    }}>
+                    <p className="student-course-description">
                       {enrollment.course.description}
                     </p>
                     
-                    <div style={{ 
-                      paddingTop: '15px', 
-                      borderTop: '1px solid #eee',
-                      fontSize: '13px',
-                      color: '#888'
-                    }}>
-                      <p style={{ margin: '0 0 5px 0' }}>
+                    <div className="student-course-info">
+                      <p>
                         <strong>Teacher:</strong> {enrollment.course.teacher.user.fname} {enrollment.course.teacher.user.lname}
                       </p>
-                      <p style={{ margin: '0 0 5px 0' }}>
+                      <p>
                         <strong>Course ID:</strong> {enrollment.course.courseId}
                       </p>
                     </div>
@@ -474,23 +315,14 @@ export default function StudentClasses() {
         <div>
           <button
             onClick={handleBackToClasses}
-            style={{
-              padding: '8px 16px',
-              background: '#6c757d',
-              color: 'white',
-              border: 'none',
-              borderRadius: '6px',
-              cursor: 'pointer',
-              fontSize: '14px',
-              marginBottom: '20px'
-            }}
+            className="student-back-button"
           >
             ← Back to Classes
           </button>
 
-          <div style={{ background: '#f7f9fb', padding: '20px', borderRadius: '8px', marginBottom: '20px' }}>
-            <h3 style={{ margin: '0 0 10px 0' }}>{selectedCourse.course.courseName}</h3>
-            <p style={{ color: '#666', fontSize: '14px', margin: '0' }}>
+          <div className="student-course-header">
+            <h3>{selectedCourse.course.courseName}</h3>
+            <p>
               <strong>Teacher:</strong> {selectedCourse.course.teacher.user.fname} {selectedCourse.course.teacher.user.lname}
             </p>
           </div>
@@ -498,108 +330,52 @@ export default function StudentClasses() {
           {loading ? (
             <p>Loading attendance records...</p>
           ) : attendanceRecords.length === 0 ? (
-            <div style={{
-              background: '#fff3e0',
-              padding: '20px',
-              borderRadius: '8px',
-              textAlign: 'center',
-              color: '#e65100'
-            }}>
-              <p style={{ margin: 0, fontSize: '16px' }}>No attendance records yet</p>
-              <p style={{ margin: '5px 0 0 0', fontSize: '14px' }}>Your teacher hasn't marked attendance for this course.</p>
+            <div className="student-no-attendance">
+              <p>No attendance records yet</p>
+              <p>Your teacher hasn't marked attendance for this course.</p>
             </div>
           ) : (
             <>
               {/* Attendance Statistics */}
-              <div style={{
-                display: 'flex',
-                gap: '10px',
-                marginBottom: '20px',
-                flexWrap: 'wrap'
-              }}>
-                <div style={{
-                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                  color: 'white',
-                  padding: '10px 15px',
-                  borderRadius: '8px',
-                  textAlign: 'center',
-                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                  flex: '1',
-                  minWidth: '110px'
-                }}>
-                  <div style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '2px' }}>
+              <div className="student-stats-container">
+                <div className="student-stat-card" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
+                  <div className="student-stat-number">
                     {calculateAttendanceStats().attendanceRate}%
                   </div>
-                  <div style={{ fontSize: '11px', opacity: 0.9 }}>Rate</div>
+                  <div className="student-stat-label">Attendance Rate</div>
                 </div>
 
-                <div style={{
-                  background: '#4CAF50',
-                  color: 'white',
-                  padding: '10px 15px',
-                  borderRadius: '8px',
-                  textAlign: 'center',
-                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                  flex: '1',
-                  minWidth: '110px'
-                }}>
-                  <div style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '2px' }}>
+                <div className="student-stat-card" style={{ background: '#4CAF50' }}>
+                  <div className="student-stat-number">
                     {calculateAttendanceStats().present}
                   </div>
-                  <div style={{ fontSize: '11px', opacity: 0.9 }}>Present</div>
+                  <div className="student-stat-label">Present</div>
                 </div>
 
-                <div style={{
-                  background: '#FF9800',
-                  color: 'white',
-                  padding: '10px 15px',
-                  borderRadius: '8px',
-                  textAlign: 'center',
-                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                  flex: '1',
-                  minWidth: '110px'
-                }}>
-                  <div style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '2px' }}>
+                <div className="student-stat-card" style={{ background: '#FF9800' }}>
+                  <div className="student-stat-number">
                     {calculateAttendanceStats().late}
                   </div>
-                  <div style={{ fontSize: '11px', opacity: 0.9 }}>Late</div>
+                  <div className="student-stat-label">Late</div>
                 </div>
 
-                <div style={{
-                  background: '#f44336',
-                  color: 'white',
-                  padding: '10px 15px',
-                  borderRadius: '8px',
-                  textAlign: 'center',
-                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                  flex: '1',
-                  minWidth: '110px'
-                }}>
-                  <div style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '2px' }}>
+                <div className="student-stat-card" style={{ background: '#f44336' }}>
+                  <div className="student-stat-number">
                     {calculateAttendanceStats().absent}
                   </div>
-                  <div style={{ fontSize: '11px', opacity: 0.9 }}>Absent</div>
+                  <div className="student-stat-label">Absent</div>
                 </div>
 
-                <div style={{
-                  background: '#2196F3',
-                  color: 'white',
-                  padding: '10px 15px',
-                  borderRadius: '8px',
-                  textAlign: 'center',
-                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                  flex: '1',
-                  minWidth: '110px'
-                }}>
-                  <div style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '2px' }}>
+                <div className="student-stat-card" style={{ background: '#2196F3' }}>
+                  <div className="student-stat-number">
                     {calculateAttendanceStats().excused}
                   </div>
-                  <div style={{ fontSize: '11px', opacity: 0.9 }}>Excused</div>
+                  <div className="student-stat-label">Excused</div>
                 </div>
               </div>
 
               {/* Attendance Calendar */}
-              <h3 style={{ marginBottom: '15px' }}>Attendance Calendar</h3>
+              <h3 className="student-calendar-title">Attendance Calendar</h3>
               {renderCalendar()}
             </>
           )}

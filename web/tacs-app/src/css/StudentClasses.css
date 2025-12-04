@@ -1,0 +1,319 @@
+/* Student Classes Container */
+.student-classes-container {
+  padding: 20px;
+}
+
+.student-classes-container h2 {
+  margin: 0 0 15px 0;
+}
+
+/* Error Message */
+.student-classes-error {
+  background: #fee;
+  color: #c33;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+}
+
+/* Course List */
+.student-classes-info {
+  color: #666;
+  margin-bottom: 15px;
+}
+
+.student-classes-empty {
+  background: #f5f5f5;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  color: #666;
+}
+
+.student-classes-empty p {
+  margin: 0 0 5px 0;
+}
+
+.student-classes-empty p:last-child {
+  font-size: 14px;
+}
+
+.student-classes-grid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+/* Course Card */
+.student-course-card {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e0e0e0;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.student-course-card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.student-course-status {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: bold;
+  color: white;
+}
+
+.student-course-card h3 {
+  margin: 0 0 10px 0;
+  color: #25364a;
+  font-size: 18px;
+  padding-right: 80px;
+}
+
+.student-course-description {
+  color: #666;
+  font-size: 14px;
+  margin: 0 0 15px 0;
+  line-height: 1.5;
+}
+
+.student-course-info {
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+  font-size: 13px;
+  color: #888;
+}
+
+.student-course-info p {
+  margin: 0 0 5px 0;
+}
+
+/* Back Button */
+.student-back-button {
+  padding: 8px 16px;
+  background: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+/* Course Header */
+.student-course-header {
+  background: #f7f9fb;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.student-course-header h3 {
+  margin: 0 0 10px 0;
+}
+
+.student-course-header p {
+  color: #666;
+  font-size: 14px;
+  margin: 0;
+}
+
+/* No Attendance */
+.student-no-attendance {
+  background: #fff3e0;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  color: #e65100;
+}
+
+.student-no-attendance p {
+  margin: 0;
+}
+
+.student-no-attendance p:first-child {
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.student-no-attendance p:last-child {
+  font-size: 14px;
+}
+
+/* Statistics */
+.student-stats-container {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.student-stat-card {
+  color: white;
+  padding: 10px 15px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  flex: 1;
+  min-width: 110px;
+}
+
+.student-stat-number {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 2px;
+}
+
+.student-stat-label {
+  font-size: 11px;
+  opacity: 0.9;
+}
+
+/* Calendar */
+.student-calendar-title {
+  margin-bottom: 15px;
+}
+
+.student-calendar-wrapper {
+  margin-top: 20px;
+}
+
+.student-calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  background: #f7f9fb;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.student-calendar-nav-button {
+  padding: 8px 16px;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.student-calendar-month {
+  margin: 0;
+  color: #25364a;
+}
+
+.student-calendar-day-names {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.student-calendar-day-name {
+  text-align: center;
+  font-weight: bold;
+  color: #25364a;
+  padding: 10px;
+  font-size: 14px;
+}
+
+.student-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+}
+
+.student-calendar-day-empty {
+  padding: 10px;
+}
+
+.student-calendar-day {
+  padding: 10px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  min-height: 80px;
+  background: white;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.student-calendar-day-today {
+  border: 2px solid #25364a;
+}
+
+.student-calendar-day-number {
+  font-size: 14px;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.student-calendar-day-number.today {
+  font-weight: bold;
+  color: #25364a;
+}
+
+.student-calendar-today-badge {
+  fontSize: 10px;
+  background: #25364a;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.student-calendar-attendance {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+
+.student-calendar-status {
+  font-size: 11px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-align: center;
+}
+
+/* Legend */
+.student-calendar-legend {
+  margin-top: 20px;
+  padding: 15px;
+  background: #f7f9fb;
+  border-radius: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: center;
+}
+
+.student-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.student-legend-color {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+}
+
+.student-legend-label {
+  font-size: 13px;
+}

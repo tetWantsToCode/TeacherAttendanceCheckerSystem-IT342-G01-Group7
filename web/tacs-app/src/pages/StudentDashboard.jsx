@@ -6,7 +6,6 @@ import StudentSettings from './StudentSettings';
 
 const sections = [
   { name: 'My Classes', key: 'classes' },
-  { name: 'Profile', key: 'profile' },
   { name: 'Settings', key: 'settings' },
   { name: 'Logout', key: 'logout' }
 ];
@@ -14,12 +13,18 @@ const sections = [
 export default function StudentDashboard() {
   const [activeSection, setActiveSection] = useState('classes');
   const [studentName, setStudentName] = useState('Student');
+  const [studentInitials, setStudentInitials] = useState('S');
 
   useEffect(() => {
-    // Get the student's first name from localStorage
+    // Get the student's name from localStorage
     const authData = JSON.parse(localStorage.getItem('auth'));
     if (authData && authData.fname) {
-      setStudentName(authData.fname);
+      const fullName = `${authData.fname} ${authData.lname || ''}`.trim();
+      setStudentName(fullName);
+      // Get initials
+      const names = fullName.split(' ');
+      const initials = names.map(n => n.charAt(0).toUpperCase()).join('');
+      setStudentInitials(initials.substring(0, 2)); // Max 2 letters
     }
   }, []);
 
@@ -46,7 +51,15 @@ export default function StudentDashboard() {
     <div className="student-dashboard">
       <header className="dashboard-header">
         <span className="logo">Student Dashboard</span>
-        <span>Welcome, {studentName}!</span>
+        <div 
+          className="profile-button"
+          onClick={() => setActiveSection('profile')}
+        >
+          <span className="profile-name">{studentName}</span>
+          <div className="profile-avatar">
+            {studentInitials}
+          </div>
+        </div>
       </header>
       <div className="dashboard-body">
         <aside className="sidebar">
