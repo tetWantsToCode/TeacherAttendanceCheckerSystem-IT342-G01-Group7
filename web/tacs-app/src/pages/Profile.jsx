@@ -161,8 +161,8 @@ export default function StudentProfile() {
   if (loading) {
     return (
       <div className="profile-container">
-        <div style={{ textAlign: 'center', padding: '2rem' }}>
-          <p>Loading profile...</p>
+        <div style={{ textAlign: 'center', padding: '4rem' }}>
+          <p style={{ fontSize: '1.2rem', color: '#718096' }}>Loading profile...</p>
         </div>
       </div>
     );
@@ -171,8 +171,8 @@ export default function StudentProfile() {
   if (!userData) {
     return (
       <div className="profile-container">
-        <div style={{ textAlign: 'center', padding: '2rem' }}>
-          <p style={{ color: 'red' }}>{error || 'Failed to load profile'}</p>
+        <div style={{ textAlign: 'center', padding: '4rem' }}>
+          <p style={{ fontSize: '1.2rem', color: '#c53030' }}>{error || 'Failed to load profile'}</p>
         </div>
       </div>
     );
@@ -180,35 +180,25 @@ export default function StudentProfile() {
 
   return (
     <div className="profile-container">
-      <h2 className="profile-title">My Profile</h2>
+      <h1 className="profile-title">Profile</h1>
       
       {error && (
-        <div style={{ 
-          background: '#fee', 
-          color: '#c33', 
-          padding: '1rem', 
-          borderRadius: '6px', 
-          marginBottom: '1rem',
-          border: '1px solid #fcc'
-        }}>
+        <div className="profile-alert profile-alert-error">
+          <span>⚠️</span>
           {error}
         </div>
       )}
 
       {successMessage && (
-        <div style={{ 
-          background: '#efe', 
-          color: '#3c3', 
-          padding: '1rem', 
-          borderRadius: '6px', 
-          marginBottom: '1rem',
-          border: '1px solid #cfc'
-        }}>
+        <div className="profile-alert profile-alert-success">
+          <span>✓</span>
           {successMessage}
         </div>
       )}
       
       <div className="profile-card">
+        <div className="profile-header"></div>
+        
         <div className="profile-image-container">
           <div className="profile-image-wrapper">
             {profileImage ? (
@@ -239,142 +229,145 @@ export default function StudentProfile() {
           </div>
         </div>
 
-        <div className="profile-info-container">
-          <div className="profile-info-item">
-            <span className="profile-icon">👤</span>
-            <div>
-              <label className="profile-label">First Name</label>
-              <p className="profile-value">{userData.fname}</p>
+        <div className="profile-content">
+          <div className="profile-user-name">
+            <h2>{userData.fname} {userData.lname}</h2>
+            <span className="profile-user-role">{userData.role}</span>
+          </div>
+
+          <div className="profile-info-container">
+            <div className="profile-info-item">
+              <div className="profile-icon">👤</div>
+              <div className="profile-info-content">
+                <label className="profile-label">First Name</label>
+                <p className="profile-value">{userData.fname}</p>
+              </div>
+            </div>
+
+            <div className="profile-info-item">
+              <div className="profile-icon">👤</div>
+              <div className="profile-info-content">
+                <label className="profile-label">Last Name</label>
+                <p className="profile-value">{userData.lname}</p>
+              </div>
+            </div>
+
+            <div className="profile-info-item">
+              <div className="profile-icon">📧</div>
+              <div className="profile-info-content">
+                <label className="profile-label">Email Address</label>
+                <p className="profile-value">{userData.email}</p>
+              </div>
             </div>
           </div>
 
-          <div className="profile-info-item">
-            <span className="profile-icon">👤</span>
-            <div>
-              <label className="profile-label">Last Name</label>
-              <p className="profile-value">{userData.lname}</p>
-            </div>
-          </div>
+          <div className="profile-password-section">
+            {!showPasswordForm ? (
+              <button 
+                className="profile-change-password-btn"
+                onClick={() => setShowPasswordForm(true)}
+              >
+                <span className="profile-btn-icon">🔒</span>
+                Change Password
+              </button>
+            ) : (
+              <div className="profile-password-form">
+                <h3 className="profile-form-title">Change Password</h3>
+                
+                <div className="profile-input-group">
+                  <label className="profile-input-label">Current Password</label>
+                  <div className="profile-password-input-wrapper">
+                    <input
+                      type={showPasswords.current ? 'text' : 'password'}
+                      name="currentPassword"
+                      value={passwordData.currentPassword}
+                      onChange={handlePasswordChange}
+                      className="profile-input"
+                      required
+                      placeholder="Enter current password"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => togglePasswordVisibility('current')}
+                      className="profile-eye-button"
+                    >
+                      {showPasswords.current ? '🙈' : '👁️'}
+                    </button>
+                  </div>
+                </div>
 
-          <div className="profile-info-item">
-            <span className="profile-icon">📧</span>
-            <div>
-              <label className="profile-label">Email</label>
-              <p className="profile-value">{userData.email}</p>
-            </div>
-          </div>
+                <div className="profile-input-group">
+                  <label className="profile-input-label">New Password</label>
+                  <div className="profile-password-input-wrapper">
+                    <input
+                      type={showPasswords.new ? 'text' : 'password'}
+                      name="newPassword"
+                      value={passwordData.newPassword}
+                      onChange={handlePasswordChange}
+                      className="profile-input"
+                      required
+                      minLength={8}
+                      placeholder="Enter new password"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => togglePasswordVisibility('new')}
+                      className="profile-eye-button"
+                    >
+                      {showPasswords.new ? '🙈' : '👁️'}
+                    </button>
+                  </div>
+                </div>
 
-          <div className="profile-info-item">
-            <span className="profile-icon">🎭</span>
-            <div>
-              <label className="profile-label">Role</label>
-              <p className="profile-value">{userData.role}</p>
-            </div>
-          </div>
-        </div>
+                <div className="profile-input-group">
+                  <label className="profile-input-label">Confirm New Password</label>
+                  <div className="profile-password-input-wrapper">
+                    <input
+                      type={showPasswords.confirm ? 'text' : 'password'}
+                      name="confirmPassword"
+                      value={passwordData.confirmPassword}
+                      onChange={handlePasswordChange}
+                      className="profile-input"
+                      required
+                      placeholder="Confirm new password"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => togglePasswordVisibility('confirm')}
+                      className="profile-eye-button"
+                    >
+                      {showPasswords.confirm ? '🙈' : '👁️'}
+                    </button>
+                  </div>
+                </div>
 
-        <div className="profile-password-section">
-          {!showPasswordForm ? (
-            <button 
-              className="profile-change-password-btn"
-              onClick={() => setShowPasswordForm(true)}
-            >
-              <span className="profile-btn-icon">🔒</span>
-              Change Password
-            </button>
-          ) : (
-            <div className="profile-password-form">
-              <h3 className="profile-form-title">Change Password</h3>
-              
-              <div className="profile-input-group">
-                <label className="profile-input-label">Current Password</label>
-                <div className="profile-password-input-wrapper">
-                  <input
-                    type={showPasswords.current ? 'text' : 'password'}
-                    name="currentPassword"
-                    value={passwordData.currentPassword}
-                    onChange={handlePasswordChange}
-                    className="profile-input"
-                    required
-                  />
-                  <button
+                <div className="profile-button-group">
+                  <button 
                     type="button"
-                    onClick={() => togglePasswordVisibility('current')}
-                    className="profile-eye-button"
+                    className="profile-submit-btn"
+                    onClick={handleSubmitPassword}
                   >
-                    {showPasswords.current ? '🙈' : '👁️'}
+                    Update Password
+                  </button>
+                  <button 
+                    type="button" 
+                    className="profile-cancel-btn"
+                    onClick={() => {
+                      setShowPasswordForm(false);
+                      setPasswordData({
+                        currentPassword: '',
+                        newPassword: '',
+                        confirmPassword: ''
+                      });
+                      setError('');
+                    }}
+                  >
+                    Cancel
                   </button>
                 </div>
               </div>
-
-              <div className="profile-input-group">
-                <label className="profile-input-label">New Password</label>
-                <div className="profile-password-input-wrapper">
-                  <input
-                    type={showPasswords.new ? 'text' : 'password'}
-                    name="newPassword"
-                    value={passwordData.newPassword}
-                    onChange={handlePasswordChange}
-                    className="profile-input"
-                    required
-                    minLength={8}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => togglePasswordVisibility('new')}
-                    className="profile-eye-button"
-                  >
-                    {showPasswords.new ? '🙈' : '👁️'}
-                  </button>
-                </div>
-              </div>
-
-              <div className="profile-input-group">
-                <label className="profile-input-label">Confirm New Password</label>
-                <div className="profile-password-input-wrapper">
-                  <input
-                    type={showPasswords.confirm ? 'text' : 'password'}
-                    name="confirmPassword"
-                    value={passwordData.confirmPassword}
-                    onChange={handlePasswordChange}
-                    className="profile-input"
-                    required
-                  />
-                  <button
-                    type="button"
-                    onClick={() => togglePasswordVisibility('confirm')}
-                    className="profile-eye-button"
-                  >
-                    {showPasswords.confirm ? '🙈' : '👁️'}
-                  </button>
-                </div>
-              </div>
-
-              <div className="profile-button-group">
-                <button 
-                  type="button"
-                  className="profile-submit-btn"
-                  onClick={handleSubmitPassword}
-                >
-                  Update Password
-                </button>
-                <button 
-                  type="button" 
-                  className="profile-cancel-btn"
-                  onClick={() => {
-                    setShowPasswordForm(false);
-                    setPasswordData({
-                      currentPassword: '',
-                      newPassword: '',
-                      confirmPassword: ''
-                    });
-                  }}
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </div>
