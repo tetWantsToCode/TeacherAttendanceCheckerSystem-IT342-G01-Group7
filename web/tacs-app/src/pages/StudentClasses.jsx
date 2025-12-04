@@ -6,6 +6,7 @@ export default function StudentClasses() {
   const [attendanceRecords, setAttendanceRecords] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [currentMonth, setCurrentMonth] = useState(new Date());
 
   useEffect(() => {
     fetchMyEnrollments();
@@ -97,16 +98,250 @@ export default function StudentClasses() {
   const getAttendanceStatusConfig = (status) => {
     switch(status?.toUpperCase()) {
       case 'PRESENT':
-        return { color: '#4CAF50', bg: '#e8f5e9', icon: '✓', label: 'Present' };
+        return { color: '#4CAF50', bg: '#e8f5e9', label: 'Present' };
       case 'LATE':
-        return { color: '#FF9800', bg: '#fff3e0', icon: '⏰', label: 'Late' };
+        return { color: '#FF9800', bg: '#fff3e0', label: 'Late' };
       case 'ABSENT':
-        return { color: '#f44336', bg: '#ffebee', icon: '✗', label: 'Absent' };
+        return { color: '#f44336', bg: '#ffebee', label: 'Absent' };
       case 'EXCUSED':
-        return { color: '#2196F3', bg: '#e3f2fd', icon: '📝', label: 'Excused' };
+        return { color: '#2196F3', bg: '#e3f2fd', label: 'Excused' };
       default:
-        return { color: '#999', bg: '#f5f5f5', icon: '?', label: 'Unknown' };
+        return { color: '#999', bg: '#f5f5f5', label: 'Unknown' };
     }
+  };
+
+  // Calendar functions
+  const getDaysInMonth = (date) => {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const daysInMonth = lastDay.getDate();
+    const startingDayOfWeek = firstDay.getDay();
+    
+    return { daysInMonth, startingDayOfWeek, year, month };
+  };
+
+  const getAttendanceForDate = (date) => {
+    return attendanceRecords.find(record => {
+      const recordDate = new Date(record.date);
+      return recordDate.toDateString() === date.toDateString();
+    });
+  };
+
+  const changeMonth = (direction) => {
+    setCurrentMonth(prev => {
+      const newDate = new Date(prev);
+      newDate.setMonth(prev.getMonth() + direction);
+      return newDate;
+    });
+  };
+
+  const renderCalendar = () => {
+    const { daysInMonth, startingDayOfWeek, year, month } = getDaysInMonth(currentMonth);
+    const days = [];
+    const monthName = currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+    // Empty cells for days before month starts
+    for (let i = 0; i < startingDayOfWeek; i++) {
+      days.push(<div key={`empty-${i}`} style={{ padding: '10px' }}></div>);
+    }
+
+    // Days of the month
+    for (let day = 1; day <= daysInMonth; day++) {
+      const date = new Date(year, month, day);
+      const attendance = getAttendanceForDate(date);
+      const isToday = date.toDateString() === new Date().toDateString();
+      const config = attendance ? getAttendanceStatusConfig(attendance.status) : null;
+
+      days.push(
+        <div
+          key={day}
+          style={{
+            padding: '10px',
+            border: isToday ? '2px solid #25364a' : '1px solid #e0e0e0',
+            borderRadius: '8px',
+            minHeight: '80px',
+            background: config ? config.bg : 'white',
+            position: 'relative',
+            display: 'flex',
+            flexDirection: 'column'
+          }}
+        >
+          <div style={{
+            fontWeight: isToday ? 'bold' : 'normal',
+            fontSize: '14px',
+            color: isToday ? '#25364a' : (config ? config.color : '#666'),
+            marginBottom: '5px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between'
+          }}>
+            <span>{day}</span>
+            {isToday && (
+              <span style={{
+                fontSize: '10px',
+                background: '#25364a',
+                color: 'white',
+                padding: '2px 6px',
+                borderRadius: '4px',
+                fontWeight: 'bold'
+              }}>
+                TODAY
+              </span>
+            )}
+          </div>
+          {attendance && (
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flex: 1
+            }}>
+              <div style={{
+                fontSize: '11px',
+                fontWeight: 'bold',
+                color: config.color,
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px',
+                textAlign: 'center'
+              }}>
+                {config.label}
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    return (
+      <div style={{ marginTop: '20px' }}>
+        {/* Calendar Header */}
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: '20px',
+          background: '#f7f9fb',
+          padding: '15px',
+          borderRadius: '8px'
+        }}>
+          <button
+            onClick={() => changeMonth(-1)}
+            style={{
+              padding: '8px 16px',
+              background: '#667eea',
+              color: 'white',
+              border: 'none',
+              borderRadius: '6px',
+              cursor: 'pointer',
+              fontSize: '14px',
+              fontWeight: 'bold'
+            }}
+          >
+            ← Previous
+          </button>
+          <h3 style={{ margin: 0, color: '#25364a' }}>{monthName}</h3>
+          <button
+            onClick={() => changeMonth(1)}
+            style={{
+              padding: '8px 16px',
+              background: '#667eea',
+              color: 'white',
+              border: 'none',
+              borderRadius: '6px',
+              cursor: 'pointer',
+              fontSize: '14px',
+              fontWeight: 'bold'
+            }}
+          >
+            Next →
+          </button>
+        </div>
+
+        {/* Day names */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(7, 1fr)',
+          gap: '10px',
+          marginBottom: '10px'
+        }}>
+          {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+            <div key={day} style={{
+              textAlign: 'center',
+              fontWeight: 'bold',
+              color: '#25364a',
+              padding: '10px',
+              fontSize: '14px'
+            }}>
+              {day}
+            </div>
+          ))}
+        </div>
+
+        {/* Calendar grid */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(7, 1fr)',
+          gap: '10px'
+        }}>
+          {days}
+        </div>
+
+        {/* Legend */}
+        <div style={{
+          marginTop: '20px',
+          padding: '15px',
+          background: '#f7f9fb',
+          borderRadius: '8px',
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: '15px',
+          justifyContent: 'center'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+            <div style={{
+              width: '20px',
+              height: '20px',
+              background: '#e8f5e9',
+              border: '2px solid #4CAF50',
+              borderRadius: '4px'
+            }}></div>
+            <span style={{ fontSize: '13px' }}>Present</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+            <div style={{
+              width: '20px',
+              height: '20px',
+              background: '#fff3e0',
+              border: '2px solid #FF9800',
+              borderRadius: '4px'
+            }}></div>
+            <span style={{ fontSize: '13px' }}>Late</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+            <div style={{
+              width: '20px',
+              height: '20px',
+              background: '#ffebee',
+              border: '2px solid #f44336',
+              borderRadius: '4px'
+            }}></div>
+            <span style={{ fontSize: '13px' }}>Absent</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+            <div style={{
+              width: '20px',
+              height: '20px',
+              background: '#e3f2fd',
+              border: '2px solid #2196F3',
+              borderRadius: '4px'
+            }}></div>
+            <span style={{ fontSize: '13px' }}>Excused</span>
+          </div>
+        </div>
+      </div>
+    );
   };
 
   const calculateAttendanceStats = () => {
@@ -277,166 +512,95 @@ export default function StudentClasses() {
             <>
               {/* Attendance Statistics */}
               <div style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                gap: '15px',
-                marginBottom: '25px'
+                display: 'flex',
+                gap: '10px',
+                marginBottom: '20px',
+                flexWrap: 'wrap'
               }}>
                 <div style={{
                   background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                   color: 'white',
-                  padding: '20px',
-                  borderRadius: '12px',
+                  padding: '10px 15px',
+                  borderRadius: '8px',
                   textAlign: 'center',
-                  boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                  flex: '1',
+                  minWidth: '110px'
                 }}>
-                  <div style={{ fontSize: '36px', fontWeight: 'bold', marginBottom: '5px' }}>
+                  <div style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '2px' }}>
                     {calculateAttendanceStats().attendanceRate}%
                   </div>
-                  <div style={{ fontSize: '14px', opacity: 0.9 }}>Attendance Rate</div>
+                  <div style={{ fontSize: '11px', opacity: 0.9 }}>Rate</div>
                 </div>
 
                 <div style={{
                   background: '#4CAF50',
                   color: 'white',
-                  padding: '20px',
-                  borderRadius: '12px',
+                  padding: '10px 15px',
+                  borderRadius: '8px',
                   textAlign: 'center',
-                  boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                  flex: '1',
+                  minWidth: '110px'
                 }}>
-                  <div style={{ fontSize: '36px', fontWeight: 'bold', marginBottom: '5px' }}>
+                  <div style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '2px' }}>
                     {calculateAttendanceStats().present}
                   </div>
-                  <div style={{ fontSize: '14px', opacity: 0.9 }}>Present</div>
+                  <div style={{ fontSize: '11px', opacity: 0.9 }}>Present</div>
                 </div>
 
                 <div style={{
                   background: '#FF9800',
                   color: 'white',
-                  padding: '20px',
-                  borderRadius: '12px',
+                  padding: '10px 15px',
+                  borderRadius: '8px',
                   textAlign: 'center',
-                  boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                  flex: '1',
+                  minWidth: '110px'
                 }}>
-                  <div style={{ fontSize: '36px', fontWeight: 'bold', marginBottom: '5px' }}>
+                  <div style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '2px' }}>
                     {calculateAttendanceStats().late}
                   </div>
-                  <div style={{ fontSize: '14px', opacity: 0.9 }}>Late</div>
+                  <div style={{ fontSize: '11px', opacity: 0.9 }}>Late</div>
                 </div>
 
                 <div style={{
                   background: '#f44336',
                   color: 'white',
-                  padding: '20px',
-                  borderRadius: '12px',
+                  padding: '10px 15px',
+                  borderRadius: '8px',
                   textAlign: 'center',
-                  boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                  flex: '1',
+                  minWidth: '110px'
                 }}>
-                  <div style={{ fontSize: '36px', fontWeight: 'bold', marginBottom: '5px' }}>
+                  <div style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '2px' }}>
                     {calculateAttendanceStats().absent}
                   </div>
-                  <div style={{ fontSize: '14px', opacity: 0.9 }}>Absent</div>
+                  <div style={{ fontSize: '11px', opacity: 0.9 }}>Absent</div>
                 </div>
 
                 <div style={{
                   background: '#2196F3',
                   color: 'white',
-                  padding: '20px',
-                  borderRadius: '12px',
+                  padding: '10px 15px',
+                  borderRadius: '8px',
                   textAlign: 'center',
-                  boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                  flex: '1',
+                  minWidth: '110px'
                 }}>
-                  <div style={{ fontSize: '36px', fontWeight: 'bold', marginBottom: '5px' }}>
+                  <div style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '2px' }}>
                     {calculateAttendanceStats().excused}
                   </div>
-                  <div style={{ fontSize: '14px', opacity: 0.9 }}>Excused</div>
+                  <div style={{ fontSize: '11px', opacity: 0.9 }}>Excused</div>
                 </div>
               </div>
 
-              {/* Attendance Timeline */}
-              <h3 style={{ marginBottom: '15px' }}>Attendance History ({attendanceRecords.length} records)</h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                {attendanceRecords.sort((a, b) => new Date(b.date) - new Date(a.date)).map((record, index) => {
-                  const config = getAttendanceStatusConfig(record.status);
-                  const date = new Date(record.date);
-                  const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
-                  const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-                  
-                  return (
-                    <div
-                      key={record.attendanceId}
-                      style={{
-                        background: 'white',
-                        borderLeft: `6px solid ${config.color}`,
-                        padding: '20px',
-                        borderRadius: '8px',
-                        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '20px'
-                      }}
-                    >
-                      <div style={{
-                        background: config.bg,
-                        color: config.color,
-                        width: '80px',
-                        height: '80px',
-                        borderRadius: '12px',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        flexShrink: 0,
-                        fontWeight: 'bold',
-                        fontSize: '32px'
-                      }}>
-                        <div>{config.icon}</div>
-                      </div>
-
-                      <div style={{ flex: 1 }}>
-                        <div style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '10px',
-                          marginBottom: '8px'
-                        }}>
-                          <span style={{
-                            background: config.color,
-                            color: 'white',
-                            padding: '6px 16px',
-                            borderRadius: '20px',
-                            fontSize: '16px',
-                            fontWeight: 'bold'
-                          }}>
-                            {config.label}
-                          </span>
-                          <span style={{ color: '#666', fontSize: '14px' }}>
-                            #{attendanceRecords.length - index}
-                          </span>
-                        </div>
-
-                        <div style={{ color: '#333', fontSize: '18px', fontWeight: '500', marginBottom: '5px' }}>
-                          {dayName}, {dateStr}
-                        </div>
-
-                        {record.remarks && (
-                          <div style={{
-                            background: '#f5f5f5',
-                            padding: '10px',
-                            borderRadius: '6px',
-                            marginTop: '10px',
-                            fontSize: '14px',
-                            color: '#666',
-                            fontStyle: 'italic'
-                          }}>
-                            <strong>Note:</strong> {record.remarks}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+              {/* Attendance Calendar */}
+              <h3 style={{ marginBottom: '15px' }}>Attendance Calendar</h3>
+              {renderCalendar()}
             </>
           )}
         </div>
