@@ -6,20 +6,24 @@ import StudentSettings from './StudentSettings';
 
 const sections = [
   { name: 'My Classes', key: 'classes' },
-  { name: 'Profile', key: 'profile' },
-  { name: 'Settings', key: 'settings' },
-  { name: 'Logout', key: 'logout' }
+  { name: 'Settings', key: 'settings' }
 ];
 
 export default function StudentDashboard() {
   const [activeSection, setActiveSection] = useState('classes');
   const [studentName, setStudentName] = useState('Student');
+  const [studentInitials, setStudentInitials] = useState('S');
 
   useEffect(() => {
-    // Get the student's first name from localStorage
+    // Get the student's name from localStorage
     const authData = JSON.parse(localStorage.getItem('auth'));
     if (authData && authData.fname) {
-      setStudentName(authData.fname);
+      const fullName = `${authData.fname} ${authData.lname || ''}`.trim();
+      setStudentName(fullName);
+      // Get initials
+      const names = fullName.split(' ');
+      const initials = names.map(n => n.charAt(0).toUpperCase()).join('');
+      setStudentInitials(initials.substring(0, 2)); // Max 2 letters
     }
   }, []);
 
@@ -45,29 +49,25 @@ export default function StudentDashboard() {
   return (
     <div className="student-dashboard">
       <header className="dashboard-header">
-        <span className="logo">Student Dashboard</span>
-        <span>Welcome, {studentName}!</span>
+        <span className="logo" onClick={() => setActiveSection('classes')} style={{ cursor: 'pointer' }}>Student Dashboard</span>
+        <div className="profile-section">
+          <div className="profile-info">
+            <div className="profile-name">
+              {studentName}
+            </div>
+            <div className="logout-link" onClick={handleLogout}>
+              Logout
+            </div>
+          </div>
+          <div 
+            className="profile-avatar"
+            onClick={() => setActiveSection('profile')}
+          >
+            {studentInitials}
+          </div>
+        </div>
       </header>
       <div className="dashboard-body">
-        <aside className="sidebar">
-          <nav>
-            <ul>
-              {sections.map(section => (
-                <li
-                  key={section.key}
-                  className={activeSection === section.key ? 'active' : ''}
-                  onClick={
-                    section.key === 'logout'
-                      ? handleLogout
-                      : () => setActiveSection(section.key)
-                  }
-                >
-                  {section.name}
-                </li>
-              ))}
-            </ul>
-          </nav>
-        </aside>
         <main className="main-content">
           {renderSection()}
         </main>
