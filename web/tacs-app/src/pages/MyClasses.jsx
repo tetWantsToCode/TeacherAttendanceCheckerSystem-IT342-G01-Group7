@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import '../css/MyClasses.css';
 
 export default function MyClasses() {
   const [courses, setCourses] = useState([]);
@@ -120,6 +121,7 @@ export default function MyClasses() {
     setStudents([]);
     setAttendanceRecords({});
     setSuccess('');
+    setError('');
   };
 
   const handleStatusChange = (studentId, status) => {
@@ -207,17 +209,22 @@ export default function MyClasses() {
   };
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h2>My Classes & Attendance</h2>
+    <div className="my-classes-container">
+      <div className="my-classes-header">
+        <h1 className="my-classes-title">📚 My Classes & Attendance</h1>
+        <p className="my-classes-subtitle">Manage your courses and track student attendance</p>
+      </div>
 
       {error && (
-        <div style={{ background: '#fee', color: '#c33', padding: '10px', borderRadius: '6px', marginBottom: '15px' }}>
+        <div className="my-classes-alert my-classes-alert-error">
+          <span>⚠️</span>
           {error}
         </div>
       )}
 
       {success && (
-        <div style={{ background: '#efe', color: '#3c3', padding: '10px', borderRadius: '6px', marginBottom: '15px' }}>
+        <div className="my-classes-alert my-classes-alert-success">
+          <span>✓</span>
           {success}
         </div>
       )}
@@ -226,70 +233,37 @@ export default function MyClasses() {
       {!selectedCourse && (
         <div>
           {loading ? (
-            <p>Loading courses...</p>
+            <div className="loading-message">
+              <div className="loading-spinner"></div>
+              <p>Loading courses...</p>
+            </div>
           ) : courses.length === 0 ? (
-            <div style={{ 
-              background: '#f5f5f5', 
-              padding: '20px', 
-              borderRadius: '8px', 
-              textAlign: 'center',
-              color: '#666'
-            }}>
-              <p>No courses assigned to you yet.</p>
-              <p style={{ fontSize: '14px' }}>Please contact your administrator to assign courses to you.</p>
+            <div className="empty-state">
+              <h3 className="empty-state-title">No Courses Assigned</h3>
+              <p className="empty-state-text">
+                No courses have been assigned to you yet.<br />
+                Please contact your administrator to assign courses.
+              </p>
             </div>
           ) : (
             <>
-              <p style={{ color: '#666', marginBottom: '15px' }}>
-                Click on a course to view enrolled students and mark attendance
-              </p>
-              <div style={{ display: 'grid', gap: '20px', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))' }}>
+              <div className="section-header">
+                <h2 className="section-title">Your Courses</h2>
+                <p className="section-subtitle">
+                  Click on a course to view enrolled students and mark attendance
+                </p>
+              </div>
+              <div className="course-grid">
                 {courses.map(course => (
                   <div
                     key={course.courseId}
                     onClick={() => handleCourseSelect(course)}
-                    style={{
-                      background: 'white',
-                      padding: '20px',
-                      borderRadius: '8px',
-                      boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                      border: '1px solid #e0e0e0',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,0,0,0.15)';
-                      e.currentTarget.style.transform = 'translateY(-2px)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
-                      e.currentTarget.style.transform = 'translateY(0)';
-                    }}
+                    className="course-card"
                   >
-                    <h3 style={{ 
-                      margin: '0 0 10px 0', 
-                      color: '#25364a',
-                      fontSize: '18px'
-                    }}>
-                      {course.courseName}
-                    </h3>
-                    <p style={{ 
-                      color: '#666', 
-                      fontSize: '14px',
-                      margin: '0 0 15px 0',
-                      lineHeight: '1.5'
-                    }}>
-                      {course.description}
-                    </p>
-                    <div style={{ 
-                      paddingTop: '15px', 
-                      borderTop: '1px solid #eee',
-                      fontSize: '13px',
-                      color: '#888'
-                    }}>
-                      <p style={{ margin: '0' }}>
-                        <strong>Course ID:</strong> {course.courseId}
-                      </p>
+                    <h3 className="course-card-title">{course.courseName}</h3>
+                    <p className="course-card-description">{course.description}</p>
+                    <div className="course-card-id">
+                      <strong>Course ID:</strong> {course.courseId}
                     </div>
                   </div>
                 ))}
@@ -302,131 +276,101 @@ export default function MyClasses() {
       {/* Student List & Attendance View */}
       {selectedCourse && (
         <div>
-          <div style={{ marginBottom: '20px' }}>
-            <button
-              onClick={handleBackToCourses}
-              style={{
-                padding: '8px 16px',
-                background: '#6c757d',
-                color: 'white',
-                border: 'none',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                fontSize: '14px',
-                marginBottom: '15px'
-              }}
-            >
-              ← Back to Courses
-            </button>
-          </div>
+          <button
+            onClick={handleBackToCourses}
+            className="back-button"
+          >
+            <span>←</span> Back to Courses
+          </button>
 
-          <div style={{ marginBottom: '20px', background: '#f7f9fb', padding: '15px', borderRadius: '8px' }}>
-            <h3 style={{ margin: '0 0 10px 0' }}>{selectedCourse.courseName}</h3>
-            <p style={{ color: '#666', fontSize: '14px', margin: '0 0 15px 0' }}>{selectedCourse.description}</p>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-              <label style={{ fontWeight: 'bold' }}>Date:</label>
+          <div className="course-info-bar">
+            <div className="course-info-details">
+              <h2 className="course-info-name">{selectedCourse.courseName}</h2>
+              <p className="course-info-description">{selectedCourse.description}</p>
+            </div>
+            <div className="date-selector-inline">
+              <label className="date-label">📅 Date:</label>
               <input
                 type="date"
                 value={attendanceDate}
                 onChange={(e) => handleDateChange(e.target.value)}
-                style={{ padding: '8px', borderRadius: '6px', border: '1px solid #ccc' }}
+                className="date-input"
               />
             </div>
           </div>
 
           {loading ? (
-            <p>Loading students...</p>
+            <div className="loading-message">
+              <div className="loading-spinner"></div>
+              <p>Loading students...</p>
+            </div>
           ) : students.length === 0 ? (
-            <div style={{ 
-              background: '#fff3cd', 
-              color: '#856404',
-              padding: '15px', 
-              borderRadius: '6px',
-              border: '1px solid #ffeaa7'
-            }}>
-              <strong>No students enrolled</strong>
-              <p style={{ margin: '5px 0 0 0', fontSize: '14px' }}>
-                Please enroll students in this course from the Admin Dashboard.
+            <div className="warning-state">
+              <h3 className="warning-state-title">No Students Enrolled</h3>
+              <p className="warning-state-text">
+                There are no students enrolled in this course yet. Please enroll students from the Admin Dashboard.
               </p>
             </div>
           ) : (
             <>
-              <div style={{ marginBottom: '15px' }}>
-                <h3>Enrolled Students ({students.length})</h3>
+              <div className="students-header">
+                <h2 className="students-title">Enrolled Students</h2>
+                <span className="students-count">{students.length} Students</span>
               </div>
               
-              <div style={{ overflowX: 'auto' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', background: 'white', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
+              <div className="attendance-table-wrapper">
+                <table className="attendance-table">
                   <thead>
-                    <tr style={{ background: '#25364a', color: 'white' }}>
-                      <th style={{ padding: '12px', textAlign: 'left' }}>#</th>
-                      <th style={{ padding: '12px', textAlign: 'left' }}>Student Name</th>
-                      <th style={{ padding: '12px', textAlign: 'left' }}>Email</th>
-                      <th style={{ padding: '12px', textAlign: 'left' }}>Year & Section</th>
-                      <th style={{ padding: '12px', textAlign: 'left' }}>Status</th>
-                      <th style={{ padding: '12px', textAlign: 'left' }}>Time In</th>
-                      <th style={{ padding: '12px', textAlign: 'left' }}>Remarks</th>
+                    <tr>
+                      <th>#</th>
+                      <th>Student Name</th>
+                      <th>Email</th>
+                      <th>Year & Section</th>
+                      <th>Status</th>
+                      <th>Time In</th>
+                      <th>Remarks</th>
                     </tr>
                   </thead>
                   <tbody>
                     {students.map((student, index) => {
                       const record = attendanceRecords[student.studentId] || {};
                       return (
-                        <tr key={student.studentId} style={{ borderBottom: '1px solid #eee' }}>
-                          <td style={{ padding: '12px' }}>{index + 1}</td>
-                          <td style={{ padding: '12px', fontWeight: '500' }}>{student.studentName}</td>
-                          <td style={{ padding: '12px', fontSize: '13px', color: '#666' }}>{student.email}</td>
-                          <td style={{ padding: '12px' }}>
+                        <tr key={student.studentId}>
+                          <td className="student-number">{index + 1}</td>
+                          <td className="student-name">{student.studentName}</td>
+                          <td className="student-email">{student.email}</td>
+                          <td className="year-section">
                             Year {student.yearLevel} - {student.section}
                           </td>
-                          <td style={{ padding: '12px' }}>
+                          <td>
                             <select
                               value={record.status || ''}
                               onChange={(e) => handleStatusChange(student.studentId, e.target.value)}
-                              style={{
-                                padding: '6px 10px',
-                                borderRadius: '4px',
-                                border: '1px solid #ccc',
-                                background: 'white',
-                                cursor: 'pointer',
-                                fontSize: '14px'
-                              }}
+                              className="status-select"
                             >
-                              <option value="">Select...</option>
+                              <option value="">Select Status...</option>
                               <option value="PRESENT">✓ Present</option>
                               <option value="LATE">⏰ Late</option>
                               <option value="ABSENT">✗ Absent</option>
                               <option value="EXCUSED">📝 Excused</option>
                             </select>
                           </td>
-                          <td style={{ padding: '12px' }}>
+                          <td>
                             <input
                               type="time"
                               value={record.timeIn || ''}
                               onChange={(e) => handleTimeInChange(student.studentId, e.target.value)}
                               disabled={!record.status || record.status === 'ABSENT'}
-                              style={{
-                                padding: '6px 10px',
-                                borderRadius: '4px',
-                                border: '1px solid #ccc',
-                                fontSize: '14px',
-                                background: (!record.status || record.status === 'ABSENT') ? '#f0f0f0' : 'white'
-                              }}
+                              className="time-input"
                             />
                           </td>
-                          <td style={{ padding: '12px' }}>
+                          <td>
                             <input
                               type="text"
                               value={record.remarks || ''}
                               onChange={(e) => handleRemarksChange(student.studentId, e.target.value)}
                               placeholder="Optional notes..."
-                              style={{
-                                padding: '6px 10px',
-                                borderRadius: '4px',
-                                border: '1px solid #ccc',
-                                width: '200px',
-                                fontSize: '14px'
-                              }}
+                              className="remarks-input"
                             />
                           </td>
                         </tr>
@@ -436,25 +380,16 @@ export default function MyClasses() {
                 </table>
               </div>
 
-              <div style={{ marginTop: '20px', display: 'flex', gap: '10px', alignItems: 'center' }}>
+              <div className="attendance-actions">
                 <button
                   onClick={handleSubmitAttendance}
                   disabled={loading || Object.keys(attendanceRecords).length === 0}
-                  style={{
-                    padding: '12px 30px',
-                    background: loading ? '#ccc' : '#25364a',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '6px',
-                    cursor: loading ? 'not-allowed' : 'pointer',
-                    fontWeight: 'bold',
-                    fontSize: '16px'
-                  }}
+                  className="submit-button"
                 >
-                  {loading ? 'Saving...' : 'Save Attendance'}
+                  {loading ? '⏳ Saving...' : '💾 Save Attendance'}
                 </button>
                 {Object.keys(attendanceRecords).length > 0 && (
-                  <span style={{ color: '#666', fontSize: '14px' }}>
+                  <span className="marked-count">
                     {Object.keys(attendanceRecords).length} student(s) marked
                   </span>
                 )}
