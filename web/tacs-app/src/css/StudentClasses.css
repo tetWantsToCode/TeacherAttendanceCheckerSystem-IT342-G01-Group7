@@ -1,33 +1,37 @@
 /* Student Classes Container */
 .student-classes-container {
-  padding: 20px;
+  padding: 15px;
 }
 
 .student-classes-container h2 {
-  margin: 0 0 15px 0;
+  margin: 0 0 10px 0;
+  font-size: 22px;
 }
 
 /* Error Message */
 .student-classes-error {
   background: #fee;
   color: #c33;
-  padding: 10px;
+  padding: 8px 12px;
   border-radius: 6px;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
+  font-size: 14px;
 }
 
 /* Course List */
 .student-classes-info {
   color: #666;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
+  font-size: 14px;
 }
 
 .student-classes-empty {
   background: #f5f5f5;
-  padding: 20px;
+  padding: 15px;
   border-radius: 8px;
   text-align: center;
   color: #666;
+  font-size: 14px;
 }
 
 .student-classes-empty p {
@@ -40,14 +44,14 @@
 
 .student-classes-grid {
   display: grid;
-  gap: 20px;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 15px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
 }
 
 /* Course Card */
 .student-course-card {
   background: white;
-  padding: 20px;
+  padding: 15px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   border: 1px solid #e0e0e0;
@@ -63,33 +67,33 @@
 
 .student-course-status {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  padding: 4px 12px;
+  top: 8px;
+  right: 8px;
+  padding: 3px 10px;
   border-radius: 12px;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: bold;
   color: white;
 }
 
 .student-course-card h3 {
-  margin: 0 0 10px 0;
+  margin: 0 0 8px 0;
   color: #25364a;
-  font-size: 18px;
-  padding-right: 80px;
+  font-size: 16px;
+  padding-right: 70px;
 }
 
 .student-course-description {
   color: #666;
-  font-size: 14px;
-  margin: 0 0 15px 0;
-  line-height: 1.5;
+  font-size: 13px;
+  margin: 0 0 12px 0;
+  line-height: 1.4;
 }
 
 .student-course-info {
-  padding-top: 15px;
+  padding-top: 12px;
   border-top: 1px solid #eee;
-  font-size: 13px;
+  font-size: 12px;
   color: #888;
 }
 
@@ -99,41 +103,115 @@
 
 /* Back Button */
 .student-back-button {
-  padding: 8px 16px;
+  padding: 6px 12px;
   background: #6c757d;
   color: white;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 14px;
-  margin-bottom: 20px;
+  font-size: 13px;
+  margin-bottom: 12px;
 }
 
-/* Course Header */
-.student-course-header {
+/* Course Header with Stats Split Layout */
+.student-header-stats-wrapper {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 15px;
+  align-items: stretch;
+}
+
+.student-course-header-half {
+  flex: 1;
   background: #f7f9fb;
-  padding: 20px;
+  padding: 12px 15px;
   border-radius: 8px;
-  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
-.student-course-header h3 {
-  margin: 0 0 10px 0;
+.student-course-header-half h3 {
+  margin: 0 0 6px 0;
+  color: #25364a;
+  font-size: 16px;
 }
 
-.student-course-header p {
+.student-course-header-half p {
   color: #666;
-  font-size: 14px;
+  font-size: 13px;
   margin: 0;
+}
+
+.student-stats-split {
+  flex: 1;
+  display: flex;
+  gap: 6px;
+}
+
+.student-stat-card-large {
+  flex: 1;
+  color: white;
+  padding: 10px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.student-stat-number-large {
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.student-stat-label-large {
+  font-size: 11px;
+  opacity: 0.95;
+  text-align: center;
+}
+
+.student-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 6px;
+  flex: 1;
+}
+
+.student-stat-card-small {
+  color: white;
+  padding: 8px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.student-stat-number-small {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 2px;
+}
+
+.student-stat-label-small {
+  font-size: 9px;
+  opacity: 0.95;
+  text-align: center;
 }
 
 /* No Attendance */
 .student-no-attendance {
   background: #fff3e0;
-  padding: 20px;
+  padding: 15px;
   border-radius: 8px;
   text-align: center;
   color: #e65100;
+  font-size: 14px;
 }
 
 .student-no-attendance p {
@@ -180,69 +258,71 @@
 
 /* Calendar */
 .student-calendar-title {
-  margin-bottom: 15px;
+  margin-bottom: 12px;
+  font-size: 18px;
 }
 
 .student-calendar-wrapper {
-  margin-top: 20px;
+  margin-top: 15px;
 }
 
 .student-calendar-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 12px;
   background: #f7f9fb;
-  padding: 15px;
+  padding: 12px;
   border-radius: 8px;
 }
 
 .student-calendar-nav-button {
-  padding: 8px 16px;
+  padding: 6px 12px;
   background: #667eea;
   color: white;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: bold;
 }
 
 .student-calendar-month {
   margin: 0;
   color: #25364a;
+  font-size: 16px;
 }
 
 .student-calendar-day-names {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 10px;
-  margin-bottom: 10px;
+  gap: 8px;
+  margin-bottom: 8px;
 }
 
 .student-calendar-day-name {
   text-align: center;
   font-weight: bold;
   color: #25364a;
-  padding: 10px;
-  font-size: 14px;
+  padding: 6px;
+  font-size: 12px;
 }
 
 .student-calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 10px;
+  gap: 8px;
 }
 
 .student-calendar-day-empty {
-  padding: 10px;
+  padding: 6px;
 }
 
 .student-calendar-day {
-  padding: 10px;
+  padding: 8px;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
-  min-height: 80px;
+  min-height: 65px;
   background: white;
   position: relative;
   display: flex;
@@ -254,8 +334,8 @@
 }
 
 .student-calendar-day-number {
-  font-size: 14px;
-  margin-bottom: 5px;
+  font-size: 12px;
+  margin-bottom: 4px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -267,11 +347,11 @@
 }
 
 .student-calendar-today-badge {
-  fontSize: 10px;
+  fontSize: 8px;
   background: #25364a;
   color: white;
-  padding: 2px 6px;
-  border-radius: 4px;
+  padding: 2px 4px;
+  border-radius: 3px;
   font-weight: bold;
 }
 
@@ -283,10 +363,10 @@
 }
 
 .student-calendar-status {
-  font-size: 11px;
+  font-size: 9px;
   font-weight: bold;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
   text-align: center;
 }
 

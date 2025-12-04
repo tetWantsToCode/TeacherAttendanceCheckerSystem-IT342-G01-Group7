@@ -298,9 +298,6 @@ export default function StudentClasses() {
                       <p>
                         <strong>Teacher:</strong> {enrollment.course.teacher.user.fname} {enrollment.course.teacher.user.lname}
                       </p>
-                      <p>
-                        <strong>Course ID:</strong> {enrollment.course.courseId}
-                      </p>
                     </div>
                   </div>
                 ))}
@@ -320,13 +317,6 @@ export default function StudentClasses() {
             ← Back to Classes
           </button>
 
-          <div className="student-course-header">
-            <h3>{selectedCourse.course.courseName}</h3>
-            <p>
-              <strong>Teacher:</strong> {selectedCourse.course.teacher.user.fname} {selectedCourse.course.teacher.user.lname}
-            </p>
-          </div>
-
           {loading ? (
             <p>Loading attendance records...</p>
           ) : attendanceRecords.length === 0 ? (
@@ -336,41 +326,52 @@ export default function StudentClasses() {
             </div>
           ) : (
             <>
-              {/* Attendance Statistics */}
-              <div className="student-stats-container">
-                <div className="student-stat-card" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
-                  <div className="student-stat-number">
-                    {calculateAttendanceStats().attendanceRate}%
-                  </div>
-                  <div className="student-stat-label">Attendance Rate</div>
+              {/* Course Header with Statistics */}
+              <div className="student-header-stats-wrapper">
+                <div className="student-course-header-half">
+                  <h3>{selectedCourse.course.courseName}</h3>
+                  <p>
+                    <strong>Teacher:</strong> {selectedCourse.course.teacher.user.fname} {selectedCourse.course.teacher.user.lname}
+                  </p>
                 </div>
 
-                <div className="student-stat-card" style={{ background: '#4CAF50' }}>
-                  <div className="student-stat-number">
-                    {calculateAttendanceStats().present}
+                <div className="student-stats-split">
+                  <div className="student-stat-card-large" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
+                    <div className="student-stat-number-large">
+                      {calculateAttendanceStats().attendanceRate}%
+                    </div>
+                    <div className="student-stat-label-large">Attendance Rate</div>
                   </div>
-                  <div className="student-stat-label">Present</div>
-                </div>
 
-                <div className="student-stat-card" style={{ background: '#FF9800' }}>
-                  <div className="student-stat-number">
-                    {calculateAttendanceStats().late}
-                  </div>
-                  <div className="student-stat-label">Late</div>
-                </div>
+                  <div className="student-stats-grid">
+                    <div className="student-stat-card-small" style={{ background: '#4CAF50' }}>
+                      <div className="student-stat-number-small">
+                        {calculateAttendanceStats().present}
+                      </div>
+                      <div className="student-stat-label-small">Present</div>
+                    </div>
 
-                <div className="student-stat-card" style={{ background: '#f44336' }}>
-                  <div className="student-stat-number">
-                    {calculateAttendanceStats().absent}
-                  </div>
-                  <div className="student-stat-label">Absent</div>
-                </div>
+                    <div className="student-stat-card-small" style={{ background: '#FF9800' }}>
+                      <div className="student-stat-number-small">
+                        {calculateAttendanceStats().late}
+                      </div>
+                      <div className="student-stat-label-small">Late</div>
+                    </div>
 
-                <div className="student-stat-card" style={{ background: '#2196F3' }}>
-                  <div className="student-stat-number">
-                    {calculateAttendanceStats().excused}
+                    <div className="student-stat-card-small" style={{ background: '#f44336' }}>
+                      <div className="student-stat-number-small">
+                        {calculateAttendanceStats().absent}
+                      </div>
+                      <div className="student-stat-label-small">Absent</div>
+                    </div>
+
+                    <div className="student-stat-card-small" style={{ background: '#2196F3' }}>
+                      <div className="student-stat-number-small">
+                        {calculateAttendanceStats().excused}
+                      </div>
+                      <div className="student-stat-label-small">Excused</div>
+                    </div>
                   </div>
-                  <div className="student-stat-label">Excused</div>
                 </div>
               </div>
 
