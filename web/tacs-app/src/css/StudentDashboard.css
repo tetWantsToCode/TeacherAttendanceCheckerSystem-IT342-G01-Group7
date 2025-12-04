@@ -37,23 +37,22 @@
   text-shadow: 0 2px 8px rgba(44, 62, 80, 0.1);
 }
 
-.student-dashboard .profile-button {
+.student-dashboard .profile-section {
   display: flex;
   align-items: center;
-  gap: 10px;
-  cursor: pointer;
-  padding: 5px 10px;
-  border-radius: 8px;
-  transition: background 0.2s;
+  gap: 12px;
 }
 
-.student-dashboard .profile-button:hover {
-  background: rgba(255, 255, 255, 0.1);
+.student-dashboard .profile-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  align-items: flex-end;
 }
 
 .student-dashboard .profile-avatar {
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   display: flex;
@@ -61,11 +60,36 @@
   justify-content: center;
   color: white;
   font-weight: bold;
-  font-size: 14px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+
+.student-dashboard .profile-avatar:hover {
+  transform: scale(1.05);
 }
 
 .student-dashboard .profile-name {
   font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.student-dashboard .profile-name:hover {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.student-dashboard .logout-link {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.student-dashboard .logout-link:hover {
+  color: white;
+  text-decoration: underline;
 }
 
 .student-dashboard .dashboard-body {

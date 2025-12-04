@@ -6,8 +6,7 @@ import StudentSettings from './StudentSettings';
 
 const sections = [
   { name: 'My Classes', key: 'classes' },
-  { name: 'Settings', key: 'settings' },
-  { name: 'Logout', key: 'logout' }
+  { name: 'Settings', key: 'settings' }
 ];
 
 export default function StudentDashboard() {
@@ -51,12 +50,22 @@ export default function StudentDashboard() {
     <div className="student-dashboard">
       <header className="dashboard-header">
         <span className="logo">Student Dashboard</span>
-        <div 
-          className="profile-button"
-          onClick={() => setActiveSection('profile')}
-        >
-          <span className="profile-name">{studentName}</span>
-          <div className="profile-avatar">
+        <div className="profile-section">
+          <div className="profile-info">
+            <div 
+              className="profile-name"
+              onClick={() => setActiveSection('profile')}
+            >
+              {studentName}
+            </div>
+            <div className="logout-link" onClick={handleLogout}>
+              Logout
+            </div>
+          </div>
+          <div 
+            className="profile-avatar"
+            onClick={() => setActiveSection('profile')}
+          >
             {studentInitials}
           </div>
         </div>
@@ -69,11 +78,7 @@ export default function StudentDashboard() {
                 <li
                   key={section.key}
                   className={activeSection === section.key ? 'active' : ''}
-                  onClick={
-                    section.key === 'logout'
-                      ? handleLogout
-                      : () => setActiveSection(section.key)
-                  }
+                  onClick={() => setActiveSection(section.key)}
                 >
                   {section.name}
                 </li>
