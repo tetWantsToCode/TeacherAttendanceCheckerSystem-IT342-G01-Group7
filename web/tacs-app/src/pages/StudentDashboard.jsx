@@ -49,13 +49,10 @@ export default function StudentDashboard() {
   return (
     <div className="student-dashboard">
       <header className="dashboard-header">
-        <span className="logo">Student Dashboard</span>
+        <span className="logo" onClick={() => setActiveSection('classes')} style={{ cursor: 'pointer' }}>Student Dashboard</span>
         <div className="profile-section">
           <div className="profile-info">
-            <div 
-              className="profile-name"
-              onClick={() => setActiveSection('profile')}
-            >
+            <div className="profile-name">
               {studentName}
             </div>
             <div className="logout-link" onClick={handleLogout}>
@@ -71,21 +68,6 @@ export default function StudentDashboard() {
         </div>
       </header>
       <div className="dashboard-body">
-        <aside className="sidebar">
-          <nav>
-            <ul>
-              {sections.map(section => (
-                <li
-                  key={section.key}
-                  className={activeSection === section.key ? 'active' : ''}
-                  onClick={() => setActiveSection(section.key)}
-                >
-                  {section.name}
-                </li>
-              ))}
-            </ul>
-          </nav>
-        </aside>
         <main className="main-content">
           {renderSection()}
         </main>

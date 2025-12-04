@@ -249,7 +249,7 @@ export default function StudentClasses() {
 
   return (
     <div className="student-classes-container">
-      <h2>My Classes & Attendance</h2>
+      <h2>{selectedCourse ? 'Attendance' : 'My Classes'}</h2>
 
       {error && (
         <div className="student-classes-error">

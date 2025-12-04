@@ -72,12 +72,6 @@
 
 .student-dashboard .profile-name {
   font-weight: 500;
-  cursor: pointer;
-  transition: color 0.2s;
-}
-
-.student-dashboard .profile-name:hover {
-  color: rgba(255, 255, 255, 0.8);
 }
 
 .student-dashboard .logout-link {
@@ -152,7 +146,7 @@
   padding: 2.5rem 3rem;
   background: #fff;
   border-radius: 16px;
-  margin: 2rem 2rem 2rem 0;
+  margin: 2rem;
   box-shadow: 0 2px 12px rgba(44, 62, 80, 0.07);
   overflow-y: auto !important;
   overflow-x: hidden !important;
