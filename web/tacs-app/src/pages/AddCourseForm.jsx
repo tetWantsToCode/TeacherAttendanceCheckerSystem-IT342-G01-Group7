@@ -3,8 +3,13 @@ import React, { useState, useEffect } from 'react';
 export default function AddCourseForm() {
   const [formData, setFormData] = useState({
     teacherId: '',
+    courseCode: '',
     courseName: '',
-    description: ''
+    description: '',
+    units: '',
+    courseType: 'LECTURE',
+    semester: 'FIRST_SEM',
+    schoolYear: '2024-2025'
   });
   const [teachers, setTeachers] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -66,14 +71,29 @@ export default function AddCourseForm() {
         },
         body: JSON.stringify({
           teacherId: formData.teacherId,
+          courseCode: formData.courseCode,
           courseName: formData.courseName,
-          description: formData.description
+          description: formData.description,
+          units: parseInt(formData.units),
+          courseType: formData.courseType,
+          semester: formData.semester,
+          schoolYear: formData.schoolYear,
+          isActive: true
         })
       });
 
       if (response.ok) {
         setSuccess('Course created successfully!');
-        setFormData({ teacherId: '', courseName: '', description: '' });
+        setFormData({ 
+          teacherId: '', 
+          courseCode: '',
+          courseName: '', 
+          description: '',
+          units: '',
+          courseType: 'LECTURE',
+          semester: 'FIRST_SEM',
+          schoolYear: '2024-2025'
+        });
         setTimeout(() => setSuccess(''), 3000);
       } else {
         const errorText = await response.text();
@@ -131,6 +151,27 @@ export default function AddCourseForm() {
 
         <div>
           <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
+            Course Code *
+          </label>
+          <input
+            type="text"
+            name="courseCode"
+            value={formData.courseCode}
+            onChange={handleChange}
+            required
+            placeholder="e.g., IT101, MATH201"
+            style={{
+              width: '100%',
+              padding: '10px',
+              borderRadius: '6px',
+              border: '1px solid #ccc',
+              fontSize: '14px'
+            }}
+          />
+        </div>
+
+        <div>
+          <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
             Course Name *
           </label>
           <input
@@ -140,6 +181,96 @@ export default function AddCourseForm() {
             onChange={handleChange}
             required
             placeholder="e.g., Introduction to Programming"
+            style={{
+              width: '100%',
+              padding: '10px',
+              borderRadius: '6px',
+              border: '1px solid #ccc',
+              fontSize: '14px'
+            }}
+          />
+        </div>
+
+        <div>
+          <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
+            Units *
+          </label>
+          <input
+            type="number"
+            name="units"
+            value={formData.units}
+            onChange={handleChange}
+            required
+            min="1"
+            max="6"
+            placeholder="e.g., 3"
+            style={{
+              width: '100%',
+              padding: '10px',
+              borderRadius: '6px',
+              border: '1px solid #ccc',
+              fontSize: '14px'
+            }}
+          />
+        </div>
+
+        <div>
+          <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
+            Course Type *
+          </label>
+          <select
+            name="courseType"
+            value={formData.courseType}
+            onChange={handleChange}
+            required
+            style={{
+              width: '100%',
+              padding: '10px',
+              borderRadius: '6px',
+              border: '1px solid #ccc',
+              fontSize: '14px'
+            }}
+          >
+            <option value="LECTURE">Lecture</option>
+            <option value="LABORATORY">Laboratory</option>
+            <option value="LECTURE_LAB">Lecture + Lab</option>
+          </select>
+        </div>
+
+        <div>
+          <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
+            Semester *
+          </label>
+          <select
+            name="semester"
+            value={formData.semester}
+            onChange={handleChange}
+            required
+            style={{
+              width: '100%',
+              padding: '10px',
+              borderRadius: '6px',
+              border: '1px solid #ccc',
+              fontSize: '14px'
+            }}
+          >
+            <option value="FIRST_SEM">First Semester</option>
+            <option value="SECOND_SEM">Second Semester</option>
+            <option value="SUMMER">Summer</option>
+          </select>
+        </div>
+
+        <div>
+          <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
+            School Year *
+          </label>
+          <input
+            type="text"
+            name="schoolYear"
+            value={formData.schoolYear}
+            onChange={handleChange}
+            required
+            placeholder="e.g., 2024-2025"
             style={{
               width: '100%',
               padding: '10px',
@@ -177,14 +308,16 @@ export default function AddCourseForm() {
           disabled={loading}
           style={{
             padding: '12px',
-            background: loading ? '#ccc' : '#25364a',
+            background: loading ? '#94a3b8' : '#10b981',
             color: 'white',
             border: 'none',
             borderRadius: '6px',
             cursor: loading ? 'not-allowed' : 'pointer',
             fontSize: '16px',
             fontWeight: 'bold',
-            marginTop: '10px'
+            marginTop: '10px',
+            boxShadow: loading ? 'none' : '0 2px 4px rgba(16, 185, 129, 0.3)',
+            transition: 'all 0.2s'
           }}
         >
           {loading ? 'Creating...' : 'Create Course'}

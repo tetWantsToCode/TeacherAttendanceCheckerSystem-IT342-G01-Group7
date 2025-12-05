@@ -17,7 +17,7 @@ export default function TeacherList({ teachers, onRemove }) {
               <span style={{ color: '#555' }}>{teacher.email}</span><br />
               <span style={{ color: '#888', fontSize: '0.95em' }}>Base Password: {teacher.password || 'N/A'}</span>
             </span>
-            <button onClick={() => onRemove(teacher.id)} style={{ background: '#e74c3c', color: '#fff', border: 'none', borderRadius: '6px', padding: '0.5rem 1rem', cursor: 'pointer' }}>Remove</button>
+            <button onClick={() => onRemove(teacher.id)} style={{ background: '#ef4444', color: '#fff', border: 'none', borderRadius: '6px', padding: '0.5rem 1rem', cursor: 'pointer', boxShadow: '0 2px 4px rgba(239, 68, 68, 0.3)', transition: 'all 0.2s' }}>Remove</button>
           </li>
         ))}
       </ul>

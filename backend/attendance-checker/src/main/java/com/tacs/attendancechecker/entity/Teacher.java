@@ -13,14 +13,16 @@ public class Teacher {
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 
-    private String specialization;
+    @ManyToOne
+    @JoinColumn(name = "department_id")
+    private Department department;
 
     public Teacher() {}
 
-    public Teacher(String teacherId, User user, String specialization) {
+    public Teacher(String teacherId, User user, Department department) {
         this.teacherId = teacherId;
         this.user = user;
-        this.specialization = specialization;
+        this.department = department;
     }
 
     public String getTeacherId() { return teacherId; }
@@ -29,6 +31,6 @@ public class Teacher {
     public User getUser() { return user; }
     public void setUser(User user) { this.user = user; }
 
-    public String getSpecialization() { return specialization; }
-    public void setSpecialization(String specialization) { this.specialization = specialization; }
+    public Department getDepartment() { return department; }
+    public void setDepartment(Department department) { this.department = department; }
 }

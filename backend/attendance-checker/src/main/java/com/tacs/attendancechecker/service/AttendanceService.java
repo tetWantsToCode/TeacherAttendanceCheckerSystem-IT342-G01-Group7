@@ -29,6 +29,9 @@ public class AttendanceService {
     @Autowired
     private TeacherRepository teacherRepository;
 
+    @Autowired
+    private AttendanceSessionRepository attendanceSessionRepository;
+
     // Get all courses for a teacher
     public List<CourseResponse> getTeacherCourses(String teacherId) {
         List<Course> courses = courseRepository.findByTeacherTeacherId(teacherId);
@@ -46,8 +49,11 @@ public class AttendanceService {
 
     // Mark attendance for a student
     public AttendanceResponse markAttendance(AttendanceRequest request) {
-        // Check if attendance already exists for this student, course, and date
-        var existing = attendanceRepository.findByStudentStudentIdAndCourseCourseIdAndDate(
+        // Check if attendance already exists for this student, course, date, and session
+        var existing = request.getSessionId() != null
+            ? attendanceRepository.findByStudentStudentIdAndSessionSessionId(
+                request.getStudentId(), request.getSessionId())
+            : attendanceRepository.findByStudentStudentIdAndCourseCourseIdAndDate(
                 request.getStudentId(), request.getCourseId(), request.getDate());
 
         Attendance attendance;
@@ -56,6 +62,9 @@ public class AttendanceService {
             attendance = existing.get();
             attendance.setStatus(Attendance.Status.valueOf(request.getStatus().toUpperCase()));
             attendance.setRemarks(request.getRemarks());
+            if (request.getTimeIn() != null) {
+                attendance.setTimeIn(request.getTimeIn());
+            }
         } else {
             // Create new attendance
             attendance = new Attendance();
@@ -71,6 +80,17 @@ public class AttendanceService {
             attendance.setDate(request.getDate());
             attendance.setStatus(Attendance.Status.valueOf(request.getStatus().toUpperCase()));
             attendance.setRemarks(request.getRemarks());
+            
+            if (request.getTimeIn() != null) {
+                attendance.setTimeIn(request.getTimeIn());
+            }
+            
+            // Link to session if provided
+            if (request.getSessionId() != null) {
+                AttendanceSession session = attendanceSessionRepository.findById(request.getSessionId())
+                        .orElseThrow(() -> new RuntimeException("Session not found"));
+                attendance.setSession(session);
+            }
         }
 
         Attendance saved = attendanceRepository.save(attendance);
@@ -80,6 +100,12 @@ public class AttendanceService {
     // Get attendance records for a course on a specific date
     public List<AttendanceResponse> getAttendanceByDate(Integer courseId, LocalDate date) {
         List<Attendance> attendances = attendanceRepository.findByCourseCourseIdAndDate(courseId, date);
+        return attendances.stream().map(this::mapToAttendanceResponse).collect(Collectors.toList());
+    }
+
+    // Get attendance records for a specific session
+    public List<AttendanceResponse> getAttendanceBySession(Integer sessionId) {
+        List<Attendance> attendances = attendanceRepository.findBySessionSessionId(sessionId);
         return attendances.stream().map(this::mapToAttendanceResponse).collect(Collectors.toList());
     }
 

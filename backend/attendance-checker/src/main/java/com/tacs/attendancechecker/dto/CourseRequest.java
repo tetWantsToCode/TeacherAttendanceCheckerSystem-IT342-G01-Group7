@@ -9,6 +9,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CourseRequest {
     private String teacherId;
+    private String courseCode;
     private String courseName;
     private String description;
+    private Integer units;
+    private String courseType;
+    private String semester;
+    private String schoolYear;
+    private Boolean isActive;
 }

@@ -138,11 +138,15 @@ export default function CourseList() {
         <p>No courses available. Create your first course!</p>
       ) : (
         <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', background: 'white', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', background: '#ffffff', boxShadow: '0 2px 6px rgba(0,0,0,0.08)', borderRadius: '8px', overflow: 'hidden' }}>
             <thead>
-              <tr style={{ background: '#25364a', color: 'white' }}>
+              <tr style={{ background: '#1e293b', color: 'white' }}>
+                <th style={{ padding: '12px', textAlign: 'left' }}>Code</th>
                 <th style={{ padding: '12px', textAlign: 'left' }}>Course Name</th>
-                <th style={{ padding: '12px', textAlign: 'left' }}>Description</th>
+                <th style={{ padding: '12px', textAlign: 'left' }}>Units</th>
+                <th style={{ padding: '12px', textAlign: 'left' }}>Type</th>
+                <th style={{ padding: '12px', textAlign: 'left' }}>Semester</th>
+                <th style={{ padding: '12px', textAlign: 'left' }}>School Year</th>
                 <th style={{ padding: '12px', textAlign: 'left' }}>Teacher</th>
                 <th style={{ padding: '12px', textAlign: 'left' }}>Actions</th>
               </tr>
@@ -150,8 +154,12 @@ export default function CourseList() {
             <tbody>
               {courses.map(course => (
                 <tr key={course.courseId} style={{ borderBottom: '1px solid #eee' }}>
+                  <td style={{ padding: '12px' }}>{course.courseCode || 'N/A'}</td>
                   <td style={{ padding: '12px' }}>{course.courseName}</td>
-                  <td style={{ padding: '12px' }}>{course.description}</td>
+                  <td style={{ padding: '12px' }}>{course.units || 'N/A'}</td>
+                  <td style={{ padding: '12px' }}>{course.courseType || 'N/A'}</td>
+                  <td style={{ padding: '12px' }}>{course.semester || 'N/A'}</td>
+                  <td style={{ padding: '12px' }}>{course.schoolYear || 'N/A'}</td>
                   <td style={{ padding: '12px' }}>{course.teacherName}</td>
                   <td style={{ padding: '12px' }}>
                     <button
