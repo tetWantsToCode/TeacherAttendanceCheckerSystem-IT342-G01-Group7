@@ -27,8 +27,14 @@ public class CourseService {
 
         Course course = new Course();
         course.setTeacher(teacher);
+        course.setCourseCode(request.getCourseCode());
         course.setCourseName(request.getCourseName());
         course.setDescription(request.getDescription());
+        course.setUnits(request.getUnits());
+        course.setCourseType(request.getCourseType());
+        course.setSemester(request.getSemester());
+        course.setSchoolYear(request.getSchoolYear());
+        course.setIsActive(request.getIsActive() != null ? request.getIsActive() : true);
 
         Course savedCourse = courseRepository.save(course);
         return mapToCourseResponse(savedCourse);
@@ -56,12 +62,36 @@ public class CourseService {
             course.setTeacher(teacher);
         }
 
+        if (request.getCourseCode() != null) {
+            course.setCourseCode(request.getCourseCode());
+        }
+        
         if (request.getCourseName() != null) {
             course.setCourseName(request.getCourseName());
         }
 
         if (request.getDescription() != null) {
             course.setDescription(request.getDescription());
+        }
+        
+        if (request.getUnits() != null) {
+            course.setUnits(request.getUnits());
+        }
+        
+        if (request.getCourseType() != null) {
+            course.setCourseType(request.getCourseType());
+        }
+        
+        if (request.getSemester() != null) {
+            course.setSemester(request.getSemester());
+        }
+        
+        if (request.getSchoolYear() != null) {
+            course.setSchoolYear(request.getSchoolYear());
+        }
+        
+        if (request.getIsActive() != null) {
+            course.setIsActive(request.getIsActive());
         }
 
         Course updatedCourse = courseRepository.save(course);
@@ -75,8 +105,14 @@ public class CourseService {
     private CourseResponse mapToCourseResponse(Course course) {
         CourseResponse response = new CourseResponse();
         response.setCourseId(course.getCourseId());
+        response.setCourseCode(course.getCourseCode());
         response.setCourseName(course.getCourseName());
         response.setDescription(course.getDescription());
+        response.setUnits(course.getUnits());
+        response.setCourseType(course.getCourseType());
+        response.setSemester(course.getSemester());
+        response.setSchoolYear(course.getSchoolYear());
+        response.setIsActive(course.getIsActive());
         response.setTeacherId(course.getTeacher().getTeacherId());
         response.setTeacherName(course.getTeacher().getUser().getFname() + " " + 
                                course.getTeacher().getUser().getLname());

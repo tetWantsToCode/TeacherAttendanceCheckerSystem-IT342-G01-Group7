@@ -6,8 +6,12 @@ export default function AddStudentForm({ onAdd }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [studentNumber, setStudentNumber] = useState('');
+  const [program, setProgram] = useState('');
   const [yearLevel, setYearLevel] = useState('');
   const [section, setSection] = useState('');
+  const [contactNumber, setContactNumber] = useState('');
+  const [guardianName, setGuardianName] = useState('');
+  const [guardianContact, setGuardianContact] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
@@ -15,8 +19,8 @@ export default function AddStudentForm({ onAdd }) {
     e.preventDefault();
     setError('');
     setSuccess('');
-    if (!fname || !lname || !email || !password || !studentNumber || !yearLevel || !section) {
-      setError('Please fill out all fields.');
+    if (!fname || !lname || !email || !password || !studentNumber || !program || !yearLevel || !section) {
+      setError('Please fill out all required fields.');
       return;
     }
 
@@ -35,8 +39,13 @@ export default function AddStudentForm({ onAdd }) {
           email,
           password,
           studentNumber,
+          program,
           yearLevel: Number(yearLevel),
-          section
+          section,
+          contactNumber,
+          guardianName,
+          guardianContact,
+          enrollmentStatus: 'ACTIVE'
         }),
       });
       if (!response.ok) {
@@ -52,8 +61,12 @@ export default function AddStudentForm({ onAdd }) {
       setEmail('');
       setPassword('');
       setStudentNumber('');
+      setProgram('');
       setYearLevel('');
       setSection('');
+      setContactNumber('');
+      setGuardianName('');
+      setGuardianContact('');
     } catch (err) {
       setError('Server error. Please try again.');
     }
@@ -110,13 +123,19 @@ export default function AddStudentForm({ onAdd }) {
         />
       </div>
       <div style={{ marginBottom: '1rem' }}>
-        <input
-          type="number"
-          placeholder="Year Level"
-          value={studentNumber}
-          onChange={e => setStudentNumber(e.target.value)}
+        <select
+          value={program}
+          onChange={e => setProgram(e.target.value)}
           style={{ padding: '0.5rem', borderRadius: '6px', border: '1px solid #ccc', width: '60%' }}
-        />
+          required
+        >
+          <option value="">Select Program *</option>
+          <option value="BSIT">BS Information Technology</option>
+          <option value="BSCS">BS Computer Science</option>
+          <option value="BSCE">BS Computer Engineering</option>
+          <option value="BSIS">BS Information Systems</option>
+          <option value="BSEMC">BS Entertainment and Multimedia Computing</option>
+        </select>
       </div>
       <div style={{ marginBottom: '1rem' }}>
         <input
@@ -136,7 +155,34 @@ export default function AddStudentForm({ onAdd }) {
           style={{ padding: '0.5rem', borderRadius: '6px', border: '1px solid #ccc', width: '60%' }}
         />
       </div>
-      <button type="submit" style={{ background: '#25364a', color: '#fff', border: 'none', borderRadius: '6px', padding: '0.5rem 1.2rem', cursor: 'pointer' }}>
+      <div style={{ marginBottom: '1rem' }}>
+        <input
+          type="text"
+          placeholder="Contact Number"
+          value={contactNumber}
+          onChange={e => setContactNumber(e.target.value)}
+          style={{ padding: '0.5rem', borderRadius: '6px', border: '1px solid #ccc', width: '60%' }}
+        />
+      </div>
+      <div style={{ marginBottom: '1rem' }}>
+        <input
+          type="text"
+          placeholder="Guardian Name"
+          value={guardianName}
+          onChange={e => setGuardianName(e.target.value)}
+          style={{ padding: '0.5rem', borderRadius: '6px', border: '1px solid #ccc', width: '60%' }}
+        />
+      </div>
+      <div style={{ marginBottom: '1rem' }}>
+        <input
+          type="text"
+          placeholder="Guardian Contact"
+          value={guardianContact}
+          onChange={e => setGuardianContact(e.target.value)}
+          style={{ padding: '0.5rem', borderRadius: '6px', border: '1px solid #ccc', width: '60%' }}
+        />
+      </div>
+      <button type="submit" style={{ background: '#10b981', color: '#fff', border: 'none', borderRadius: '6px', padding: '0.5rem 1.2rem', cursor: 'pointer', boxShadow: '0 2px 4px rgba(16, 185, 129, 0.3)', transition: 'all 0.2s' }}>
         Add Student
       </button>
     </form>

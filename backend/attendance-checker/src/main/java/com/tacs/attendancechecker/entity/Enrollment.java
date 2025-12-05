@@ -8,7 +8,11 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "enrollment")
+@Table(name = "enrollment",
+    uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"studentId", "courseId"})
+    }
+)
 public class Enrollment {
 
     @Id

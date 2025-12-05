@@ -38,7 +38,7 @@ public class TeacherController {
                     request.getLname(),
                     request.getEmail(),
                     request.getPassword(),
-                    request.getSpecialization()
+                    request.getDepartmentId()
             );
             return ResponseEntity.ok(teacher);
         } catch (IllegalArgumentException e) {

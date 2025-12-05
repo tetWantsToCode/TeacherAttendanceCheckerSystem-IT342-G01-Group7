@@ -5,7 +5,7 @@ public class TeacherRegistrationRequest {
     private String lname;
     private String email;
     private String password;
-    private String specialization;
+    private Integer departmentId;
 
     public TeacherRegistrationRequest() {}
 
@@ -22,6 +22,6 @@ public class TeacherRegistrationRequest {
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
 
-    public String getSpecialization() { return specialization; }
-    public void setSpecialization(String specialization) { this.specialization = specialization; }
+    public Integer getDepartmentId() { return departmentId; }
+    public void setDepartmentId(Integer departmentId) { this.departmentId = departmentId; }
 }

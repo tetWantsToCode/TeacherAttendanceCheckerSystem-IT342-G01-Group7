@@ -69,6 +69,17 @@ public class AttendanceController {
         }
     }
 
+    // Get attendance for a specific session
+    @GetMapping("/session/{sessionId}")
+    public ResponseEntity<List<AttendanceResponse>> getAttendanceBySession(@PathVariable Integer sessionId) {
+        try {
+            List<AttendanceResponse> attendances = attendanceService.getAttendanceBySession(sessionId);
+            return ResponseEntity.ok(attendances);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
     // Get all attendance records for a course
     @GetMapping("/course/{courseId}")
     public ResponseEntity<List<AttendanceResponse>> getCourseAttendance(@PathVariable Integer courseId) {

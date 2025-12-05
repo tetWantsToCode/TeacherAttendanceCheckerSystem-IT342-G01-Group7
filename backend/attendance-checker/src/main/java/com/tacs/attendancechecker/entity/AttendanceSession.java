@@ -24,6 +24,10 @@ public class AttendanceSession {
     @JoinColumn(name = "teacherId", nullable = false)
     private Teacher teacher;
 
+    @ManyToOne
+    @JoinColumn(name = "scheduleId")
+    private ClassSchedule classSchedule; // Link to which class schedule this session is for
+
     private LocalDate date;
     private LocalTime startTime;
     private LocalTime endTime;

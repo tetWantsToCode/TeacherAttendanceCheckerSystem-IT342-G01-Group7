@@ -23,6 +23,10 @@ public class Attendance {
     @JoinColumn(name = "courseId", nullable = false)
     private Course course;
 
+    @ManyToOne
+    @JoinColumn(name = "sessionId")
+    private AttendanceSession session;
+
     private LocalDate date;
     private LocalTime timeIn;
 
@@ -30,6 +34,7 @@ public class Attendance {
     private Status status;
 
     private String remarks;
+    private String recordedBy; // Teacher ID who recorded it
 
     public enum Status {
         PRESENT, LATE, ABSENT, EXCUSED
