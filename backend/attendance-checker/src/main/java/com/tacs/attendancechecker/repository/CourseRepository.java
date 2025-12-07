@@ -5,5 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface CourseRepository extends JpaRepository<Course, Integer> {
-    List<Course> findByTeacherTeacherId(String teacherId);
+    // Removed findByTeacherTeacherId - Course no longer has teacher field
+    // Teacher association is now in OfferedCourse
 }

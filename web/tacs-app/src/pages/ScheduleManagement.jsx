@@ -155,23 +155,10 @@ const ScheduleManagement = () => {
     };
 
     const handleOfferedCourseChange = (offeredCourseId) => {
-        const selectedCourse = offeredCourses.find(oc => oc.offeredCourseId === parseInt(offeredCourseId));
-        
-        if (selectedCourse) {
-            setFormData({
-                ...formData,
-                offeredCourse: offeredCourseId,
-                dayOfWeek: selectedCourse.dayOfWeek || formData.dayOfWeek,
-                startTime: selectedCourse.startTime || formData.startTime,
-                endTime: selectedCourse.endTime || formData.endTime,
-                classroom: selectedCourse.classroom?.classroomId || formData.classroom
-            });
-        } else {
-            setFormData({
-                ...formData,
-                offeredCourse: offeredCourseId
-            });
-        }
+        setFormData({
+            ...formData,
+            offeredCourse: offeredCourseId
+        });
     };
 
     const formatTime = (time) => {
@@ -236,11 +223,6 @@ const ScheduleManagement = () => {
                                 <small style={{ display: 'block', marginTop: '5px', color: '#17a2b8' }}>
                                     ℹ️ This course already has {schedules.filter(s => s.offeredCourse?.offeredCourseId === parseInt(formData.offeredCourse)).length} schedule(s). 
                                     You can add another meeting time.
-                                </small>
-                            )}
-                            {formData.offeredCourse && (
-                                <small style={{ display: 'block', marginTop: '5px', color: '#10b981' }}>
-                                    ✓ Fields auto-filled from offered course. You can modify them if needed.
                                 </small>
                             )}
                         </div>

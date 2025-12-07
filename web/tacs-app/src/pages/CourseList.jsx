@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-export default function CourseList() {
+export default function CourseList({ refreshKey }) {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -10,7 +10,7 @@ export default function CourseList() {
   useEffect(() => {
     fetchCourses();
     fetchTeachers();
-  }, []);
+  }, [refreshKey]);
 
   const fetchCourses = async () => {
     setLoading(true);
@@ -145,9 +145,7 @@ export default function CourseList() {
                 <th style={{ padding: '12px', textAlign: 'left' }}>Course Name</th>
                 <th style={{ padding: '12px', textAlign: 'left' }}>Units</th>
                 <th style={{ padding: '12px', textAlign: 'left' }}>Type</th>
-                <th style={{ padding: '12px', textAlign: 'left' }}>Semester</th>
-                <th style={{ padding: '12px', textAlign: 'left' }}>School Year</th>
-                <th style={{ padding: '12px', textAlign: 'left' }}>Teacher</th>
+                <th style={{ padding: '12px', textAlign: 'left' }}>Status</th>
                 <th style={{ padding: '12px', textAlign: 'left' }}>Actions</th>
               </tr>
             </thead>
@@ -158,9 +156,7 @@ export default function CourseList() {
                   <td style={{ padding: '12px' }}>{course.courseName}</td>
                   <td style={{ padding: '12px' }}>{course.units || 'N/A'}</td>
                   <td style={{ padding: '12px' }}>{course.courseType || 'N/A'}</td>
-                  <td style={{ padding: '12px' }}>{course.semester || 'N/A'}</td>
-                  <td style={{ padding: '12px' }}>{course.schoolYear || 'N/A'}</td>
-                  <td style={{ padding: '12px' }}>{course.teacherName}</td>
+                  <td style={{ padding: '12px' }}>{course.isActive ? 'Active' : 'Inactive'}</td>
                   <td style={{ padding: '12px' }}>
                     <button
                       onClick={() => handleEdit(course)}

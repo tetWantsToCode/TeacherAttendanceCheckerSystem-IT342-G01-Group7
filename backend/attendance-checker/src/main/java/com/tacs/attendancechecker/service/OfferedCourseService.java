@@ -36,15 +36,27 @@ public class OfferedCourseService {
 
     public OfferedCourse updateOfferedCourse(Integer offeredCourseId, OfferedCourse offeredCourse) {
         OfferedCourse existingOfferedCourse = getOfferedCourseById(offeredCourseId);
-        existingOfferedCourse.setTeacher(offeredCourse.getTeacher());
-        existingOfferedCourse.setClassroom(offeredCourse.getClassroom());
-        existingOfferedCourse.setCourse(offeredCourse.getCourse());
-        existingOfferedCourse.setSchedule(offeredCourse.getSchedule());
-        existingOfferedCourse.setSemester(offeredCourse.getSemester());
-        existingOfferedCourse.setUnits(offeredCourse.getUnits());
-        existingOfferedCourse.setStartTime(offeredCourse.getStartTime());
-        existingOfferedCourse.setEndTime(offeredCourse.getEndTime());
-        existingOfferedCourse.setDayOfWeek(offeredCourse.getDayOfWeek());
+        if (offeredCourse.getTeacher() != null) {
+            existingOfferedCourse.setTeacher(offeredCourse.getTeacher());
+        }
+        if (offeredCourse.getCourse() != null) {
+            existingOfferedCourse.setCourse(offeredCourse.getCourse());
+        }
+        if (offeredCourse.getSchedule() != null) {
+            existingOfferedCourse.setSchedule(offeredCourse.getSchedule());
+        }
+        if (offeredCourse.getSemester() != null) {
+            existingOfferedCourse.setSemester(offeredCourse.getSemester());
+        }
+        if (offeredCourse.getSchoolYear() != null) {
+            existingOfferedCourse.setSchoolYear(offeredCourse.getSchoolYear());
+        }
+        if (offeredCourse.getSection() != null) {
+            existingOfferedCourse.setSection(offeredCourse.getSection());
+        }
+        if (offeredCourse.getUnits() != null) {
+            existingOfferedCourse.setUnits(offeredCourse.getUnits());
+        }
         return offeredCourseRepository.save(existingOfferedCourse);
     }
 

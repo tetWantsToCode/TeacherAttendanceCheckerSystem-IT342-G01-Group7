@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { api } from '../utils/api-utils';
 
-export default function AddStudentForm() {
+export default function AddStudentForm({ onSuccess }) {
   const [fname, setFName] = useState('');
   const [lname, setLName] = useState('');
   const [email, setEmail] = useState('');
@@ -9,9 +9,6 @@ export default function AddStudentForm() {
   const [studentNumber, setStudentNumber] = useState('');
   const [program, setProgram] = useState('');
   const [yearLevel, setYearLevel] = useState('');
-  const [contactNumber, setContactNumber] = useState('');
-  const [guardianName, setGuardianName] = useState('');
-  const [guardianContact, setGuardianContact] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
@@ -33,9 +30,6 @@ export default function AddStudentForm() {
       studentNumber,
       program,
       yearLevel: Number(yearLevel),
-      contactNumber,
-      guardianName,
-      guardianContact,
       enrollmentStatus: 'ACTIVE'
     });
 
@@ -48,9 +42,7 @@ export default function AddStudentForm() {
       setStudentNumber('');
       setProgram('');
       setYearLevel('');
-      setContactNumber('');
-      setGuardianName('');
-      setGuardianContact('');
+      if (onSuccess) onSuccess();
       setTimeout(() => setSuccess(''), 3000);
     } else {
       setError(result.error);
@@ -128,33 +120,6 @@ export default function AddStudentForm() {
           placeholder="Year Level"
           value={yearLevel}
           onChange={e => setYearLevel(e.target.value)}
-          style={{ padding: '0.5rem', borderRadius: '6px', border: '1px solid #ccc', width: '60%' }}
-        />
-      </div>
-      <div style={{ marginBottom: '1rem' }}>
-        <input
-          type="text"
-          placeholder="Contact Number"
-          value={contactNumber}
-          onChange={e => setContactNumber(e.target.value)}
-          style={{ padding: '0.5rem', borderRadius: '6px', border: '1px solid #ccc', width: '60%' }}
-        />
-      </div>
-      <div style={{ marginBottom: '1rem' }}>
-        <input
-          type="text"
-          placeholder="Guardian Name"
-          value={guardianName}
-          onChange={e => setGuardianName(e.target.value)}
-          style={{ padding: '0.5rem', borderRadius: '6px', border: '1px solid #ccc', width: '60%' }}
-        />
-      </div>
-      <div style={{ marginBottom: '1rem' }}>
-        <input
-          type="text"
-          placeholder="Guardian Contact"
-          value={guardianContact}
-          onChange={e => setGuardianContact(e.target.value)}
           style={{ padding: '0.5rem', borderRadius: '6px', border: '1px solid #ccc', width: '60%' }}
         />
       </div>

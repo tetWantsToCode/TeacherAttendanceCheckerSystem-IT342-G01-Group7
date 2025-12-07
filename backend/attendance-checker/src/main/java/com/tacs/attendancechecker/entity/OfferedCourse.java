@@ -2,7 +2,6 @@ package com.tacs.attendancechecker.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import java.time.LocalTime;
 
 @Entity
 @Data
@@ -20,18 +19,12 @@ public class OfferedCourse {
     private Teacher teacher;
 
     @ManyToOne
-    @JoinColumn(name = "classroomId", nullable = false)
-    private Classroom classroom;
-
-    @ManyToOne
     @JoinColumn(name = "courseId", nullable = false)
     private Course course;
 
-    private String schedule;
-    private String semester;
+    private String schedule; // Optional text description (e.g., "MW 8:00-10:00")
+    private String semester; // FIRST_SEM, SECOND_SEM, SUMMER
+    private String schoolYear; // 2024-2025, 2025-2026
     private String section;
     private Integer units;
-    private LocalTime startTime;
-    private LocalTime endTime;
-    private String dayOfWeek;
 }
