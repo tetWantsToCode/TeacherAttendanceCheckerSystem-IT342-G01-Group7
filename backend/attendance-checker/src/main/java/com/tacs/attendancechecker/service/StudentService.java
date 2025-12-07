@@ -4,6 +4,8 @@ import com.tacs.attendancechecker.entity.Student;
 import com.tacs.attendancechecker.entity.User;
 import com.tacs.attendancechecker.repository.StudentRepository;
 import com.tacs.attendancechecker.repository.UserRepository;
+import com.tacs.attendancechecker.repository.EnrollmentRepository;
+import com.tacs.attendancechecker.repository.AttendanceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,7 +21,16 @@ public class StudentService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public Student addStudent(String fname, String lname, String email, String password, Integer yearLevel, String section) {
+    @Autowired
+    private EnrollmentRepository enrollmentRepository;
+
+    @Autowired
+    private AttendanceRepository attendanceRepository;
+
+    public Student addStudent(String fname, String lname, String email, String password,
+            String studentNumber, String program, Integer yearLevel,
+            String enrollmentStatus, String contactNumber,
+            String guardianName, String guardianContact) {
         // Prevent duplicate users by email
         if (userRepository.existsByEmail(email)) {
             throw new IllegalArgumentException("A user with that email already exists.");
@@ -37,8 +48,13 @@ public class StudentService {
         // Create and save Student entity
         Student student = new Student();
         student.setUser(savedUser);
+        student.setStudentNumber(studentNumber);
+        student.setProgram(program);
         student.setYearLevel(yearLevel);
-        student.setSection(section);
+        student.setEnrollmentStatus(enrollmentStatus != null ? enrollmentStatus : "ACTIVE");
+        student.setContactNumber(contactNumber);
+        student.setGuardianName(guardianName);
+        student.setGuardianContact(guardianContact);
 
         return studentRepository.save(student);
     }
@@ -53,7 +69,38 @@ public class StudentService {
     }
 
     public void deleteStudent(Integer studentId) {
+        // Check if student exists
         Student student = getStudentById(studentId);
+
+        // Check if student has enrollments
+        long enrollmentCount = enrollmentRepository.findAll().stream()
+                .filter(enrollment -> enrollment.getStudent() != null &&
+                        enrollment.getStudent().getStudentId().equals(studentId))
+                .count();
+        if (enrollmentCount > 0) {
+            throw new RuntimeException("Cannot delete student: " + enrollmentCount
+                    + " enrollment(s) exist. Please remove enrollments first.");
+        }
+
+        // Check if student has attendance records
+        long attendanceCount = attendanceRepository.findAll().stream()
+                .filter(attendance -> attendance.getStudent() != null &&
+                        attendance.getStudent().getStudentId().equals(studentId))
+                .count();
+        if (attendanceCount > 0) {
+            throw new RuntimeException("Cannot delete student: " + attendanceCount
+                    + " attendance record(s) exist. Please remove attendance records first.");
+        }
+
+        // Get the associated user before deleting student
+        User user = student.getUser();
+
+        // Delete student first (removes foreign key relationship)
         studentRepository.delete(student);
+
+        // Then delete the associated user
+        if (user != null) {
+            userRepository.deleteById(user.getUserId());
+        }
     }
 }

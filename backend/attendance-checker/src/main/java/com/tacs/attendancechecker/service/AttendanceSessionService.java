@@ -2,6 +2,7 @@ package com.tacs.attendancechecker.service;
 
 import com.tacs.attendancechecker.entity.AttendanceSession;
 import com.tacs.attendancechecker.repository.AttendanceSessionRepository;
+import com.tacs.attendancechecker.repository.AttendanceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,9 @@ public class AttendanceSessionService {
 
     @Autowired
     private AttendanceSessionRepository attendanceSessionRepository;
+
+    @Autowired
+    private AttendanceRepository attendanceRepository;
 
     public AttendanceSession createAttendanceSession(AttendanceSession attendanceSession) {
         return attendanceSessionRepository.save(attendanceSession);
@@ -53,6 +57,13 @@ public class AttendanceSessionService {
     }
 
     public void deleteAttendanceSession(Integer sessionId) {
+        // First, delete all attendance records for this session
+        attendanceRepository.findAll().stream()
+                .filter(attendance -> attendance.getSession() != null &&
+                        attendance.getSession().getSessionId().equals(sessionId))
+                .forEach(attendance -> attendanceRepository.delete(attendance));
+
+        // Then delete the session
         attendanceSessionRepository.deleteById(sessionId);
     }
 }

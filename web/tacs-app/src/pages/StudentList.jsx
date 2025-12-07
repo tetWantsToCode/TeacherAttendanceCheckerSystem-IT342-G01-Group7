@@ -1,30 +1,51 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { api } from '../utils/api-utils';
 
-const initialStudents = [
-  { id: 1, name: 'Charlie Brown', email: 'charlie@school.edu', password: 'student123' },
-  { id: 2, name: 'Dana White', email: 'dana@school.edu', password: 'student123' }
-];
+export default function StudentList() {
+  const [students, setStudents] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-export default function StudentList({ onRemove }) {
-  const [students, setStudents] = useState(initialStudents);
+  useEffect(() => {
+    fetchStudents();
+  }, []);
 
-  function handleRemove(id) {
-    setStudents(students.filter(s => s.id !== id));
-    if (onRemove) onRemove(id);
+  async function fetchStudents() {
+    setLoading(true);
+    const result = await api.get('/students');
+    if (result.success) {
+      setStudents(result.data);
+    }
+    setLoading(false);
   }
+
+  async function handleRemove(studentId) {
+    if (window.confirm('Are you sure you want to remove this student?')) {
+      const result = await api.delete(`/students/${studentId}`);
+      if (result.success) {
+        alert('Student removed successfully!');
+        fetchStudents();
+      } else {
+        alert('Failed to remove student: ' + result.error);
+      }
+    }
+  }
+
+  if (loading) return <div>Loading students...</div>;
 
   return (
     <div>
       <h2>Students</h2>
       <ul style={{ listStyle: 'none', padding: 0 }}>
         {students.map(student => (
-          <li key={student.id} style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#f7f9fb', padding: '1rem', borderRadius: '8px' }}>
+          <li key={student.studentId} style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#f7f9fb', padding: '1rem', borderRadius: '8px' }}>
             <span>
-              <strong>{student.name}</strong> <br />
-              <span style={{ color: '#555' }}>{student.email}</span><br />
-              <span style={{ color: '#888', fontSize: '0.95em' }}>Base Password: {student.password || 'N/A'}</span>
+              <strong>{student.user?.fname} {student.user?.lname}</strong> <br />
+              <span style={{ color: '#555' }}>{student.user?.email}</span><br />
+              <span style={{ color: '#888', fontSize: '0.95em' }}>
+                {student.program} - Year {student.yearLevel} {student.section}
+              </span>
             </span>
-            <button onClick={() => handleRemove(student.id)} style={{ background: '#ef4444', color: '#fff', border: 'none', borderRadius: '6px', padding: '0.5rem 1rem', cursor: 'pointer', boxShadow: '0 2px 4px rgba(239, 68, 68, 0.3)', transition: 'all 0.2s' }}>Remove</button>
+            <button onClick={() => handleRemove(student.studentId)} style={{ background: '#ef4444', color: '#fff', border: 'none', borderRadius: '6px', padding: '0.5rem 1rem', cursor: 'pointer', boxShadow: '0 2px 4px rgba(239, 68, 68, 0.3)', transition: 'all 0.2s' }}>Remove</button>
           </li>
         ))}
       </ul>

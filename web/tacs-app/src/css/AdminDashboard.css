@@ -17,11 +17,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #25364a;
+  background: linear-gradient(135deg, #ff7849 0%, #ff5722 100%);
   color: #fff;
   padding: 1.2rem 2.5rem 1.2rem 2rem;
   font-size: 1.25rem;
-  box-shadow: 0 2px 8px rgba(44, 62, 80, 0.07);
+  box-shadow: 0 4px 20px rgba(255, 120, 73, 0.25);
   width: 100%;
   border-radius: 0;
   box-sizing: border-box;
@@ -31,7 +31,7 @@
   font-weight: 700;
   font-size: 1.5rem;
   letter-spacing: 1.5px;
-  text-shadow: 0 2px 8px rgba(44, 62, 80, 0.1);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .dashboard-body {
@@ -48,7 +48,7 @@
 .sidebar {
   width: 220px;
   background: #f4f6fa;
-  color: #25364a;
+  color: #2d3748;
   padding: 2rem 1rem;
   box-shadow: 1px 0 8px rgba(44, 62, 80, 0.04);
   height: calc(100vh - 64px);
@@ -85,10 +85,11 @@
 
 .sidebar li.active,
 .sidebar li:hover {
-  background: #25364a;
-  color: #ffd700;
-  box-shadow: 0 2px 8px rgba(44, 62, 80, 0.07);
-  transform: none;
+  background: linear-gradient(135deg, #ff7849 0%, #ff5722 100%);
+  color: #fff;
+  box-shadow: 0 4px 15px rgba(255, 120, 73, 0.25);
+  transform: translateX(4px);
+  transition: all 0.3s ease;
 }
 
 .main-content {
@@ -197,90 +198,92 @@
 }
 
 .btn-primary {
-  background: #10b981 !important;
+  background: linear-gradient(135deg, #ff7849 0%, #ff5722 100%) !important;
   color: white !important;
   padding: 0.75rem 1.5rem;
   border: none;
-  border-radius: 6px;
+  border-radius: 10px;
   cursor: pointer;
   font-size: 1rem;
   font-weight: 600;
-  transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
-  box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 15px rgba(255, 120, 73, 0.3);
 }
 
 .btn-primary:hover {
-  background: #059669 !important;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(16, 185, 129, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(255, 120, 73, 0.4);
 }
 
 .btn-secondary {
-  background: #64748b !important;
+  background: linear-gradient(135deg, #64748b 0%, #475569 100%) !important;
   color: white !important;
   padding: 0.75rem 1.5rem;
   border: none;
-  border-radius: 6px;
+  border-radius: 10px;
   cursor: pointer;
   font-size: 1rem;
   font-weight: 600;
-  transition: background 0.2s, box-shadow 0.2s;
-  box-shadow: 0 2px 4px rgba(100, 116, 139, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 15px rgba(100, 116, 139, 0.3);
 }
 
 .btn-secondary:hover {
-  background: #475569 !important;
-  box-shadow: 0 4px 8px rgba(100, 116, 139, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(100, 116, 139, 0.4);
 }
 
 .btn-edit {
-  background: #10b981 !important;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
   color: white !important;
   padding: 0.5rem 1rem;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
   margin-right: 0.5rem;
-  transition: background 0.2s, box-shadow 0.2s;
-  box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 3px 12px rgba(16, 185, 129, 0.3);
+  font-weight: 600;
 }
 
 .btn-edit:hover {
-  background: #059669 !important;
-  box-shadow: 0 4px 8px rgba(16, 185, 129, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
 }
 
 .btn-warning {
-  background: #f59e0b !important;
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
   color: white !important;
   padding: 0.5rem 1rem;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
   margin-right: 0.5rem;
-  transition: background 0.2s, box-shadow 0.2s;
-  box-shadow: 0 2px 4px rgba(245, 158, 11, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 3px 12px rgba(245, 158, 11, 0.3);
+  font-weight: 600;
 }
 
 .btn-warning:hover {
-  background: #d97706 !important;
-  box-shadow: 0 4px 8px rgba(245, 158, 11, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
 }
 
 .btn-delete {
-  background: #ef4444 !important;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
   color: white !important;
   padding: 0.5rem 1rem;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background 0.2s, box-shadow 0.2s;
-  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 3px 12px rgba(239, 68, 68, 0.3);
+  font-weight: 600;
 }
 
 .btn-delete:hover {
-  background: #dc2626 !important;
-  box-shadow: 0 4px 8px rgba(239, 68, 68, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
 }
 
 .table-container table {
@@ -290,7 +293,8 @@
   box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 .table-container h3 {
   margin-bottom: 1rem;
-  color: #25364a;
+  color: #1a202c;
+  font-weight: 700;
 }
 
 .table-container table {
@@ -303,7 +307,7 @@
 }
 
 .table-container thead {
-  background: #25364a;
+  background: linear-gradient(135deg, #ff7849 0%, #ff5722 100%);
   color: white;
 }
 

@@ -17,20 +17,19 @@ public class Student {
     private String studentNumber;
     private String program; // BSIT, BSCS, BSCE, etc.
     private Integer yearLevel;
-    private String section;
     private String enrollmentStatus = "ACTIVE"; // ACTIVE, INACTIVE, GRADUATED, DROPPED
     private String contactNumber;
     private String guardianName;
     private String guardianContact;
 
-    public Student() {}
+    public Student() {
+    }
 
-    public Student(Integer studentId, User user, String studentNumber, Integer yearLevel, String section) {
+    public Student(Integer studentId, User user, String studentNumber, Integer yearLevel) {
         this.studentId = studentId;
         this.user = user;
         this.studentNumber = studentNumber;
         this.yearLevel = yearLevel;
-        this.section = section;
     }
 
     public Integer getStudentId() {
@@ -65,26 +64,43 @@ public class Student {
         this.yearLevel = yearLevel;
     }
 
-    public String getSection() {
-        return section;
+    public String getProgram() {
+        return program;
     }
 
-    public void setSection(String section) {
-        this.section = section;
+    public void setProgram(String program) {
+        this.program = program;
     }
-    
-    public String getProgram() { return program; }
-    public void setProgram(String program) { this.program = program; }
-    
-    public String getEnrollmentStatus() { return enrollmentStatus; }
-    public void setEnrollmentStatus(String enrollmentStatus) { this.enrollmentStatus = enrollmentStatus; }
-    
-    public String getContactNumber() { return contactNumber; }
-    public void setContactNumber(String contactNumber) { this.contactNumber = contactNumber; }
-    
-    public String getGuardianName() { return guardianName; }
-    public void setGuardianName(String guardianName) { this.guardianName = guardianName; }
-    
-    public String getGuardianContact() { return guardianContact; }
-    public void setGuardianContact(String guardianContact) { this.guardianContact = guardianContact; }
+
+    public String getEnrollmentStatus() {
+        return enrollmentStatus;
+    }
+
+    public void setEnrollmentStatus(String enrollmentStatus) {
+        this.enrollmentStatus = enrollmentStatus;
+    }
+
+    public String getContactNumber() {
+        return contactNumber;
+    }
+
+    public void setContactNumber(String contactNumber) {
+        this.contactNumber = contactNumber;
+    }
+
+    public String getGuardianName() {
+        return guardianName;
+    }
+
+    public void setGuardianName(String guardianName) {
+        this.guardianName = guardianName;
+    }
+
+    public String getGuardianContact() {
+        return guardianContact;
+    }
+
+    public void setGuardianContact(String guardianContact) {
+        this.guardianContact = guardianContact;
+    }
 }

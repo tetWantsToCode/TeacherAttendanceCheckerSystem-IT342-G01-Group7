@@ -49,8 +49,8 @@ public class CourseController {
     }
 
     @PutMapping("/{courseId}")
-    public ResponseEntity<?> updateCourse(@PathVariable Integer courseId, 
-                                         @RequestBody CourseRequest request) {
+    public ResponseEntity<?> updateCourse(@PathVariable Integer courseId,
+            @RequestBody CourseRequest request) {
         try {
             CourseResponse response = courseService.updateCourse(courseId, request);
             return ResponseEntity.ok(response);
@@ -64,10 +64,13 @@ public class CourseController {
     public ResponseEntity<?> deleteCourse(@PathVariable Integer courseId) {
         try {
             courseService.deleteCourse(courseId);
-            return ResponseEntity.ok("Course deleted successfully");
-        } catch (Exception e) {
+            return ResponseEntity.ok().body(java.util.Map.of("message", "Course deleted successfully"));
+        } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Error deleting course: " + e.getMessage());
+                    .body(java.util.Map.of("error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(java.util.Map.of("error", "Internal server error"));
         }
     }
 }

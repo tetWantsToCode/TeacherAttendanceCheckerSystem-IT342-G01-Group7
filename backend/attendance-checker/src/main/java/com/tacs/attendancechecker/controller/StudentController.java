@@ -27,9 +27,13 @@ public class StudentController {
                     request.getLname(),
                     request.getEmail(),
                     request.getPassword(),
+                    request.getStudentNumber(),
+                    request.getProgram(),
                     request.getYearLevel(),
-                    request.getSection()
-            );
+                    request.getEnrollmentStatus(),
+                    request.getContactNumber(),
+                    request.getGuardianName(),
+                    request.getGuardianContact());
             return ResponseEntity.ok(student);
         } catch (IllegalArgumentException e) {
             Map<String, String> error = new HashMap<>();

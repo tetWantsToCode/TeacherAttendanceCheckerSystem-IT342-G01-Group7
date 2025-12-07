@@ -29,6 +29,7 @@ public class OfferedCourse {
 
     private String schedule;
     private String semester;
+    private String section;
     private Integer units;
     private LocalTime startTime;
     private LocalTime endTime;

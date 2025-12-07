@@ -38,8 +38,7 @@ public class TeacherController {
                     request.getLname(),
                     request.getEmail(),
                     request.getPassword(),
-                    request.getDepartmentId()
-            );
+                    request.getDepartmentId());
             return ResponseEntity.ok(teacher);
         } catch (IllegalArgumentException e) {
             Map<String, String> error = new HashMap<>();
@@ -48,6 +47,24 @@ public class TeacherController {
         } catch (Exception e) {
             Map<String, String> error = new HashMap<>();
             error.put("message", "Error adding teacher: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        }
+    }
+
+    @DeleteMapping("/{teacherId}")
+    public ResponseEntity<?> deleteTeacher(@PathVariable String teacherId) {
+        try {
+            teacherService.deleteTeacher(teacherId);
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Teacher deleted successfully");
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        } catch (Exception e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", "Internal server error");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
         }
     }
