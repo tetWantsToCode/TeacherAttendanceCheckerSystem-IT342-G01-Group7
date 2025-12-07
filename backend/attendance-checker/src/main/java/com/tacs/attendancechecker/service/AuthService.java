@@ -35,8 +35,8 @@ public class AuthService {
     private final JwtUtil jwtUtil;
 
     public AuthService(UserRepository repo, TeacherRepository teacherRepo,
-                       StudentRepository studentRepo, PasswordEncoder encoder,
-                       AuthenticationManager authManager, JwtUtil jwtUtil) {
+            StudentRepository studentRepo, PasswordEncoder encoder,
+            AuthenticationManager authManager, JwtUtil jwtUtil) {
         this.userRepo = repo;
         this.teacherRepo = teacherRepo;
         this.studentRepo = studentRepo;
@@ -57,16 +57,15 @@ public class AuthService {
         u.setPassword(encoder.encode(req.getPassword()));
         u.setRole(User.Role.STUDENT);
         userRepo.save(u);
-        
+
         // Automatically create Student record for new student users
         Student student = new Student();
         student.setUser(u);
         student.setStudentNumber(generateStudentNumber());
         student.setYearLevel(1); // Default to year 1
-        student.setSection("TBD"); // To be determined by admin
         studentRepo.save(student);
     }
-    
+
     private String generateStudentNumber() {
         // Generate student number in format: YYYY-XXXXX (e.g., 2025-00001)
         int year = java.time.Year.now().getValue();
@@ -78,10 +77,10 @@ public class AuthService {
         authManager.authenticate(new UsernamePasswordAuthenticationToken(req.getEmail(), req.getPassword()));
         User user = userRepo.findByEmail(req.getEmail()).orElseThrow();
         String token = jwtUtil.generateToken(user.getEmail());
-        
+
         String teacherId = null;
         Integer studentId = null;
-        
+
         if (user.getRole() == User.Role.TEACHER) {
             Optional<Teacher> teacher = teacherRepo.findByUser(user);
             if (teacher.isPresent()) {
@@ -93,9 +92,9 @@ public class AuthService {
                 studentId = student.get().getStudentId();
             }
         }
-        
-        return new AuthResponse(token, user.getEmail(), user.getFname(), user.getLname(), 
-                               user.getRole().name(), teacherId, studentId);
+
+        return new AuthResponse(token, user.getEmail(), user.getFname(), user.getLname(),
+                user.getRole().name(), teacherId, studentId);
     }
 
     // Find user by email, or return null if not found
@@ -118,25 +117,24 @@ public class AuthService {
         u.setPassword(""); //
         u.setRole(User.Role.STUDENT);
         userRepo.save(u);
-        
+
         // Automatically create Student record for Google-registered students
         Student student = new Student();
         student.setUser(u);
         student.setStudentNumber(generateStudentNumber());
         student.setYearLevel(1); // Default to year 1
-        student.setSection("TBD"); // To be determined by admin
         studentRepo.save(student);
-        
+
         return u;
     }
 
     // Used to generate "login" response for Google users
     public AuthResponse loginWithGoogle(User user) {
         String token = jwtUtil.generateToken(user.getEmail());
-        
+
         String teacherId = null;
         Integer studentId = null;
-        
+
         if (user.getRole() == User.Role.TEACHER) {
             Optional<Teacher> teacher = teacherRepo.findByUser(user);
             if (teacher.isPresent()) {
@@ -148,9 +146,9 @@ public class AuthService {
                 studentId = student.get().getStudentId();
             }
         }
-        
-        return new AuthResponse(token, user.getEmail(), user.getFname(), user.getLname(), 
-                               user.getRole().name(), teacherId, studentId);
+
+        return new AuthResponse(token, user.getEmail(), user.getFname(), user.getLname(),
+                user.getRole().name(), teacherId, studentId);
     }
 
     public Map<String, Object> verifyGoogleToken(String idTokenString) {
@@ -158,7 +156,8 @@ public class AuthService {
             GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
                     GoogleNetHttpTransport.newTrustedTransport(),
                     GsonFactory.getDefaultInstance())
-                    .setAudience(Collections.singletonList("1032045816890-72lk7isilq0n6gd11m23gfd01u4kb7gm.apps.googleusercontent.com"))
+                    .setAudience(Collections
+                            .singletonList("1032045816890-72lk7isilq0n6gd11m23gfd01u4kb7gm.apps.googleusercontent.com"))
                     .build();
 
             GoogleIdToken idToken = verifier.verify(idTokenString);

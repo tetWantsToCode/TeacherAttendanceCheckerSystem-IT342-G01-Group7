@@ -15,14 +15,6 @@ export default function App() {
   return (
     <GoogleOAuthProvider clientId="1032045816890-72lk7isilq0n6gd11m23gfd01u4kb7gm.apps.googleusercontent.com">
       <Router>
-        <nav style={{ padding: '1rem', background: '#eee' }}>
-          <Link to="/">Home</Link> |{' '}
-          <Link to="/admin">Admin Dashboard</Link> |{' '}
-          <Link to="/teacher">Teacher Dashboard</Link> |{' '}
-          <Link to="/student">Student Dashboard</Link> |{' '}
-          <Link to="/login">Login</Link> |{' '}
-          <Link to="/register">Register</Link>
-        </nav>
         <Routes>
           <Route path="/" element={<HomeRedirector />} /> {/* smart landing route */}
           <Route path="/admin" element={

@@ -3,9 +3,12 @@ package com.tacs.attendancechecker.service;
 import com.tacs.attendancechecker.entity.ClassSchedule;
 import com.tacs.attendancechecker.entity.OfferedCourse;
 import com.tacs.attendancechecker.entity.Classroom;
+import com.tacs.attendancechecker.entity.AttendanceSession;
 import com.tacs.attendancechecker.repository.ClassScheduleRepository;
+import com.tacs.attendancechecker.repository.AttendanceSessionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -17,19 +20,21 @@ public class ClassScheduleService {
     @Autowired
     private ClassScheduleRepository classScheduleRepository;
 
+    @Autowired
+    private AttendanceSessionRepository attendanceSessionRepository;
+
     public ClassSchedule createSchedule(ClassSchedule schedule) {
         // Check for conflicts before creating
         List<ClassSchedule> conflicts = checkScheduleConflicts(
-            schedule.getClassroom().getClassroomId(),
-            schedule.getDayOfWeek(),
-            schedule.getStartTime(),
-            schedule.getEndTime()
-        );
-        
+                schedule.getClassroom().getClassroomId(),
+                schedule.getDayOfWeek(),
+                schedule.getStartTime(),
+                schedule.getEndTime());
+
         if (!conflicts.isEmpty()) {
             throw new RuntimeException("Schedule conflict detected for this classroom and time slot");
         }
-        
+
         return classScheduleRepository.save(schedule);
     }
 
@@ -61,55 +66,66 @@ public class ClassScheduleService {
         return classScheduleRepository.findByIsActive(true);
     }
 
-    public List<ClassSchedule> checkScheduleConflicts(Integer classroomId, String dayOfWeek, 
-                                                      LocalTime startTime, LocalTime endTime) {
+    public List<ClassSchedule> checkScheduleConflicts(Integer classroomId, String dayOfWeek,
+            LocalTime startTime, LocalTime endTime) {
         return classScheduleRepository.findConflictingSchedules(classroomId, dayOfWeek, startTime, endTime);
     }
 
     public ClassSchedule updateSchedule(Integer scheduleId, ClassSchedule updatedSchedule) {
         return classScheduleRepository.findById(scheduleId)
-            .map(schedule -> {
-                // Check for conflicts if changing time/classroom
-                if (!schedule.getClassroom().equals(updatedSchedule.getClassroom()) ||
-                    !schedule.getDayOfWeek().equals(updatedSchedule.getDayOfWeek()) ||
-                    !schedule.getStartTime().equals(updatedSchedule.getStartTime()) ||
-                    !schedule.getEndTime().equals(updatedSchedule.getEndTime())) {
-                    
-                    List<ClassSchedule> conflicts = classScheduleRepository.findConflictingSchedules(
-                        updatedSchedule.getClassroom().getClassroomId(),
-                        updatedSchedule.getDayOfWeek(),
-                        updatedSchedule.getStartTime(),
-                        updatedSchedule.getEndTime()
-                    );
-                    
-                    // Remove current schedule from conflicts list
-                    conflicts.removeIf(s -> s.getScheduleId().equals(scheduleId));
-                    
-                    if (!conflicts.isEmpty()) {
-                        throw new RuntimeException("Schedule conflict detected for this classroom and time slot");
+                .map(schedule -> {
+                    // Check for conflicts if changing time/classroom
+                    if (!schedule.getClassroom().equals(updatedSchedule.getClassroom()) ||
+                            !schedule.getDayOfWeek().equals(updatedSchedule.getDayOfWeek()) ||
+                            !schedule.getStartTime().equals(updatedSchedule.getStartTime()) ||
+                            !schedule.getEndTime().equals(updatedSchedule.getEndTime())) {
+
+                        List<ClassSchedule> conflicts = classScheduleRepository.findConflictingSchedules(
+                                updatedSchedule.getClassroom().getClassroomId(),
+                                updatedSchedule.getDayOfWeek(),
+                                updatedSchedule.getStartTime(),
+                                updatedSchedule.getEndTime());
+
+                        // Remove current schedule from conflicts list
+                        conflicts.removeIf(s -> s.getScheduleId().equals(scheduleId));
+
+                        if (!conflicts.isEmpty()) {
+                            throw new RuntimeException("Schedule conflict detected for this classroom and time slot");
+                        }
                     }
-                }
-                
-                schedule.setOfferedCourse(updatedSchedule.getOfferedCourse());
-                schedule.setDayOfWeek(updatedSchedule.getDayOfWeek());
-                schedule.setStartTime(updatedSchedule.getStartTime());
-                schedule.setEndTime(updatedSchedule.getEndTime());
-                schedule.setClassroom(updatedSchedule.getClassroom());
-                schedule.setIsActive(updatedSchedule.getIsActive());
-                return classScheduleRepository.save(schedule);
-            })
-            .orElseThrow(() -> new RuntimeException("Schedule not found with id: " + scheduleId));
+
+                    schedule.setOfferedCourse(updatedSchedule.getOfferedCourse());
+                    schedule.setDayOfWeek(updatedSchedule.getDayOfWeek());
+                    schedule.setStartTime(updatedSchedule.getStartTime());
+                    schedule.setEndTime(updatedSchedule.getEndTime());
+                    schedule.setClassroom(updatedSchedule.getClassroom());
+                    schedule.setIsActive(updatedSchedule.getIsActive());
+                    return classScheduleRepository.save(schedule);
+                })
+                .orElseThrow(() -> new RuntimeException("Schedule not found with id: " + scheduleId));
     }
 
+    @Transactional
     public void deleteSchedule(Integer scheduleId) {
+        // First, find and delete all attendance sessions associated with this schedule
+        List<AttendanceSession> sessions = attendanceSessionRepository.findByClassScheduleScheduleId(scheduleId);
+        if (!sessions.isEmpty()) {
+            // Set the classSchedule reference to null for all related sessions
+            // or delete them based on your business logic
+            for (AttendanceSession session : sessions) {
+                session.setClassSchedule(null);
+                attendanceSessionRepository.save(session);
+            }
+        }
+        // Now delete the schedule
         classScheduleRepository.deleteById(scheduleId);
     }
 
     public void deactivateSchedule(Integer scheduleId) {
         classScheduleRepository.findById(scheduleId)
-            .ifPresent(schedule -> {
-                schedule.setIsActive(false);
-                classScheduleRepository.save(schedule);
-            });
+                .ifPresent(schedule -> {
+                    schedule.setIsActive(false);
+                    classScheduleRepository.save(schedule);
+                });
     }
 }

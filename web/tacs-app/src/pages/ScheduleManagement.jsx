@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { api } from '../utils/api-utils';
 import '../css/AdminDashboard.css';
 
 const ScheduleManagement = () => {
@@ -17,72 +17,47 @@ const ScheduleManagement = () => {
         isActive: true
     });
 
-    const API_BASE_URL = 'http://localhost:8080/api';
     const daysOfWeek = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'];
 
     useEffect(() => {
-        fetchSchedules();
-        fetchOfferedCourses();
-        fetchClassrooms();
+        fetchAllData();
     }, []);
 
+    const fetchAllData = async () => {
+        await Promise.all([
+            fetchSchedules(),
+            fetchOfferedCourses(),
+            fetchClassrooms()
+        ]);
+    };
+
     const fetchSchedules = async () => {
-        try {
-            const authData = JSON.parse(localStorage.getItem('auth'));
-            const token = authData?.token;
-            const response = await axios.get(`${API_BASE_URL}/schedules`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            setSchedules(response.data);
-        } catch (error) {
-            console.error('Error fetching schedules:', error);
-            alert('Failed to fetch schedules');
+        const result = await api.get('/schedules');
+        if (result.success) {
+            setSchedules(result.data);
+        } else {
+            alert('Failed to fetch schedules: ' + result.error);
         }
     };
 
     const fetchOfferedCourses = async () => {
-        try {
-            const authData = JSON.parse(localStorage.getItem('auth'));
-            const token = authData?.token;
-            const response = await axios.get(`${API_BASE_URL}/offered-courses`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            setOfferedCourses(response.data);
-        } catch (error) {
-            console.error('Error fetching offered courses:', error);
-        }
+        const result = await api.get('/offered-courses');
+        if (result.success) setOfferedCourses(result.data);
     };
 
     const fetchClassrooms = async () => {
-        try {
-            const authData = JSON.parse(localStorage.getItem('auth'));
-            const token = authData?.token;
-            const response = await axios.get(`${API_BASE_URL}/classrooms`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            setClassrooms(response.data);
-        } catch (error) {
-            console.error('Error fetching classrooms:', error);
-        }
+        const result = await api.get('/classrooms');
+        if (result.success) setClassrooms(result.data);
     };
 
     const checkConflicts = async (classroomId, dayOfWeek, startTime, endTime) => {
-        try {
-            const authData = JSON.parse(localStorage.getItem('auth'));
-            const token = authData?.token;
-            const response = await axios.post(`${API_BASE_URL}/schedules/check-conflicts`, {
-                classroomId: parseInt(classroomId),
-                dayOfWeek,
-                startTime,
-                endTime
-            }, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            return response.data;
-        } catch (error) {
-            console.error('Error checking conflicts:', error);
-            return [];
-        }
+        const result = await api.post('/schedules/check-conflicts', {
+            classroomId: parseInt(classroomId),
+            dayOfWeek,
+            startTime,
+            endTime
+        });
+        return result.success ? result.data : [];
     };
 
     const handleSubmit = async (e) => {
@@ -103,36 +78,25 @@ const ScheduleManagement = () => {
             }
         }
 
-        try {
-            const authData = JSON.parse(localStorage.getItem('auth'));
-            const token = authData?.token;
-            const payload = {
-                offeredCourse: { offeredCourseId: parseInt(formData.offeredCourse) },
-                classroom: { classroomId: parseInt(formData.classroom) },
-                dayOfWeek: formData.dayOfWeek,
-                startTime: formData.startTime,
-                endTime: formData.endTime,
-                isActive: formData.isActive
-            };
+        const payload = {
+            offeredCourse: { offeredCourseId: parseInt(formData.offeredCourse) },
+            classroom: { classroomId: parseInt(formData.classroom) },
+            dayOfWeek: formData.dayOfWeek,
+            startTime: formData.startTime,
+            endTime: formData.endTime,
+            isActive: formData.isActive
+        };
 
-            if (editingId) {
-                await axios.put(`${API_BASE_URL}/schedules/${editingId}`, payload, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
-                alert('Schedule updated successfully!');
-            } else {
-                await axios.post(`${API_BASE_URL}/schedules`, payload, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
-                alert('Schedule created successfully!');
-            }
+        const result = editingId
+            ? await api.put(`/schedules/${editingId}`, payload)
+            : await api.post('/schedules', payload);
 
+        if (result.success) {
+            alert(`Schedule ${editingId ? 'updated' : 'created'} successfully!`);
             resetForm();
             fetchSchedules();
-        } catch (error) {
-            console.error('Error saving schedule:', error);
-            const errorMsg = error.response?.data?.error || error.message;
-            alert('Failed to save schedule: ' + errorMsg);
+        } else {
+            alert('Failed to save schedule: ' + result.error);
         }
     };
 
@@ -151,34 +115,28 @@ const ScheduleManagement = () => {
 
     const handleDeactivate = async (scheduleId) => {
         if (window.confirm('Are you sure you want to deactivate this schedule?')) {
-            try {
-                const authData = JSON.parse(localStorage.getItem('auth'));
-                const token = authData?.token;
-                await axios.patch(`${API_BASE_URL}/schedules/${scheduleId}/deactivate`, {}, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
+            const result = await api.put(`/schedules/${scheduleId}/deactivate`, {});
+            if (result.success) {
                 alert('Schedule deactivated successfully!');
                 fetchSchedules();
-            } catch (error) {
-                console.error('Error deactivating schedule:', error);
-                alert('Failed to deactivate schedule');
+            } else {
+                alert('Failed to deactivate schedule: ' + result.error);
             }
         }
     };
 
     const handleDelete = async (scheduleId) => {
+        console.log('Attempting to delete schedule with ID:', scheduleId);
         if (window.confirm('Are you sure you want to delete this schedule?')) {
-            try {
-                const authData = JSON.parse(localStorage.getItem('auth'));
-                const token = authData?.token;
-                await axios.delete(`${API_BASE_URL}/schedules/${scheduleId}`, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
+            console.log('Delete confirmed, calling API...');
+            const result = await api.delete(`/schedules/${scheduleId}`);
+            console.log('Delete API result:', result);
+            if (result.success) {
                 alert('Schedule deleted successfully!');
                 fetchSchedules();
-            } catch (error) {
-                console.error('Error deleting schedule:', error);
-                alert('Failed to delete schedule');
+            } else {
+                console.error('Delete failed:', result.error, result.details);
+                alert('Failed to delete schedule: ' + result.error);
             }
         }
     };
@@ -194,6 +152,26 @@ const ScheduleManagement = () => {
         });
         setEditingId(null);
         setShowForm(false);
+    };
+
+    const handleOfferedCourseChange = (offeredCourseId) => {
+        const selectedCourse = offeredCourses.find(oc => oc.offeredCourseId === parseInt(offeredCourseId));
+        
+        if (selectedCourse) {
+            setFormData({
+                ...formData,
+                offeredCourse: offeredCourseId,
+                dayOfWeek: selectedCourse.dayOfWeek || formData.dayOfWeek,
+                startTime: selectedCourse.startTime || formData.startTime,
+                endTime: selectedCourse.endTime || formData.endTime,
+                classroom: selectedCourse.classroom?.classroomId || formData.classroom
+            });
+        } else {
+            setFormData({
+                ...formData,
+                offeredCourse: offeredCourseId
+            });
+        }
     };
 
     const formatTime = (time) => {
@@ -236,17 +214,19 @@ const ScheduleManagement = () => {
                             <label>Offered Course: *</label>
                             <select
                                 value={formData.offeredCourse}
-                                onChange={(e) => setFormData({ ...formData, offeredCourse: e.target.value })}
+                                onChange={(e) => handleOfferedCourseChange(e.target.value)}
                                 required
                             >
                                 <option value="">Select Offered Course</option>
                                 {offeredCourses.map(oc => {
                                     const existingSchedules = schedules.filter(s => s.offeredCourse?.offeredCourseId === oc.offeredCourseId);
                                     const scheduleCount = existingSchedules.length;
+                                    const scheduleNote = oc.schedule ? ` - ${oc.schedule}` : '';
                                     return (
                                         <option key={oc.offeredCourseId} value={oc.offeredCourseId}>
                                             {oc.course?.courseCode || 'N/A'} - {oc.course?.courseName || 'Unknown'} 
-                                            ({oc.teacher?.user?.fname} {oc.teacher?.user?.lname})
+                                            ({oc.teacher?.user?.fname} {oc.teacher?.user?.lname}) - Section {oc.section || 'N/A'}
+                                            {scheduleNote}
                                             {scheduleCount > 0 ? ` [${scheduleCount} schedule${scheduleCount > 1 ? 's' : ''}]` : ''}
                                         </option>
                                     );
@@ -256,6 +236,11 @@ const ScheduleManagement = () => {
                                 <small style={{ display: 'block', marginTop: '5px', color: '#17a2b8' }}>
                                     ℹ️ This course already has {schedules.filter(s => s.offeredCourse?.offeredCourseId === parseInt(formData.offeredCourse)).length} schedule(s). 
                                     You can add another meeting time.
+                                </small>
+                            )}
+                            {formData.offeredCourse && (
+                                <small style={{ display: 'block', marginTop: '5px', color: '#10b981' }}>
+                                    ✓ Fields auto-filled from offered course. You can modify them if needed.
                                 </small>
                             )}
                         </div>
@@ -308,17 +293,6 @@ const ScheduleManagement = () => {
                                     </option>
                                 ))}
                             </select>
-                        </div>
-
-                        <div className="form-group">
-                            <label>
-                                <input
-                                    type="checkbox"
-                                    checked={formData.isActive}
-                                    onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                                />
-                                Active
-                            </label>
                         </div>
 
                         <div className="form-actions">

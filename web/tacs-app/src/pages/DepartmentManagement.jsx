@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { api } from '../utils/api-utils';
 import '../css/AdminDashboard.css';
 
 const DepartmentManagement = () => {
@@ -11,23 +11,16 @@ const DepartmentManagement = () => {
         departmentName: ''
     });
 
-    const API_BASE_URL = 'http://localhost:8080/api';
-
     useEffect(() => {
         fetchDepartments();
     }, []);
 
     const fetchDepartments = async () => {
-        try {
-            const authData = JSON.parse(localStorage.getItem('auth'));
-            const token = authData?.token;
-            const response = await axios.get(`${API_BASE_URL}/departments`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            setDepartments(response.data);
-        } catch (error) {
-            console.error('Error fetching departments:', error);
-            alert('Failed to fetch departments');
+        const result = await api.get('/departments');
+        if (result.success) {
+            setDepartments(result.data);
+        } else {
+            alert('Failed to fetch departments: ' + result.error);
         }
     };
 
@@ -35,27 +28,16 @@ const DepartmentManagement = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            const authData = JSON.parse(localStorage.getItem('auth'));
-            const token = authData?.token;
+        const result = editingId
+            ? await api.put(`/departments/${editingId}`, formData)
+            : await api.post('/departments', formData);
 
-            if (editingId) {
-                await axios.put(`${API_BASE_URL}/departments/${editingId}`, formData, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
-                alert('Department updated successfully!');
-            } else {
-                await axios.post(`${API_BASE_URL}/departments`, formData, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
-                alert('Department created successfully!');
-            }
-
+        if (result.success) {
+            alert(`Department ${editingId ? 'updated' : 'created'} successfully!`);
             resetForm();
             fetchDepartments();
-        } catch (error) {
-            console.error('Error saving department:', error);
-            alert('Failed to save department: ' + (error.response?.data?.message || error.message));
+        } else {
+            alert('Failed to save department: ' + result.error);
         }
     };
 
@@ -72,17 +54,12 @@ const DepartmentManagement = () => {
 
     const handleDelete = async (departmentId) => {
         if (window.confirm('Are you sure you want to delete this department? This cannot be undone.')) {
-            try {
-                const authData = JSON.parse(localStorage.getItem('auth'));
-                const token = authData?.token;
-                await axios.delete(`${API_BASE_URL}/departments/${departmentId}`, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
+            const result = await api.delete(`/departments/${departmentId}`);
+            if (result.success) {
                 alert('Department deleted successfully!');
                 fetchDepartments();
-            } catch (error) {
-                console.error('Error deleting department:', error);
-                alert('Failed to delete department');
+            } else {
+                alert('Failed to delete department: ' + result.error);
             }
         }
     };

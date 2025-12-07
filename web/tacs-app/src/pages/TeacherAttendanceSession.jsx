@@ -16,6 +16,7 @@ export default function TeacherAttendanceSession() {
   const [success, setSuccess] = useState('');
   const [teacherId, setTeacherId] = useState(null);
   const [showSessionForm, setShowSessionForm] = useState(false);
+  const [showHistoryView, setShowHistoryView] = useState(false);
   const [sessionForm, setSessionForm] = useState({
     date: new Date().toISOString().split('T')[0],
     startTime: '08:00',
@@ -141,6 +142,7 @@ export default function TeacherAttendanceSession() {
     setSessions([]);
     fetchClassSchedules(course.courseId);
     fetchEnrolledStudents(course.courseId);
+    fetchCourseSessions(course.courseId); // Fetch all sessions for the course
   };
 
   const handleScheduleSelect = (schedule) => {
@@ -160,6 +162,7 @@ export default function TeacherAttendanceSession() {
 
   const handleSessionSelect = (session) => {
     setSelectedSession(session);
+    setShowHistoryView(session.isFinalized); // Show history view if session is finalized
     fetchSessionAttendance(session.sessionId);
   };
 
@@ -243,6 +246,31 @@ export default function TeacherAttendanceSession() {
     }));
   };
 
+  const handleMarkAllPresent = () => {
+    if (!students || students.length === 0) {
+      setError('No students enrolled in this course');
+      return;
+    }
+
+    const confirmed = confirm(`Mark all ${students.length} students as PRESENT?`);
+    if (!confirmed) return;
+
+    const newRecords = {};
+    const currentTime = new Date().toTimeString().slice(0, 5);
+    
+    students.forEach(student => {
+      newRecords[student.studentId] = {
+        status: 'PRESENT',
+        timeIn: currentTime,
+        remarks: attendanceRecords[student.studentId]?.remarks || ''
+      };
+    });
+
+    setAttendanceRecords(newRecords);
+    setSuccess(`All ${students.length} students marked as PRESENT`);
+    setTimeout(() => setSuccess(''), 3000);
+  };
+
   const handleSubmitAttendance = async () => {
     if (!selectedSession) {
       setError('Please select or create a session first');
@@ -317,6 +345,46 @@ export default function TeacherAttendanceSession() {
     }
   };
 
+  const handleDeleteSession = async (sessionId) => {
+    if (!confirm('Are you sure you want to delete this session? This will also delete all attendance records for this session.')) {
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+    setSuccess('');
+
+    try {
+      const authData = JSON.parse(localStorage.getItem('auth'));
+      const token = authData?.token;
+
+      const response = await axios.delete(`${API_BASE_URL}/attendance-sessions/${sessionId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      setSuccess('Session deleted successfully!');
+      
+      // Refresh sessions list
+      if (selectedSchedule) {
+        fetchCourseSessions(selectedCourse.courseId, selectedSchedule.scheduleId);
+      } else {
+        fetchCourseSessions(selectedCourse.courseId);
+      }
+      
+      // Clear selected session if it was deleted
+      if (selectedSession?.sessionId === sessionId) {
+        setSelectedSession(null);
+        setAttendanceRecords({});
+      }
+
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (err) {
+      setError('Error deleting session: ' + err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const formatDate = (dateStr) => {
     return new Date(dateStr).toLocaleDateString('en-US', { 
       weekday: 'short', 
@@ -358,10 +426,10 @@ export default function TeacherAttendanceSession() {
           gap: '10px', 
           marginBottom: '20px',
           padding: '20px',
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          background: 'linear-gradient(135deg, #ff7849 0%, #ff5722 100%)',
           borderRadius: '12px',
           color: 'white',
-          boxShadow: '0 4px 15px rgba(102, 126, 234, 0.3)'
+          boxShadow: '0 4px 15px rgba(255, 120, 73, 0.3)'
         }}>
           <span style={{ fontSize: '32px' }}>📚</span>
           <div>
@@ -713,7 +781,7 @@ export default function TeacherAttendanceSession() {
                   <th>Type</th>
                   <th>Status</th>
                   <th>Remarks</th>
-                  <th>Action</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -753,16 +821,36 @@ export default function TeacherAttendanceSession() {
                       </td>
                       <td style={{ fontSize: '13px', color: '#666' }}>{session.remarks || '-'}</td>
                       <td>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleSessionSelect(session);
-                          }}
-                          className="btn-primary"
-                          style={{ padding: '6px 12px', fontSize: '13px' }}
-                        >
-                          {session.isFinalized ? 'View' : 'Take Attendance'}
-                        </button>
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setShowHistoryView(true);
+                              handleSessionSelect(session);
+                            }}
+                            className="btn-primary"
+                            style={{ padding: '6px 12px', fontSize: '13px' }}
+                          >
+                            {session.isFinalized ? '📊 View' : '✏️ Edit'}
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteSession(session.sessionId);
+                            }}
+                            style={{
+                              padding: '6px 12px',
+                              fontSize: '13px',
+                              background: '#ef4444',
+                              color: 'white',
+                              border: 'none',
+                              borderRadius: '4px',
+                              cursor: 'pointer'
+                            }}
+                          >
+                            🗑️ Delete
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))
@@ -773,7 +861,7 @@ export default function TeacherAttendanceSession() {
         </div>
       )}
 
-      {/* Step 3: Mark Attendance */}
+      {/* Step 3: Mark Attendance or View History */}
       {selectedSession && students.length > 0 && (
         <div>
           <div style={{ 
@@ -786,14 +874,31 @@ export default function TeacherAttendanceSession() {
             color: 'white',
             boxShadow: '0 6px 20px rgba(0,0,0,0.15)'
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
-              <span style={{ fontSize: '32px' }}>
-                {selectedSession.isFinalized ? '🔒' : '✍️'}
-              </span>
-              <h3 style={{ margin: 0, fontSize: '24px', fontWeight: 'bold' }}>
-                Step 3: Mark Attendance
-                {selectedSession.isFinalized && ' (View Only)'}
-              </h3>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <span style={{ fontSize: '32px' }}>
+                  {selectedSession.isFinalized ? '📊' : '✍️'}
+                </span>
+                <h3 style={{ margin: 0, fontSize: '24px', fontWeight: 'bold' }}>
+                  {selectedSession.isFinalized ? 'Attendance History' : 'Step 3: Mark Attendance'}
+                </h3>
+              </div>
+              {selectedSession.isFinalized && (
+                <button
+                  onClick={() => setSelectedSession(null)}
+                  style={{
+                    background: 'rgba(255,255,255,0.3)',
+                    color: 'white',
+                    border: 'none',
+                    padding: '8px 16px',
+                    borderRadius: '6px',
+                    cursor: 'pointer',
+                    fontWeight: 'bold'
+                  }}
+                >
+                  ← Back to Sessions
+                </button>
+              )}
             </div>
             
             <div style={{ 
@@ -850,6 +955,49 @@ export default function TeacherAttendanceSession() {
                 </div>
               </div>
             </div>
+
+            {/* Attendance Statistics for History View */}
+            {selectedSession.isFinalized && (
+              <div style={{ 
+                display: 'grid', 
+                gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', 
+                gap: '12px',
+                marginTop: '16px',
+                paddingTop: '16px',
+                borderTop: '2px solid rgba(255,255,255,0.3)'
+              }}>
+                <div style={{ textAlign: 'center' }}>
+                  <div style={{ fontSize: '24px', fontWeight: 'bold' }}>
+                    {Object.values(attendanceRecords).filter(r => r.status === 'PRESENT').length}
+                  </div>
+                  <div style={{ fontSize: '12px', opacity: 0.9 }}>✅ Present</div>
+                </div>
+                <div style={{ textAlign: 'center' }}>
+                  <div style={{ fontSize: '24px', fontWeight: 'bold' }}>
+                    {Object.values(attendanceRecords).filter(r => r.status === 'LATE').length}
+                  </div>
+                  <div style={{ fontSize: '12px', opacity: 0.9 }}>⏰ Late</div>
+                </div>
+                <div style={{ textAlign: 'center' }}>
+                  <div style={{ fontSize: '24px', fontWeight: 'bold' }}>
+                    {Object.values(attendanceRecords).filter(r => r.status === 'ABSENT').length}
+                  </div>
+                  <div style={{ fontSize: '12px', opacity: 0.9 }}>❌ Absent</div>
+                </div>
+                <div style={{ textAlign: 'center' }}>
+                  <div style={{ fontSize: '24px', fontWeight: 'bold' }}>
+                    {Object.values(attendanceRecords).filter(r => r.status === 'EXCUSED').length}
+                  </div>
+                  <div style={{ fontSize: '12px', opacity: 0.9 }}>📝 Excused</div>
+                </div>
+                <div style={{ textAlign: 'center' }}>
+                  <div style={{ fontSize: '24px', fontWeight: 'bold' }}>
+                    {((Object.values(attendanceRecords).filter(r => r.status === 'PRESENT' || r.status === 'LATE').length / students.length) * 100).toFixed(1)}%
+                  </div>
+                  <div style={{ fontSize: '12px', opacity: 0.9 }}>📈 Attendance Rate</div>
+                </div>
+              </div>
+            )}
           </div>
 
           <div style={{ overflowX: 'auto' }}>
@@ -857,8 +1005,11 @@ export default function TeacherAttendanceSession() {
               <thead>
                 <tr style={{ background: '#25364a', color: 'white' }}>
                   <th style={{ padding: '12px', textAlign: 'left' }}>#</th>
+                  <th style={{ padding: '12px', textAlign: 'left' }}>Student ID</th>
                   <th style={{ padding: '12px', textAlign: 'left' }}>Student Name</th>
-                  <th style={{ padding: '12px', textAlign: 'left' }}>Year & Section</th>
+                  <th style={{ padding: '12px', textAlign: 'left' }}>Email</th>
+                  <th style={{ padding: '12px', textAlign: 'left' }}>Program</th>
+                  <th style={{ padding: '12px', textAlign: 'left' }}>Year Level</th>
                   <th style={{ padding: '12px', textAlign: 'left' }}>Status</th>
                   <th style={{ padding: '12px', textAlign: 'left' }}>Time In</th>
                   <th style={{ padding: '12px', textAlign: 'left' }}>Remarks</th>
@@ -867,49 +1018,80 @@ export default function TeacherAttendanceSession() {
               <tbody>
                 {students.map((student, index) => {
                   const record = attendanceRecords[student.studentId] || {};
+                  const statusColor = 
+                    record.status === 'PRESENT' ? '#10b981' :
+                    record.status === 'LATE' ? '#f59e0b' :
+                    record.status === 'ABSENT' ? '#ef4444' :
+                    record.status === 'EXCUSED' ? '#6366f1' : '#9ca3af';
+                  
                   return (
-                    <tr key={student.studentId} style={{ borderBottom: '1px solid #eee' }}>
+                    <tr key={student.studentId} style={{ 
+                      borderBottom: '1px solid #eee',
+                      background: selectedSession.isFinalized && record.status ? `${statusColor}10` : 'white'
+                    }}>
                       <td style={{ padding: '12px' }}>{index + 1}</td>
+                      <td style={{ padding: '12px' }}>{student.studentId}</td>
                       <td style={{ padding: '12px', fontWeight: 'bold' }}>{student.studentName}</td>
-                      <td style={{ padding: '12px' }}>Year {student.yearLevel} - {student.section}</td>
+                      <td style={{ padding: '12px' }}>{student.email}</td>
+                      <td style={{ padding: '12px' }}>{student.program || 'N/A'}</td>
+                      <td style={{ padding: '12px' }}>Year {student.yearLevel}</td>
                       <td style={{ padding: '12px' }}>
-                        <select
-                          value={record.status || ''}
-                          onChange={(e) => handleStatusChange(student.studentId, e.target.value)}
-                          disabled={selectedSession.isFinalized}
-                          style={{
-                            padding: '6px 10px',
-                            borderRadius: '4px',
-                            border: '1px solid #ccc',
-                            background: selectedSession.isFinalized ? '#f5f5f5' : 'white',
-                            cursor: selectedSession.isFinalized ? 'not-allowed' : 'pointer'
-                          }}
-                        >
-                          <option value="">Select...</option>
-                          <option value="PRESENT">✅ Present</option>
-                          <option value="LATE">⏰ Late</option>
-                          <option value="ABSENT">❌ Absent</option>
-                          <option value="EXCUSED">📝 Excused</option>
-                        </select>
+                        {selectedSession.isFinalized ? (
+                          <span style={{
+                            padding: '6px 12px',
+                            borderRadius: '6px',
+                            background: statusColor,
+                            color: 'white',
+                            fontWeight: 'bold',
+                            display: 'inline-block'
+                          }}>
+                            {record.status === 'PRESENT' && '✅ Present'}
+                            {record.status === 'LATE' && '⏰ Late'}
+                            {record.status === 'ABSENT' && '❌ Absent'}
+                            {record.status === 'EXCUSED' && '📝 Excused'}
+                            {!record.status && '— Not Marked'}
+                          </span>
+                        ) : (
+                          <select
+                            value={record.status || ''}
+                            onChange={(e) => handleStatusChange(student.studentId, e.target.value)}
+                            style={{
+                              padding: '6px 10px',
+                              borderRadius: '4px',
+                              border: '1px solid #ccc',
+                              cursor: 'pointer'
+                            }}
+                          >
+                            <option value="">Select...</option>
+                            <option value="PRESENT">✅ Present</option>
+                            <option value="LATE">⏰ Late</option>
+                            <option value="ABSENT">❌ Absent</option>
+                            <option value="EXCUSED">📝 Excused</option>
+                          </select>
+                        )}
                       </td>
-                      <td style={{ padding: '12px', fontSize: '13px', color: '#666' }}>
+                      <td style={{ padding: '12px', fontSize: '13px', color: '#666', fontWeight: 'bold' }}>
                         {record.timeIn || '-'}
                       </td>
                       <td style={{ padding: '12px' }}>
-                        <input
-                          type="text"
-                          value={record.remarks || ''}
-                          onChange={(e) => handleRemarksChange(student.studentId, e.target.value)}
-                          disabled={selectedSession.isFinalized}
-                          placeholder="Optional notes..."
-                          style={{
-                            padding: '6px 10px',
-                            borderRadius: '4px',
-                            border: '1px solid #ccc',
-                            width: '200px',
-                            background: selectedSession.isFinalized ? '#f5f5f5' : 'white'
-                          }}
-                        />
+                        {selectedSession.isFinalized ? (
+                          <span style={{ color: '#6b7280', fontStyle: record.remarks ? 'normal' : 'italic' }}>
+                            {record.remarks || 'No remarks'}
+                          </span>
+                        ) : (
+                          <input
+                            type="text"
+                            value={record.remarks || ''}
+                            onChange={(e) => handleRemarksChange(student.studentId, e.target.value)}
+                            placeholder="Optional notes..."
+                            style={{
+                              padding: '6px 10px',
+                              borderRadius: '4px',
+                              border: '1px solid #ccc',
+                              width: '200px'
+                            }}
+                          />
+                        )}
                       </td>
                     </tr>
                   );
@@ -919,7 +1101,24 @@ export default function TeacherAttendanceSession() {
           </div>
 
           {!selectedSession.isFinalized && (
-            <div style={{ marginTop: '20px', display: 'flex', gap: '10px' }}>
+            <div style={{ marginTop: '20px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+              <button
+                onClick={handleMarkAllPresent}
+                disabled={loading || students.length === 0}
+                className="btn-success"
+                style={{ 
+                  padding: '12px 30px',
+                  background: '#10b981',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '6px',
+                  cursor: 'pointer',
+                  fontWeight: '600'
+                }}
+              >
+                ✅ Mark All Present
+              </button>
+              
               <button
                 onClick={handleSubmitAttendance}
                 disabled={loading || Object.keys(attendanceRecords).length === 0}

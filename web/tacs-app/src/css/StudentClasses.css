@@ -48,17 +48,18 @@
 .student-course-card {
   background: white;
   padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e0e0e0;
+  border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(255, 120, 73, 0.1);
+  border: 2px solid #ffccb3;
   position: relative;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .student-course-card:hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(255, 120, 73, 0.2);
+  transform: translateY(-4px);
+  border-color: #ff7849;
 }
 
 .student-course-status {
@@ -267,7 +268,7 @@
 }
 
 .student-calendar-today-badge {
-  fontSize: 10px;
+  fontsize: 10px;
   background: #25364a;
   color: white;
   padding: 2px 6px;

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import { api } from '../utils/api-utils';
 
-export default function AddStudentForm({ onAdd }) {
+export default function AddStudentForm() {
   const [fname, setFName] = useState('');
   const [lname, setLName] = useState('');
   const [email, setEmail] = useState('');
@@ -8,7 +9,6 @@ export default function AddStudentForm({ onAdd }) {
   const [studentNumber, setStudentNumber] = useState('');
   const [program, setProgram] = useState('');
   const [yearLevel, setYearLevel] = useState('');
-  const [section, setSection] = useState('');
   const [contactNumber, setContactNumber] = useState('');
   const [guardianName, setGuardianName] = useState('');
   const [guardianContact, setGuardianContact] = useState('');
@@ -19,42 +19,27 @@ export default function AddStudentForm({ onAdd }) {
     e.preventDefault();
     setError('');
     setSuccess('');
-    if (!fname || !lname || !email || !password || !studentNumber || !program || !yearLevel || !section) {
+    
+    if (!fname || !lname || !email || !password || !studentNumber || !program || !yearLevel) {
       setError('Please fill out all required fields.');
       return;
     }
 
-    try {
-      const authData = JSON.parse(localStorage.getItem('auth'));
-      const token = authData?.token;
-      const response = await fetch('http://localhost:8080/api/students', {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
-        },
-        body: JSON.stringify({
-          fname,
-          lname,
-          email,
-          password,
-          studentNumber,
-          program,
-          yearLevel: Number(yearLevel),
-          section,
-          contactNumber,
-          guardianName,
-          guardianContact,
-          enrollmentStatus: 'ACTIVE'
-        }),
-      });
-      if (!response.ok) {
-        const err = await response.json();
-        setError(err.message || 'Error adding student');
-        return;
-      }
-      const data = await response.json();
-      if (onAdd) onAdd(data);
+    const result = await api.post('/students', {
+      fname,
+      lname,
+      email,
+      password,
+      studentNumber,
+      program,
+      yearLevel: Number(yearLevel),
+      contactNumber,
+      guardianName,
+      guardianContact,
+      enrollmentStatus: 'ACTIVE'
+    });
+
+    if (result.success) {
       setSuccess('Student added successfully!');
       setFName('');
       setLName('');
@@ -63,12 +48,12 @@ export default function AddStudentForm({ onAdd }) {
       setStudentNumber('');
       setProgram('');
       setYearLevel('');
-      setSection('');
       setContactNumber('');
       setGuardianName('');
       setGuardianContact('');
-    } catch (err) {
-      setError('Server error. Please try again.');
+      setTimeout(() => setSuccess(''), 3000);
+    } else {
+      setError(result.error);
     }
   }
 
@@ -143,15 +128,6 @@ export default function AddStudentForm({ onAdd }) {
           placeholder="Year Level"
           value={yearLevel}
           onChange={e => setYearLevel(e.target.value)}
-          style={{ padding: '0.5rem', borderRadius: '6px', border: '1px solid #ccc', width: '60%' }}
-        />
-      </div>
-      <div style={{ marginBottom: '1rem' }}>
-        <input
-          type="text"
-          placeholder="Section"
-          value={section}
-          onChange={e => setSection(e.target.value)}
           style={{ padding: '0.5rem', borderRadius: '6px', border: '1px solid #ccc', width: '60%' }}
         />
       </div>

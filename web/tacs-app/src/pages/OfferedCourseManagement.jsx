@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { api } from '../utils/api-utils';
 import '../css/AdminDashboard.css';
 
 const OfferedCourseManagement = () => {
@@ -15,110 +15,78 @@ const OfferedCourseManagement = () => {
         classroom: '',
         schedule: '',
         semester: 'FIRST_SEM',
+        section: '',
         units: '',
         startTime: '',
         endTime: '',
         dayOfWeek: ''
     });
 
-    const API_BASE_URL = 'http://localhost:8080/api';
     const daysOfWeek = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'];
     const semesters = ['FIRST_SEM', 'SECOND_SEM', 'SUMMER'];
 
     useEffect(() => {
-        fetchOfferedCourses();
-        fetchCourses();
-        fetchTeachers();
-        fetchClassrooms();
+        fetchAllData();
     }, []);
 
+    const fetchAllData = async () => {
+        await Promise.all([
+            fetchOfferedCourses(),
+            fetchCourses(),
+            fetchTeachers(),
+            fetchClassrooms()
+        ]);
+    };
+
     const fetchOfferedCourses = async () => {
-        try {
-            const authData = JSON.parse(localStorage.getItem('auth'));
-            const token = authData?.token;
-            const response = await axios.get(`${API_BASE_URL}/offered-courses`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            setOfferedCourses(response.data);
-        } catch (error) {
-            console.error('Error fetching offered courses:', error);
-            alert('Failed to fetch offered courses');
+        const result = await api.get('/offered-courses');
+        if (result.success) {
+            setOfferedCourses(result.data);
+        } else {
+            alert('Failed to fetch offered courses: ' + result.error);
         }
     };
 
     const fetchCourses = async () => {
-        try {
-            const authData = JSON.parse(localStorage.getItem('auth'));
-            const token = authData?.token;
-            const response = await axios.get(`${API_BASE_URL}/courses`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            setCourses(response.data);
-        } catch (error) {
-            console.error('Error fetching courses:', error);
-        }
+        const result = await api.get('/courses');
+        if (result.success) setCourses(result.data);
     };
 
     const fetchTeachers = async () => {
-        try {
-            const authData = JSON.parse(localStorage.getItem('auth'));
-            const token = authData?.token;
-            const response = await axios.get(`${API_BASE_URL}/teachers`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            setTeachers(response.data);
-        } catch (error) {
-            console.error('Error fetching teachers:', error);
-        }
+        const result = await api.get('/teachers');
+        if (result.success) setTeachers(result.data);
     };
 
     const fetchClassrooms = async () => {
-        try {
-            const authData = JSON.parse(localStorage.getItem('auth'));
-            const token = authData?.token;
-            const response = await axios.get(`${API_BASE_URL}/classrooms`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            setClassrooms(response.data);
-        } catch (error) {
-            console.error('Error fetching classrooms:', error);
-        }
+        const result = await api.get('/classrooms');
+        if (result.success) setClassrooms(result.data);
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            const authData = JSON.parse(localStorage.getItem('auth'));
-            const token = authData?.token;
-            const payload = {
-                course: { courseId: parseInt(formData.course) },
-                teacher: { teacherId: formData.teacher },
-                classroom: { classroomId: parseInt(formData.classroom) },
-                schedule: formData.schedule,
-                semester: formData.semester,
-                units: parseInt(formData.units),
-                startTime: formData.startTime,
-                endTime: formData.endTime,
-                dayOfWeek: formData.dayOfWeek
-            };
+        const payload = {
+            course: { courseId: parseInt(formData.course) },
+            teacher: { teacherId: formData.teacher },
+            classroom: { classroomId: parseInt(formData.classroom) },
+            schedule: formData.schedule,
+            semester: formData.semester,
+            section: formData.section,
+            units: parseInt(formData.units),
+            startTime: formData.startTime,
+            endTime: formData.endTime,
+            dayOfWeek: formData.dayOfWeek
+        };
 
-            if (editingId) {
-                await axios.put(`${API_BASE_URL}/offered-courses/${editingId}`, payload, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
-                alert('Offered course updated successfully!');
-            } else {
-                await axios.post(`${API_BASE_URL}/offered-courses`, payload, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
-                alert('Offered course created successfully!');
-            }
+        const result = editingId
+            ? await api.put(`/offered-courses/${editingId}`, payload)
+            : await api.post('/offered-courses', payload);
 
+        if (result.success) {
+            alert(`Offered course ${editingId ? 'updated' : 'created'} successfully!`);
             resetForm();
             fetchOfferedCourses();
-        } catch (error) {
-            console.error('Error saving offered course:', error);
-            alert('Failed to save offered course: ' + (error.response?.data?.message || error.message));
+        } else {
+            alert('Failed to save offered course: ' + result.error);
         }
     };
 
@@ -129,6 +97,7 @@ const OfferedCourseManagement = () => {
             classroom: offeredCourse.classroom?.classroomId || '',
             schedule: offeredCourse.schedule || '',
             semester: offeredCourse.semester || 'FIRST_SEM',
+            section: offeredCourse.section || '',
             units: offeredCourse.units || '',
             startTime: offeredCourse.startTime || '',
             endTime: offeredCourse.endTime || '',
@@ -140,17 +109,12 @@ const OfferedCourseManagement = () => {
 
     const handleDelete = async (offeredCourseId) => {
         if (window.confirm('Are you sure you want to delete this offered course?')) {
-            try {
-                const authData = JSON.parse(localStorage.getItem('auth'));
-                const token = authData?.token;
-                await axios.delete(`${API_BASE_URL}/offered-courses/${offeredCourseId}`, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
+            const result = await api.delete(`/offered-courses/${offeredCourseId}`);
+            if (result.success) {
                 alert('Offered course deleted successfully!');
                 fetchOfferedCourses();
-            } catch (error) {
-                console.error('Error deleting offered course:', error);
-                alert('Failed to delete offered course');
+            } else {
+                alert('Failed to delete offered course: ' + result.error);
             }
         }
     };
@@ -162,6 +126,7 @@ const OfferedCourseManagement = () => {
             classroom: '',
             schedule: '',
             semester: 'FIRST_SEM',
+            section: '',
             units: '',
             startTime: '',
             endTime: '',
@@ -209,23 +174,44 @@ const OfferedCourseManagement = () => {
                             <select
                                 value={formData.course}
                                 onChange={(e) => {
-                                    const selectedCourse = courses.find(c => c.courseId === parseInt(e.target.value));
-                                    setFormData({ 
-                                        ...formData, 
-                                        course: e.target.value,
-                                        units: selectedCourse?.units || '',
-                                        semester: selectedCourse?.semester || 'FIRST_SEM'
-                                    });
+                                    const selectedCourseId = parseInt(e.target.value);
+                                    const selectedCourse = courses.find(c => c.courseId === selectedCourseId);
+                                    console.log('Selected course:', selectedCourse);
+                                    console.log('Units from course:', selectedCourse?.units);
+                                    console.log('Semester from course:', selectedCourse?.semester);
+                                    
+                                    if (selectedCourse) {
+                                        const newFormData = { 
+                                            ...formData, 
+                                            course: e.target.value,
+                                            units: selectedCourse.units?.toString() || '',
+                                            semester: selectedCourse.semester || 'FIRST_SEM'
+                                        };
+                                        console.log('New form data:', newFormData);
+                                        setFormData(newFormData);
+                                    } else {
+                                        setFormData({ 
+                                            ...formData, 
+                                            course: e.target.value,
+                                            units: '',
+                                            semester: 'FIRST_SEM'
+                                        });
+                                    }
                                 }}
                                 required
                             >
                                 <option value="">Select Course</option>
                                 {courses.map(course => (
                                     <option key={course.courseId} value={course.courseId}>
-                                        {course.courseCode} - {course.courseName} ({course.units} units)
+                                        {course.courseCode} - {course.courseName} ({course.units || 'N/A'} units, {course.semester || 'N/A'})
                                     </option>
                                 ))}
                             </select>
+                            {formData.course && (
+                                <small style={{ color: '#666', display: 'block', marginTop: '5px' }}>
+                                    ℹ️ Units and semester auto-filled from selected course
+                                </small>
+                            )}
                         </div>
 
                         <div className="form-group">
@@ -266,11 +252,29 @@ const OfferedCourseManagement = () => {
                                 value={formData.semester}
                                 onChange={(e) => setFormData({ ...formData, semester: e.target.value })}
                                 required
+                                disabled={!!formData.course}
+                                style={formData.course ? { backgroundColor: '#f0f0f0', cursor: 'not-allowed' } : {}}
                             >
                                 {semesters.map(sem => (
                                     <option key={sem} value={sem}>{sem.replace('_', ' ')}</option>
                                 ))}
                             </select>
+                            {formData.course && (
+                                <small style={{ color: '#666', display: 'block', marginTop: '5px' }}>
+                                    Auto-filled from course. Clear course to edit manually.
+                                </small>
+                            )}
+                        </div>
+
+                        <div className="form-group">
+                            <label>Section: *</label>
+                            <input
+                                type="text"
+                                placeholder="e.g., A, B, C, 1A, 2B"
+                                value={formData.section}
+                                onChange={(e) => setFormData({ ...formData, section: e.target.value })}
+                                required
+                            />
                         </div>
 
                         <div className="form-group">
@@ -282,7 +286,14 @@ const OfferedCourseManagement = () => {
                                 min="1"
                                 max="6"
                                 required
+                                disabled={!!formData.course}
+                                style={formData.course ? { backgroundColor: '#f0f0f0', cursor: 'not-allowed' } : {}}
                             />
+                            {formData.course && (
+                                <small style={{ color: '#666', display: 'block', marginTop: '5px' }}>
+                                    Auto-filled from course. Clear course to edit manually.
+                                </small>
+                            )}
                         </div>
 
                         <div className="form-group">
@@ -350,6 +361,7 @@ const OfferedCourseManagement = () => {
                             <th>Course Name</th>
                             <th>Teacher</th>
                             <th>Classroom</th>
+                            <th>Section</th>
                             <th>Day</th>
                             <th>Time</th>
                             <th>Semester</th>
@@ -360,7 +372,7 @@ const OfferedCourseManagement = () => {
                     <tbody>
                         {offeredCourses.length === 0 ? (
                             <tr>
-                                <td colSpan="9" style={{ textAlign: 'center' }}>
+                                <td colSpan="10" style={{ textAlign: 'center' }}>
                                     No offered courses found. Create one to enable class scheduling.
                                 </td>
                             </tr>
@@ -371,6 +383,7 @@ const OfferedCourseManagement = () => {
                                     <td>{oc.course?.courseName || 'N/A'}</td>
                                     <td>{oc.teacher?.user?.fname} {oc.teacher?.user?.lname}</td>
                                     <td>{oc.classroom?.roomNumber} - {oc.classroom?.building}</td>
+                                    <td>{oc.section || 'N/A'}</td>
                                     <td>{oc.dayOfWeek}</td>
                                     <td>{formatTime(oc.startTime)} - {formatTime(oc.endTime)}</td>
                                     <td>{oc.semester}</td>

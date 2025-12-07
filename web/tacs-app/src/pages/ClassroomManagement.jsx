@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { api } from '../utils/api-utils';
 import '../css/AdminDashboard.css';
 
 const ClassroomManagement = () => {
@@ -13,7 +13,6 @@ const ClassroomManagement = () => {
         roomType: 'LECTURE'
     });
 
-    const API_BASE_URL = 'http://localhost:8080/api';
     const roomTypes = ['LECTURE', 'LABORATORY', 'COMPUTER_LAB', 'LIBRARY', 'AUDITORIUM', 'GYM', 'OTHER'];
 
     useEffect(() => {
@@ -21,48 +20,33 @@ const ClassroomManagement = () => {
     }, []);
 
     const fetchClassrooms = async () => {
-        try {
-            const authData = JSON.parse(localStorage.getItem('auth'));
-            const token = authData?.token;
-            const response = await axios.get(`${API_BASE_URL}/classrooms`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            setClassrooms(response.data);
-        } catch (error) {
-            console.error('Error fetching classrooms:', error);
-            alert('Failed to fetch classrooms');
+        const result = await api.get('/classrooms');
+        if (result.success) {
+            setClassrooms(result.data);
+        } else {
+            alert('Failed to fetch classrooms: ' + result.error);
         }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            const authData = JSON.parse(localStorage.getItem('auth'));
-            const token = authData?.token;
-            const payload = {
-                roomNumber: formData.roomNumber,
-                building: formData.building,
-                capacity: parseInt(formData.capacity),
-                roomType: formData.roomType
-            };
+        const payload = {
+            roomNumber: formData.roomNumber,
+            building: formData.building,
+            capacity: parseInt(formData.capacity),
+            roomType: formData.roomType
+        };
 
-            if (editingId) {
-                await axios.put(`${API_BASE_URL}/classrooms/${editingId}`, payload, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
-                alert('Classroom updated successfully!');
-            } else {
-                await axios.post(`${API_BASE_URL}/classrooms`, payload, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
-                alert('Classroom created successfully!');
-            }
+        const result = editingId
+            ? await api.put(`/classrooms/${editingId}`, payload)
+            : await api.post('/classrooms', payload);
 
+        if (result.success) {
+            alert(`Classroom ${editingId ? 'updated' : 'created'} successfully!`);
             resetForm();
             fetchClassrooms();
-        } catch (error) {
-            console.error('Error saving classroom:', error);
-            alert('Failed to save classroom: ' + (error.response?.data?.message || error.message));
+        } else {
+            alert('Failed to save classroom: ' + result.error);
         }
     };
 
@@ -79,17 +63,12 @@ const ClassroomManagement = () => {
 
     const handleDelete = async (classroomId) => {
         if (window.confirm('Are you sure you want to delete this classroom?')) {
-            try {
-                const authData = JSON.parse(localStorage.getItem('auth'));
-                const token = authData?.token;
-                await axios.delete(`${API_BASE_URL}/classrooms/${classroomId}`, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
+            const result = await api.delete(`/classrooms/${classroomId}`);
+            if (result.success) {
                 alert('Classroom deleted successfully!');
                 fetchClassrooms();
-            } catch (error) {
-                console.error('Error deleting classroom:', error);
-                alert('Failed to delete classroom');
+            } else {
+                alert('Failed to delete classroom: ' + result.error);
             }
         }
     };

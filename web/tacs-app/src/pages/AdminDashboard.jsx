@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
+import { logout } from '../utils/auth-utils';
 import '../css/AdminDashboard.css';
 import Teachers from './Teachers';
 import Students from './Students';
-import Attendance from './Attendance';
-import Statistics from './Statistics';
 import Settings from './Settings';
 import TeacherList from './TeacherList';
 import AddTeacherForm from './AddTeacherForm';
@@ -31,8 +30,6 @@ const sections = [
   { key: 'students', label: 'Students', icon: '🧑‍🎓', category: 'users' },
   { key: 'divider4', label: '— OPERATIONS —', icon: '', category: 'divider' },
   { key: 'enrollments', label: 'Enrollments', icon: '📋', category: 'operations' },
-  { key: 'attendance', label: 'Attendance', icon: '📝', category: 'operations' },
-  { key: 'statistics', label: 'Statistics', icon: '📊', category: 'operations' },
   { key: 'divider5', label: '— SYSTEM —', icon: '', category: 'divider' },
   { key: 'settings', label: 'Settings', icon: '⚙️', category: 'system' },
   { key: 'logout', label: 'Logout', icon: '🚪', category: 'system' },
@@ -40,39 +37,9 @@ const sections = [
 
 const AdminDashboard = () => {
   const [activeSection, setActiveSection] = useState('dashboard');
-  const [teachers, setTeachers] = useState([
-    { id: 1, name: 'Alice Smith', email: 'alice@school.edu' },
-    { id: 2, name: 'Bob Johnson', email: 'bob@school.edu' }
-  ]);
-  const [students, setStudents] = useState([
-    { id: 1, name: 'Charlie Brown', email: 'charlie@school.edu', password: 'student123' },
-    { id: 2, name: 'Dana White', email: 'dana@school.edu', password: 'student123' }
-  ]);
-  
-  function handleAddTeacher(newTeacher) {
-    setTeachers([
-      ...teachers,
-      { id: Date.now(), ...newTeacher }
-    ]);
-  }
-  function handleRemoveTeacher(id) {
-    setTeachers(teachers.filter(t => t.id !== id));
-  }
-  function handleAddStudent(newStudent) {
-    setStudents([
-      ...students,
-      { id: Date.now(), ...newStudent }
-    ]);
-  }
-  function handleRemoveStudent(id) {
-    setStudents(students.filter(s => s.id !== id));
-  }
 
   function handleLogout() {
-    // Clear local/session storage as needed
-    localStorage.clear();
-    sessionStorage.clear();
-    // Redirect to login/home page
+    logout();
     window.location.href = '/';
   }
 
@@ -89,15 +56,15 @@ const AdminDashboard = () => {
       case 'teachers':
         return (
           <>
-            <AddTeacherForm onAdd={handleAddTeacher} />
-            <TeacherList teachers={teachers} onRemove={handleRemoveTeacher} />
+            <AddTeacherForm />
+            <TeacherList />
           </>
         );
       case 'students':
         return (
           <>
-            <AddStudentForm onAdd={handleAddStudent} />
-            <StudentList students={students} onRemove={handleRemoveStudent} />
+            <AddStudentForm />
+            <StudentList />
           </>
         );
       case 'courses':
@@ -109,8 +76,8 @@ const AdminDashboard = () => {
         );
       case 'enrollments':
         return <EnrollStudentForm />;
-      case 'attendance':
-        return <Attendance />;
+      case 'settings':
+        return <Settings />;
       case 'dashboard':
         return (
           <div className="dashboard-welcome">

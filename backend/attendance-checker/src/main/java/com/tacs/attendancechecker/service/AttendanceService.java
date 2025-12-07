@@ -49,12 +49,13 @@ public class AttendanceService {
 
     // Mark attendance for a student
     public AttendanceResponse markAttendance(AttendanceRequest request) {
-        // Check if attendance already exists for this student, course, date, and session
+        // Check if attendance already exists for this student, course, date, and
+        // session
         var existing = request.getSessionId() != null
-            ? attendanceRepository.findByStudentStudentIdAndSessionSessionId(
-                request.getStudentId(), request.getSessionId())
-            : attendanceRepository.findByStudentStudentIdAndCourseCourseIdAndDate(
-                request.getStudentId(), request.getCourseId(), request.getDate());
+                ? attendanceRepository.findByStudentStudentIdAndSessionSessionId(
+                        request.getStudentId(), request.getSessionId())
+                : attendanceRepository.findByStudentStudentIdAndCourseCourseIdAndDate(
+                        request.getStudentId(), request.getCourseId(), request.getDate());
 
         Attendance attendance;
         if (existing.isPresent()) {
@@ -69,28 +70,50 @@ public class AttendanceService {
             // Create new attendance
             attendance = new Attendance();
             attendance.setAttendanceId(UUID.randomUUID().toString());
-            
+
             Student student = studentRepository.findById(request.getStudentId())
                     .orElseThrow(() -> new RuntimeException("Student not found"));
             Course course = courseRepository.findById(request.getCourseId())
                     .orElseThrow(() -> new RuntimeException("Course not found"));
-            
+
             attendance.setStudent(student);
             attendance.setCourse(course);
             attendance.setDate(request.getDate());
             attendance.setStatus(Attendance.Status.valueOf(request.getStatus().toUpperCase()));
             attendance.setRemarks(request.getRemarks());
-            
+
             if (request.getTimeIn() != null) {
                 attendance.setTimeIn(request.getTimeIn());
             }
-            
-            // Link to session if provided
+
+            // Link to session - either use provided or find/create one for this date
+            AttendanceSession session;
             if (request.getSessionId() != null) {
-                AttendanceSession session = attendanceSessionRepository.findById(request.getSessionId())
+                session = attendanceSessionRepository.findById(request.getSessionId())
                         .orElseThrow(() -> new RuntimeException("Session not found"));
-                attendance.setSession(session);
+            } else {
+                // Try to find existing session for this course and date
+                var sessions = attendanceSessionRepository.findByCourseCourseIdAndDate(
+                        request.getCourseId(), request.getDate());
+
+                if (!sessions.isEmpty()) {
+                    // Use the first (or most recent) session
+                    session = sessions.get(0);
+                } else {
+                    // Auto-create a default session for this date
+                    session = new AttendanceSession();
+                    session.setCourse(course);
+                    session.setTeacher(course.getTeacher());
+                    session.setDate(request.getDate());
+                    session.setStartTime(java.time.LocalTime.of(8, 0));
+                    session.setEndTime(java.time.LocalTime.of(10, 0));
+                    session.setSessionType("LECTURE");
+                    session.setIsFinalized(false);
+                    session.setRemarks("Auto-created session");
+                    session = attendanceSessionRepository.save(session);
+                }
             }
+            attendance.setSession(session);
         }
 
         Attendance saved = attendanceRepository.save(attendance);
@@ -130,10 +153,10 @@ public class AttendanceService {
         response.setCourseName(course.getCourseName());
         response.setDescription(course.getDescription());
         response.setTeacherId(course.getTeacher().getTeacherId());
-        
+
         User teacherUser = course.getTeacher().getUser();
         response.setTeacherName(teacherUser.getFname() + " " + teacherUser.getLname());
-        
+
         return response;
     }
 
@@ -141,14 +164,15 @@ public class AttendanceService {
         EnrolledStudentResponse response = new EnrolledStudentResponse();
         Student student = enrollment.getStudent();
         User user = student.getUser();
-        
+
         response.setStudentId(student.getStudentId());
+        response.setStudentNumber(student.getStudentNumber());
         response.setStudentName(user.getFname() + " " + user.getLname());
         response.setEmail(user.getEmail());
+        response.setProgram(student.getProgram());
         response.setYearLevel(student.getYearLevel());
-        response.setSection(student.getSection());
         response.setEnrollmentStatus(enrollment.getStatus());
-        
+
         return response;
     }
 
@@ -156,16 +180,22 @@ public class AttendanceService {
         AttendanceResponse response = new AttendanceResponse();
         response.setAttendanceId(attendance.getAttendanceId());
         response.setStudentId(attendance.getStudent().getStudentId());
-        
+
         User studentUser = attendance.getStudent().getUser();
         response.setStudentName(studentUser.getFname() + " " + studentUser.getLname());
-        
+
         response.setCourseId(attendance.getCourse().getCourseId());
         response.setCourseName(attendance.getCourse().getCourseName());
         response.setDate(attendance.getDate());
+        response.setTimeIn(attendance.getTimeIn());
         response.setStatus(attendance.getStatus().toString());
         response.setRemarks(attendance.getRemarks());
-        
+
+        // Include session ID if attendance is linked to a session
+        if (attendance.getSession() != null) {
+            response.setSessionId(attendance.getSession().getSessionId());
+        }
+
         return response;
     }
 }

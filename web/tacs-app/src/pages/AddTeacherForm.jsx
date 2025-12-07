@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { api } from '../utils/api-utils';
 
-export default function AddTeacherForm({ onAdd }) {
+export default function AddTeacherForm() {
   const [fname, setFName] = useState('');
   const [lname, setLName] = useState('');
   const [email, setEmail] = useState('');
@@ -15,20 +16,9 @@ export default function AddTeacherForm({ onAdd }) {
   }, []);
 
   async function fetchDepartments() {
-    try {
-      const authData = JSON.parse(localStorage.getItem('auth'));
-      const token = authData?.token;
-      const response = await fetch('http://localhost:8080/api/departments', {
-        headers: {
-          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
-        }
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setDepartments(data);
-      }
-    } catch (err) {
-      console.error('Error fetching departments:', err);
+    const result = await api.get('/departments');
+    if (result.success) {
+      setDepartments(result.data);
     }
   }
 
@@ -36,43 +26,30 @@ export default function AddTeacherForm({ onAdd }) {
     e.preventDefault();
     setError('');
     setSuccess('');
+    
     if (!fname || !lname || !email || !password) {
       setError('Please fill out all fields.');
       return;
     }
 
-    try {
-      const authData = JSON.parse(localStorage.getItem('auth'));
-      const token = authData?.token;
-      const response = await fetch('http://localhost:8080/api/teachers', {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
-        },
-        body: JSON.stringify({ 
-          fname, 
-          lname, 
-          email, 
-          password, 
-          departmentId: departmentId ? parseInt(departmentId) : null
-        })
-      });
-      if (!response.ok) {
-        const err = await response.json();
-        setError(err.message || 'Error adding teacher');
-        return;
-      }
-      const data = await response.json();
-      if (onAdd) onAdd(data);
+    const result = await api.post('/teachers', { 
+      fname, 
+      lname, 
+      email, 
+      password, 
+      departmentId: departmentId ? parseInt(departmentId) : null
+    });
+
+    if (result.success) {
       setSuccess('Teacher added successfully!');
       setFName('');
       setLName('');
       setEmail('');
       setPassword('');
       setDepartmentId('');
-    } catch (err) {
-      setError('Server error. Please try again.');
+      setTimeout(() => setSuccess(''), 3000);
+    } else {
+      setError(result.error);
     }
   }
 
