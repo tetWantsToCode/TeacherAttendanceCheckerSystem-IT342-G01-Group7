@@ -37,6 +37,9 @@ const sections = [
 
 const AdminDashboard = () => {
   const [activeSection, setActiveSection] = useState('dashboard');
+  const [teacherRefreshKey, setTeacherRefreshKey] = useState(0);
+  const [studentRefreshKey, setStudentRefreshKey] = useState(0);
+  const [courseRefreshKey, setCourseRefreshKey] = useState(0);
 
   function handleLogout() {
     logout();
@@ -56,22 +59,22 @@ const AdminDashboard = () => {
       case 'teachers':
         return (
           <>
-            <AddTeacherForm />
-            <TeacherList />
+            <AddTeacherForm onSuccess={() => setTeacherRefreshKey(prev => prev + 1)} />
+            <TeacherList refreshKey={teacherRefreshKey} />
           </>
         );
       case 'students':
         return (
           <>
-            <AddStudentForm />
-            <StudentList />
+            <AddStudentForm onSuccess={() => setStudentRefreshKey(prev => prev + 1)} />
+            <StudentList refreshKey={studentRefreshKey} />
           </>
         );
       case 'courses':
         return (
           <>
-            <AddCourseForm />
-            <CourseList />
+            <AddCourseForm onSuccess={() => setCourseRefreshKey(prev => prev + 1)} />
+            <CourseList refreshKey={courseRefreshKey} />
           </>
         );
       case 'enrollments':

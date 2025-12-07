@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../utils/api-utils';
 
-export default function TeacherList() {
+export default function TeacherList({ refreshKey }) {
   const [teachers, setTeachers] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchTeachers();
-  }, []);
+  }, [refreshKey]);
 
   async function fetchTeachers() {
     setLoading(true);

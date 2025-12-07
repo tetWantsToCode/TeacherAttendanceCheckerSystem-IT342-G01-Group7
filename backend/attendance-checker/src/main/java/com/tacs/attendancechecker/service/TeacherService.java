@@ -76,16 +76,7 @@ public class TeacherService {
         Teacher teacher = teacherRepository.findById(teacherId)
                 .orElseThrow(() -> new RuntimeException("Teacher not found with id: " + teacherId));
 
-        // Check if teacher has courses
-        long courseCount = courseRepository.findAll().stream()
-                .filter(course -> course.getTeacher() != null &&
-                        course.getTeacher().getTeacherId().equals(teacherId))
-                .count();
-        if (courseCount > 0) {
-            throw new RuntimeException("Cannot delete teacher: " + courseCount
-                    + " course(s) are assigned to this teacher. Please reassign or delete the courses first.");
-        }
-
+        // Course no longer has teacher - check only offered courses
         // Check if teacher has offered courses
         long offeredCourseCount = offeredCourseRepository.findByTeacherTeacherId(teacherId).size();
         if (offeredCourseCount > 0) {

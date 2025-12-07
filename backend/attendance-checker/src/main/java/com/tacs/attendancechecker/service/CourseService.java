@@ -22,18 +22,12 @@ public class CourseService {
     private TeacherRepository teacherRepository;
 
     public CourseResponse createCourse(CourseRequest request) {
-        Teacher teacher = teacherRepository.findById(request.getTeacherId())
-                .orElseThrow(() -> new RuntimeException("Teacher not found"));
-
         Course course = new Course();
-        course.setTeacher(teacher);
         course.setCourseCode(request.getCourseCode());
         course.setCourseName(request.getCourseName());
         course.setDescription(request.getDescription());
         course.setUnits(request.getUnits());
         course.setCourseType(request.getCourseType());
-        course.setSemester(request.getSemester());
-        course.setSchoolYear(request.getSchoolYear());
         course.setIsActive(request.getIsActive() != null ? request.getIsActive() : true);
 
         Course savedCourse = courseRepository.save(course);
@@ -56,12 +50,6 @@ public class CourseService {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new RuntimeException("Course not found"));
 
-        if (request.getTeacherId() != null && !request.getTeacherId().isEmpty()) {
-            Teacher teacher = teacherRepository.findById(request.getTeacherId())
-                    .orElseThrow(() -> new RuntimeException("Teacher not found"));
-            course.setTeacher(teacher);
-        }
-
         if (request.getCourseCode() != null) {
             course.setCourseCode(request.getCourseCode());
         }
@@ -80,14 +68,6 @@ public class CourseService {
         
         if (request.getCourseType() != null) {
             course.setCourseType(request.getCourseType());
-        }
-        
-        if (request.getSemester() != null) {
-            course.setSemester(request.getSemester());
-        }
-        
-        if (request.getSchoolYear() != null) {
-            course.setSchoolYear(request.getSchoolYear());
         }
         
         if (request.getIsActive() != null) {
@@ -110,12 +90,7 @@ public class CourseService {
         response.setDescription(course.getDescription());
         response.setUnits(course.getUnits());
         response.setCourseType(course.getCourseType());
-        response.setSemester(course.getSemester());
-        response.setSchoolYear(course.getSchoolYear());
         response.setIsActive(course.getIsActive());
-        response.setTeacherId(course.getTeacher().getTeacherId());
-        response.setTeacherName(course.getTeacher().getUser().getFname() + " " + 
-                               course.getTeacher().getUser().getLname());
         return response;
     }
 }

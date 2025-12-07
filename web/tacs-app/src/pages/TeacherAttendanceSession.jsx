@@ -736,7 +736,9 @@ export default function TeacherAttendanceSession() {
                       type="time"
                       value={sessionForm.startTime}
                       onChange={(e) => setSessionForm({...sessionForm, startTime: e.target.value})}
+                      disabled
                       required
+                      style={{ backgroundColor: '#f5f5f5', cursor: 'not-allowed' }}
                     />
                   </div>
 
@@ -746,7 +748,9 @@ export default function TeacherAttendanceSession() {
                       type="time"
                       value={sessionForm.endTime}
                       onChange={(e) => setSessionForm({...sessionForm, endTime: e.target.value})}
+                      disabled
                       required
+                      style={{ backgroundColor: '#f5f5f5', cursor: 'not-allowed' }}
                     />
                   </div>
 

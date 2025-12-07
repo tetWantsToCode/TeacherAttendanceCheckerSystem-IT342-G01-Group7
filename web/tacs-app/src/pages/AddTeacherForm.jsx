@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../utils/api-utils';
 
-export default function AddTeacherForm() {
+export default function AddTeacherForm({ onSuccess }) {
   const [fname, setFName] = useState('');
   const [lname, setLName] = useState('');
   const [email, setEmail] = useState('');
@@ -47,6 +47,7 @@ export default function AddTeacherForm() {
       setEmail('');
       setPassword('');
       setDepartmentId('');
+      if (onSuccess) onSuccess();
       setTimeout(() => setSuccess(''), 3000);
     } else {
       setError(result.error);

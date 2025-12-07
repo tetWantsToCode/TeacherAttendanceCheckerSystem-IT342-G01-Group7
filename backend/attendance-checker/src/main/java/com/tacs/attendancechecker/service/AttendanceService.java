@@ -32,10 +32,17 @@ public class AttendanceService {
     @Autowired
     private AttendanceSessionRepository attendanceSessionRepository;
 
+    @Autowired
+    private OfferedCourseRepository offeredCourseRepository;
+
     // Get all courses for a teacher
     public List<CourseResponse> getTeacherCourses(String teacherId) {
-        List<Course> courses = courseRepository.findByTeacherTeacherId(teacherId);
-        return courses.stream().map(this::mapToCourseResponse).collect(Collectors.toList());
+        // Course no longer has teacher - get courses through OfferedCourse
+        List<OfferedCourse> offeredCourses = offeredCourseRepository.findByTeacherTeacherId(teacherId);
+        return offeredCourses.stream()
+                .map(oc -> mapToCourseResponse(oc.getCourse()))
+                .distinct()
+                .collect(Collectors.toList());
     }
 
     // Get enrolled students for a course
@@ -100,17 +107,10 @@ public class AttendanceService {
                     // Use the first (or most recent) session
                     session = sessions.get(0);
                 } else {
-                    // Auto-create a default session for this date
-                    session = new AttendanceSession();
-                    session.setCourse(course);
-                    session.setTeacher(course.getTeacher());
-                    session.setDate(request.getDate());
-                    session.setStartTime(java.time.LocalTime.of(8, 0));
-                    session.setEndTime(java.time.LocalTime.of(10, 0));
-                    session.setSessionType("LECTURE");
-                    session.setIsFinalized(false);
-                    session.setRemarks("Auto-created session");
-                    session = attendanceSessionRepository.save(session);
+                    // Course no longer has teacher - cannot auto-create session
+                    // Sessions must be created through proper workflow with OfferedCourse
+                    throw new RuntimeException("No attendance session found for course " + course.getCourseId() 
+                        + " on date " + request.getDate() + ". Please create a session first.");
                 }
             }
             attendance.setSession(session);
@@ -152,11 +152,10 @@ public class AttendanceService {
         response.setCourseId(course.getCourseId());
         response.setCourseName(course.getCourseName());
         response.setDescription(course.getDescription());
-        response.setTeacherId(course.getTeacher().getTeacherId());
-
-        User teacherUser = course.getTeacher().getUser();
-        response.setTeacherName(teacherUser.getFname() + " " + teacherUser.getLname());
-
+        // Course no longer has teacher - teacher info is in OfferedCourse
+        // This method is used by getTeacherCourses which gets courses via OfferedCourse
+        // Teacher info should be set by caller if needed
+        
         return response;
     }
 
