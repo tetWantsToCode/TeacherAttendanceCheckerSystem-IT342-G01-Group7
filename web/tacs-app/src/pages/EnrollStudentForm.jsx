@@ -251,50 +251,6 @@ export default function EnrollStudentForm() {
               </select>
             </div>
 
-            <div>
-              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
-                Status *
-              </label>
-              <select
-                name="status"
-                value={formData.status}
-                onChange={handleChange}
-                required
-                style={{
-                  width: '100%',
-                  padding: '10px',
-                  borderRadius: '6px',
-                  border: '1px solid #ccc',
-                  fontSize: '14px'
-                }}
-              >
-                <option value="ACTIVE">Active</option>
-                <option value="DROPPED">Dropped</option>
-                <option value="COMPLETED">Completed</option>
-              </select>
-            </div>
-
-            <div>
-              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
-                Academic Year *
-              </label>
-              <input
-                type="text"
-                name="academicYear"
-                value={formData.academicYear}
-                onChange={handleChange}
-                placeholder="e.g., 2024-2025"
-                required
-                style={{
-                  width: '100%',
-                  padding: '10px',
-                  borderRadius: '6px',
-                  border: '1px solid #ccc',
-                  fontSize: '14px'
-                }}
-              />
-            </div>
-
             <button
               type="submit"
               disabled={loading}
@@ -327,7 +283,6 @@ export default function EnrollStudentForm() {
                   <tr>
                     <th style={{ padding: '10px', textAlign: 'left' }}>Student</th>
                     <th style={{ padding: '10px', textAlign: 'left' }}>Course</th>
-                    <th style={{ padding: '10px', textAlign: 'left' }}>Status</th>
                     <th style={{ padding: '10px', textAlign: 'left' }}>Actions</th>
                   </tr>
                 </thead>
@@ -339,22 +294,6 @@ export default function EnrollStudentForm() {
                       </td>
                       <td style={{ padding: '10px' }}>
                         {enrollment.course.courseName}
-                      </td>
-                      <td style={{ padding: '10px' }}>
-                        <select
-                          value={enrollment.status}
-                          onChange={(e) => handleUpdateStatus(enrollment.enrollmentId, e.target.value)}
-                          style={{
-                            padding: '5px',
-                            borderRadius: '4px',
-                            border: '1px solid #ccc',
-                            fontSize: '13px'
-                          }}
-                        >
-                          <option value="ACTIVE">Active</option>
-                          <option value="DROPPED">Dropped</option>
-                          <option value="COMPLETED">Completed</option>
-                        </select>
                       </td>
                       <td style={{ padding: '10px' }}>
                         <button
