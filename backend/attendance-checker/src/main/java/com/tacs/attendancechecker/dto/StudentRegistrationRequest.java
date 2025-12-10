@@ -9,9 +9,6 @@ public class StudentRegistrationRequest {
     private String program;
     private Integer yearLevel;
     private String enrollmentStatus;
-    private String contactNumber;
-    private String guardianName;
-    private String guardianContact;
 
     public StudentRegistrationRequest() {
     }
@@ -78,29 +75,5 @@ public class StudentRegistrationRequest {
 
     public void setEnrollmentStatus(String enrollmentStatus) {
         this.enrollmentStatus = enrollmentStatus;
-    }
-
-    public String getContactNumber() {
-        return contactNumber;
-    }
-
-    public void setContactNumber(String contactNumber) {
-        this.contactNumber = contactNumber;
-    }
-
-    public String getGuardianName() {
-        return guardianName;
-    }
-
-    public void setGuardianName(String guardianName) {
-        this.guardianName = guardianName;
-    }
-
-    public String getGuardianContact() {
-        return guardianContact;
-    }
-
-    public void setGuardianContact(String guardianContact) {
-        this.guardianContact = guardianContact;
     }
 }

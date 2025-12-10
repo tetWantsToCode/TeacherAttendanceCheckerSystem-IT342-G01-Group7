@@ -78,4 +78,15 @@ public class OfferedCourseController {
                     .body("Error deleting offered course: " + e.getMessage());
         }
     }
+
+    @DeleteMapping("/delete-all")
+    public ResponseEntity<?> deleteAllOfferedCourses() {
+        try {
+            offeredCourseService.deleteAllOfferedCourses();
+            return ResponseEntity.ok("All offered courses deleted successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error deleting all offered courses: " + e.getMessage());
+        }
+    }
 }

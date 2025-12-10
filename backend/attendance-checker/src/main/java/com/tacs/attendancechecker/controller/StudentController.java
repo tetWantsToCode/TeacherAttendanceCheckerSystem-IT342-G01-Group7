@@ -30,10 +30,7 @@ public class StudentController {
                     request.getStudentNumber(),
                     request.getProgram(),
                     request.getYearLevel(),
-                    request.getEnrollmentStatus(),
-                    request.getContactNumber(),
-                    request.getGuardianName(),
-                    request.getGuardianContact());
+                    request.getEnrollmentStatus());
             return ResponseEntity.ok(student);
         } catch (IllegalArgumentException e) {
             Map<String, String> error = new HashMap<>();

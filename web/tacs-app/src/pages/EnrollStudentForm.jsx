@@ -3,9 +3,7 @@ import React, { useState, useEffect } from 'react';
 export default function EnrollStudentForm() {
   const [formData, setFormData] = useState({
     studentId: '',
-    courseId: '',
-    status: 'ACTIVE',
-    academicYear: ''
+    courseId: ''
   });
   const [students, setStudents] = useState([]);
   const [courses, setCourses] = useState([]);
@@ -108,15 +106,13 @@ export default function EnrollStudentForm() {
         },
         body: JSON.stringify({
           studentId: parseInt(formData.studentId),
-          courseId: parseInt(formData.courseId),
-          status: formData.status,
-          academicYear: formData.academicYear
+          courseId: parseInt(formData.courseId)
         })
       });
 
       if (response.ok) {
         setSuccess('Student enrolled successfully!');
-        setFormData({ studentId: '', courseId: '', status: 'ACTIVE', academicYear: '' });
+        setFormData({ studentId: '', courseId: '' });
         fetchEnrollments();
         setTimeout(() => setSuccess(''), 3000);
       } else {
@@ -152,29 +148,6 @@ export default function EnrollStudentForm() {
       }
     } catch (err) {
       alert('Error deleting enrollment');
-    }
-  };
-
-  const handleUpdateStatus = async (enrollmentId, newStatus) => {
-    try {
-      const authData = JSON.parse(localStorage.getItem('auth'));
-      const token = authData?.token;
-
-      const response = await fetch(`http://localhost:8080/api/enrollments/${enrollmentId}?status=${newStatus}`, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-
-      if (response.ok) {
-        fetchEnrollments();
-      } else {
-        alert('Failed to update enrollment status');
-      }
-    } catch (err) {
-      alert('Error updating enrollment status');
     }
   };
 

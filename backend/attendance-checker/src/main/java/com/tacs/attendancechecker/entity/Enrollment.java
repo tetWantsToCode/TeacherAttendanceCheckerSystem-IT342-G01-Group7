@@ -27,7 +27,5 @@ public class Enrollment {
     @JoinColumn(name = "courseId", nullable = false)
     private Course course;
 
-    private String status;
     private LocalDate dateEnrolled;
-    private String academicYear;
 }

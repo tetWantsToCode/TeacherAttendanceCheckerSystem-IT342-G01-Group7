@@ -49,7 +49,7 @@ public class AttendanceService {
     public List<EnrolledStudentResponse> getEnrolledStudents(Integer courseId) {
         List<Enrollment> enrollments = enrollmentRepository.findByCourseCourseId(courseId);
         return enrollments.stream()
-                .filter(e -> "ACTIVE".equalsIgnoreCase(e.getStatus()))
+                .filter(e -> "ACTIVE".equalsIgnoreCase(e.getStudent().getEnrollmentStatus()))
                 .map(this::mapToEnrolledStudentResponse)
                 .collect(Collectors.toList());
     }
@@ -170,7 +170,7 @@ public class AttendanceService {
         response.setEmail(user.getEmail());
         response.setProgram(student.getProgram());
         response.setYearLevel(student.getYearLevel());
-        response.setEnrollmentStatus(enrollment.getStatus());
+        response.setEnrollmentStatus(student.getEnrollmentStatus());
 
         return response;
     }

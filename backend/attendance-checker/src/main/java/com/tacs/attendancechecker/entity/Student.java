@@ -18,9 +18,6 @@ public class Student {
     private String program; // BSIT, BSCS, BSCE, etc.
     private Integer yearLevel;
     private String enrollmentStatus = "ACTIVE"; // ACTIVE, INACTIVE, GRADUATED, DROPPED
-    private String contactNumber;
-    private String guardianName;
-    private String guardianContact;
 
     public Student() {
     }
@@ -78,29 +75,5 @@ public class Student {
 
     public void setEnrollmentStatus(String enrollmentStatus) {
         this.enrollmentStatus = enrollmentStatus;
-    }
-
-    public String getContactNumber() {
-        return contactNumber;
-    }
-
-    public void setContactNumber(String contactNumber) {
-        this.contactNumber = contactNumber;
-    }
-
-    public String getGuardianName() {
-        return guardianName;
-    }
-
-    public void setGuardianName(String guardianName) {
-        this.guardianName = guardianName;
-    }
-
-    public String getGuardianContact() {
-        return guardianContact;
-    }
-
-    public void setGuardianContact(String guardianContact) {
-        this.guardianContact = guardianContact;
     }
 }

@@ -128,4 +128,19 @@ public class ClassScheduleService {
                     classScheduleRepository.save(schedule);
                 });
     }
+
+    @Transactional
+    public void deleteAllSchedules() {
+        // First, handle all attendance sessions
+        List<ClassSchedule> allSchedules = classScheduleRepository.findAll();
+        for (ClassSchedule schedule : allSchedules) {
+            List<AttendanceSession> sessions = attendanceSessionRepository.findByClassScheduleScheduleId(schedule.getScheduleId());
+            for (AttendanceSession session : sessions) {
+                session.setClassSchedule(null);
+                attendanceSessionRepository.save(session);
+            }
+        }
+        // Now delete all schedules
+        classScheduleRepository.deleteAll();
+    }
 }

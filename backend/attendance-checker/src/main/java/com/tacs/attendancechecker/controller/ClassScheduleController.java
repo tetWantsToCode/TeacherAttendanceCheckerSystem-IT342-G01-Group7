@@ -126,4 +126,15 @@ public class ClassScheduleController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @DeleteMapping("/delete-all")
+    public ResponseEntity<?> deleteAllSchedules() {
+        try {
+            classScheduleService.deleteAllSchedules();
+            return ResponseEntity.ok(Map.of("message", "All schedules deleted successfully"));
+        } catch (Exception e) {
+            return new ResponseEntity<>(Map.of("error", "Error deleting all schedules: " + e.getMessage()), 
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

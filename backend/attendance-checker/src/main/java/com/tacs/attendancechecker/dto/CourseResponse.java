@@ -7,8 +7,6 @@ public class CourseResponse {
     private String description;
     private Integer units;
     private String courseType;
-    private String semester;
-    private String schoolYear;
     private Boolean isActive;
     private String teacherId;
     private String teacherName;
@@ -32,12 +30,6 @@ public class CourseResponse {
 
     public String getCourseType() { return courseType; }
     public void setCourseType(String courseType) { this.courseType = courseType; }
-
-    public String getSemester() { return semester; }
-    public void setSemester(String semester) { this.semester = semester; }
-
-    public String getSchoolYear() { return schoolYear; }
-    public void setSchoolYear(String schoolYear) { this.schoolYear = schoolYear; }
 
     public Boolean getIsActive() { return isActive; }
     public void setIsActive(Boolean isActive) { this.isActive = isActive; }
