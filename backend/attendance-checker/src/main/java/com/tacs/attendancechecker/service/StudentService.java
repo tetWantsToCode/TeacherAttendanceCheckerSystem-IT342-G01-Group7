@@ -29,8 +29,7 @@ public class StudentService {
 
     public Student addStudent(String fname, String lname, String email, String password,
             String studentNumber, String program, Integer yearLevel,
-            String enrollmentStatus, String contactNumber,
-            String guardianName, String guardianContact) {
+            String enrollmentStatus) {
         // Prevent duplicate users by email
         if (userRepository.existsByEmail(email)) {
             throw new IllegalArgumentException("A user with that email already exists.");
@@ -52,9 +51,6 @@ public class StudentService {
         student.setProgram(program);
         student.setYearLevel(yearLevel);
         student.setEnrollmentStatus(enrollmentStatus != null ? enrollmentStatus : "ACTIVE");
-        student.setContactNumber(contactNumber);
-        student.setGuardianName(guardianName);
-        student.setGuardianContact(guardianContact);
 
         return studentRepository.save(student);
     }

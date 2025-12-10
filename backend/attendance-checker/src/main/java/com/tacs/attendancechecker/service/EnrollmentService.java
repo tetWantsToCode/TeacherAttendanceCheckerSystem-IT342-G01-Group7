@@ -41,7 +41,6 @@ public class EnrollmentService {
         Enrollment enrollment = new Enrollment();
         enrollment.setStudent(student);
         enrollment.setCourse(course);
-        enrollment.setStatus(request.getStatus() != null ? request.getStatus() : "ACTIVE");
         enrollment.setDateEnrolled(LocalDate.now());
 
         return enrollmentRepository.save(enrollment);
@@ -57,14 +56,6 @@ public class EnrollmentService {
 
     public List<Enrollment> getEnrollmentsByCourse(Integer courseId) {
         return enrollmentRepository.findByCourseCourseId(courseId);
-    }
-
-    public Enrollment updateEnrollment(Integer enrollmentId, String status) {
-        Enrollment enrollment = enrollmentRepository.findById(enrollmentId)
-                .orElseThrow(() -> new RuntimeException("Enrollment not found"));
-        
-        enrollment.setStatus(status);
-        return enrollmentRepository.save(enrollment);
     }
 
     public void deleteEnrollment(Integer enrollmentId) {

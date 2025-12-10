@@ -14,7 +14,5 @@ public class CourseRequest {
     private String description;
     private Integer units;
     private String courseType;
-    private String semester;
-    private String schoolYear;
     private Boolean isActive;
 }
