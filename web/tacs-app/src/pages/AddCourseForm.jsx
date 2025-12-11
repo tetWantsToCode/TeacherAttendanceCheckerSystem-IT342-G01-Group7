@@ -204,7 +204,7 @@ export default function AddCourseForm({ onSuccess }) {
           disabled={loading}
           style={{
             padding: '12px',
-            background: loading ? '#94a3b8' : '#10b981',
+            background: loading ? '#94a3b8' : '#3F72AF',
             color: 'white',
             border: 'none',
             borderRadius: '6px',
@@ -212,7 +212,6 @@ export default function AddCourseForm({ onSuccess }) {
             fontSize: '16px',
             fontWeight: 'bold',
             marginTop: '10px',
-            boxShadow: loading ? 'none' : '0 2px 4px rgba(16, 185, 129, 0.3)',
             transition: 'all 0.2s'
           }}
         >

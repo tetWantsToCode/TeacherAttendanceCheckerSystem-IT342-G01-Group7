@@ -129,27 +129,37 @@ const DepartmentManagement = () => {
                 <h3>Departments List</h3>
                 
                 {/* Search and Sort Controls */}
-                <div style={{ marginBottom: '20px', display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '10px' }}>
+                <div style={{ 
+                    marginBottom: '20px', 
+                    display: 'flex', 
+                    gap: '10px',
+                    alignItems: 'stretch'
+                }}>
                     <input
                         type="text"
                         placeholder="Search by department code or name..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         style={{
-                            padding: '10px',
+                            flex: '1',
+                            padding: '10px 15px',
                             borderRadius: '6px',
-                            border: '1px solid #ccc',
-                            fontSize: '14px'
+                            border: '1px solid #ddd',
+                            fontSize: '14px',
+                            minHeight: '42px'
                         }}
                     />
                     <select
                         value={sortBy}
                         onChange={(e) => setSortBy(e.target.value)}
                         style={{
-                            padding: '10px',
+                            padding: '10px 15px',
                             borderRadius: '6px',
-                            border: '1px solid #ccc',
-                            fontSize: '14px'
+                            border: '1px solid #ddd',
+                            fontSize: '14px',
+                            minWidth: '200px',
+                            cursor: 'pointer',
+                            minHeight: '42px'
                         }}
                     >
                         <option value="code">Sort: Code (A-Z)</option>
@@ -160,15 +170,15 @@ const DepartmentManagement = () => {
                 <table>
                     <thead>
                         <tr>
-                            <th>Code</th>
-                            <th>Name</th>
-                            <th>Actions</th>
+                            <th style={{ padding: '14px 16px', textAlign: 'left', fontWeight: '600', width: '15%' }}>Code</th>
+                            <th style={{ padding: '14px 16px', textAlign: 'left', fontWeight: '600', width: '55%' }}>Name</th>
+                            <th style={{ padding: '14px 16px', textAlign: 'left', fontWeight: '600', width: '30%' }}>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {departments.length === 0 ? (
                             <tr>
-                                <td colSpan="3" style={{ textAlign: 'center' }}>No departments found</td>
+                                <td colSpan="3" style={{ textAlign: 'center', padding: '14px 16px' }}>No departments found</td>
                             </tr>
                         ) : (
                             departments
@@ -186,9 +196,9 @@ const DepartmentManagement = () => {
                                 })
                                 .map(dept => (
                                 <tr key={dept.departmentId}>
-                                    <td>{dept.departmentCode}</td>
-                                    <td>{dept.departmentName}</td>
-                                    <td>
+                                    <td style={{ padding: '14px 16px', verticalAlign: 'middle', width: '15%' }}>{dept.departmentCode}</td>
+                                    <td style={{ padding: '14px 16px', verticalAlign: 'middle', width: '55%' }}>{dept.departmentName}</td>
+                                    <td style={{ padding: '14px 16px', verticalAlign: 'middle', width: '30%' }}>
                                         <button onClick={() => handleEdit(dept)} className="btn-edit">
                                             Edit
                                         </button>

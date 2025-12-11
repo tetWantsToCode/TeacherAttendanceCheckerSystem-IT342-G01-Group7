@@ -216,17 +216,17 @@ const ClassroomManagement = () => {
                 <table>
                     <thead>
                         <tr>
-                            <th>Room Number</th>
-                            <th>Building</th>
-                            <th>Capacity</th>
-                            <th>Room Type</th>
-                            <th>Actions</th>
+                            <th style={{ padding: '14px 16px', textAlign: 'left', fontWeight: '600', width: '15%' }}>Room Number</th>
+                            <th style={{ padding: '14px 16px', textAlign: 'left', fontWeight: '600', width: '20%' }}>Building</th>
+                            <th style={{ padding: '14px 16px', textAlign: 'left', fontWeight: '600', width: '15%' }}>Capacity</th>
+                            <th style={{ padding: '14px 16px', textAlign: 'left', fontWeight: '600', width: '20%' }}>Room Type</th>
+                            <th style={{ padding: '14px 16px', textAlign: 'left', fontWeight: '600', width: '30%' }}>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {classrooms.length === 0 ? (
                             <tr>
-                                <td colSpan="5" style={{ textAlign: 'center' }}>No classrooms found</td>
+                                <td colSpan="5" style={{ textAlign: 'center', padding: '14px 16px' }}>No classrooms found</td>
                             </tr>
                         ) : (
                             classrooms
@@ -250,11 +250,11 @@ const ClassroomManagement = () => {
                                 })
                                 .map(room => (
                                 <tr key={room.classroomId}>
-                                    <td>{room.roomNumber}</td>
-                                    <td>{room.building}</td>
-                                    <td>{room.capacity}</td>
-                                    <td>{room.roomType}</td>
-                                    <td>
+                                    <td style={{ padding: '14px 16px', verticalAlign: 'middle', width: '15%' }}>{room.roomNumber}</td>
+                                    <td style={{ padding: '14px 16px', verticalAlign: 'middle', width: '20%' }}>{room.building}</td>
+                                    <td style={{ padding: '14px 16px', verticalAlign: 'middle', width: '15%' }}>{room.capacity}</td>
+                                    <td style={{ padding: '14px 16px', verticalAlign: 'middle', width: '20%' }}>{room.roomType}</td>
+                                    <td style={{ padding: '14px 16px', verticalAlign: 'middle', width: '30%' }}>
                                         <button onClick={() => handleEdit(room)} className="btn-edit">
                                             Edit
                                         </button>

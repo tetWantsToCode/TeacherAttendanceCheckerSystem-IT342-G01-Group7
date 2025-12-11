@@ -359,13 +359,13 @@ const ScheduleManagement = () => {
                 <table>
                     <thead>
                         <tr>
-                            <th>Course</th>
-                            <th>Teacher</th>
-                            <th>Day</th>
-                            <th>Time</th>
-                            <th>Classroom</th>
-                            <th>Status</th>
-                            <th>Actions</th>
+                            <th style={{ fontWeight: '600' }}>Course</th>
+                            <th style={{ fontWeight: '600' }}>Teacher</th>
+                            <th style={{ fontWeight: '600' }}>Day</th>
+                            <th style={{ fontWeight: '600' }}>Time</th>
+                            <th style={{ fontWeight: '600' }}>Classroom</th>
+                            <th style={{ fontWeight: '600' }}>Status</th>
+                            <th style={{ fontWeight: '600' }}>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
