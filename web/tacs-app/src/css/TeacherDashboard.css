@@ -4,7 +4,7 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: #f7f9fb;
+  background: #F9F7F7;
   display: flex;
   flex-direction: column;
   margin: 0;
@@ -18,11 +18,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: linear-gradient(135deg, #ff7849 0%, #ff5722 100%);
+  background: linear-gradient(135deg, #112D4E 0%, #3F72AF 100%);
   color: #fff;
   padding: 1.2rem 2.5rem 1.2rem 2rem;
   font-size: 1.25rem;
-  box-shadow: 0 4px 20px rgba(255, 120, 73, 0.25);
+  box-shadow: 0 4px 20px rgba(17, 45, 78, 0.25);
   width: 100%;
   border-radius: 0;
   box-sizing: border-box;
@@ -51,10 +51,10 @@
 
 .sidebar {
   width: 220px;
-  background: #f4f6fa;
-  color: #25364a;
+  background: #DBE2EF;
+  color: #112D4E;
   padding: 2rem 1rem;
-  box-shadow: 1px 0 8px rgba(44, 62, 80, 0.04);
+  box-shadow: 1px 0 8px rgba(17, 45, 78, 0.08);
   height: 100%;
   min-height: 0;
   border-radius: 0;
@@ -86,9 +86,9 @@
 
 .sidebar li.active,
 .sidebar li:hover {
-  background: linear-gradient(135deg, #ff7849 0%, #ff5722 100%);
+  background: linear-gradient(135deg, #3F72AF 0%, #112D4E 100%);
   color: #fff;
-  box-shadow: 0 4px 15px rgba(255, 120, 73, 0.25);
+  box-shadow: 0 4px 15px rgba(63, 114, 175, 0.3);
   transform: translateX(4px);
   transition: all 0.3s ease;
 }

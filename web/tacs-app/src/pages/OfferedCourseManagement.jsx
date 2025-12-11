@@ -13,16 +13,11 @@ const OfferedCourseManagement = () => {
         course: '',
         teacher: '',
         classroom: '',
-        schedule: '',
         semester: 'FIRST_SEM',
         section: '',
-        units: '',
-        startTime: '',
-        endTime: '',
-        dayOfWeek: ''
+        units: ''
     });
 
-    const daysOfWeek = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'];
     const semesters = ['FIRST_SEM', 'SECOND_SEM', 'SUMMER'];
 
     useEffect(() => {
@@ -68,13 +63,9 @@ const OfferedCourseManagement = () => {
             course: { courseId: parseInt(formData.course) },
             teacher: { teacherId: formData.teacher },
             classroom: { classroomId: parseInt(formData.classroom) },
-            schedule: formData.schedule,
             semester: formData.semester,
             section: formData.section,
-            units: parseInt(formData.units),
-            startTime: formData.startTime,
-            endTime: formData.endTime,
-            dayOfWeek: formData.dayOfWeek
+            units: parseInt(formData.units)
         };
 
         const result = editingId
@@ -95,13 +86,9 @@ const OfferedCourseManagement = () => {
             course: offeredCourse.course?.courseId || '',
             teacher: offeredCourse.teacher?.teacherId || '',
             classroom: offeredCourse.classroom?.classroomId || '',
-            schedule: offeredCourse.schedule || '',
             semester: offeredCourse.semester || 'FIRST_SEM',
             section: offeredCourse.section || '',
-            units: offeredCourse.units || '',
-            startTime: offeredCourse.startTime || '',
-            endTime: offeredCourse.endTime || '',
-            dayOfWeek: offeredCourse.dayOfWeek || ''
+            units: offeredCourse.units || ''
         });
         setEditingId(offeredCourse.offeredCourseId);
         setShowForm(true);
@@ -124,13 +111,9 @@ const OfferedCourseManagement = () => {
             course: '',
             teacher: '',
             classroom: '',
-            schedule: '',
             semester: 'FIRST_SEM',
             section: '',
-            units: '',
-            startTime: '',
-            endTime: '',
-            dayOfWeek: ''
+            units: ''
         });
         setEditingId(null);
         setShowForm(false);
@@ -148,13 +131,12 @@ const OfferedCourseManagement = () => {
         <div className="admin-container">
             <h2>Offered Course Management</h2>
             <p style={{ color: '#666', marginBottom: '10px' }}>
-                Link courses with teachers and classrooms for specific semesters. 
-                These will be available for class scheduling.
+                Define which courses are offered each semester, assign teachers, and set classrooms.
             </p>
-            <div style={{ background: '#fff3cd', border: '1px solid #ffc107', padding: '15px', borderRadius: '8px', marginBottom: '20px' }}>
-                <strong>💡 Multiple Meetings Per Week:</strong> If a course meets multiple times (e.g., Tuesday lecture + Thursday lab), 
-                create <strong>multiple Class Schedules</strong> for the same Offered Course in the Schedules page. 
-                Each schedule can have different days, times, and even different classrooms!
+            <div style={{ background: '#e3f2fd', border: '1px solid #2196f3', padding: '15px', borderRadius: '8px', marginBottom: '20px' }}>
+                <strong>ℹ️ Note:</strong> After creating an Offered Course, go to <strong>Class Schedules</strong> to set the specific 
+                days and times when this course meets. You can create multiple schedules for courses that meet on different days 
+                (e.g., Monday/Wednesday lectures, Thursday labs).
             </div>
             
             <button 
@@ -296,49 +278,7 @@ const OfferedCourseManagement = () => {
                             )}
                         </div>
 
-                        <div className="form-group">
-                            <label>Day of Week: *</label>
-                            <select
-                                value={formData.dayOfWeek}
-                                onChange={(e) => setFormData({ ...formData, dayOfWeek: e.target.value })}
-                                required
-                            >
-                                <option value="">Select Day</option>
-                                {daysOfWeek.map(day => (
-                                    <option key={day} value={day}>{day}</option>
-                                ))}
-                            </select>
-                        </div>
 
-                        <div className="form-group">
-                            <label>Start Time: *</label>
-                            <input
-                                type="time"
-                                value={formData.startTime}
-                                onChange={(e) => setFormData({ ...formData, startTime: e.target.value })}
-                                required
-                            />
-                        </div>
-
-                        <div className="form-group">
-                            <label>End Time: *</label>
-                            <input
-                                type="time"
-                                value={formData.endTime}
-                                onChange={(e) => setFormData({ ...formData, endTime: e.target.value })}
-                                required
-                            />
-                        </div>
-
-                        <div className="form-group">
-                            <label>Schedule Notes:</label>
-                            <input
-                                type="text"
-                                value={formData.schedule}
-                                onChange={(e) => setFormData({ ...formData, schedule: e.target.value })}
-                                placeholder="e.g., MW 8:00-10:00"
-                            />
-                        </div>
 
                         <div className="form-actions">
                             <button type="submit" className="btn-primary">
@@ -362,8 +302,6 @@ const OfferedCourseManagement = () => {
                             <th>Teacher</th>
                             <th>Classroom</th>
                             <th>Section</th>
-                            <th>Day</th>
-                            <th>Time</th>
                             <th>Semester</th>
                             <th>Units</th>
                             <th>Actions</th>
@@ -372,7 +310,7 @@ const OfferedCourseManagement = () => {
                     <tbody>
                         {offeredCourses.length === 0 ? (
                             <tr>
-                                <td colSpan="10" style={{ textAlign: 'center' }}>
+                                <td colSpan="8" style={{ textAlign: 'center' }}>
                                     No offered courses found. Create one to enable class scheduling.
                                 </td>
                             </tr>
@@ -384,8 +322,6 @@ const OfferedCourseManagement = () => {
                                     <td>{oc.teacher?.user?.fname} {oc.teacher?.user?.lname}</td>
                                     <td>{oc.classroom?.roomNumber} - {oc.classroom?.building}</td>
                                     <td>{oc.section || 'N/A'}</td>
-                                    <td>{oc.dayOfWeek}</td>
-                                    <td>{formatTime(oc.startTime)} - {formatTime(oc.endTime)}</td>
                                     <td>{oc.semester}</td>
                                     <td>{oc.units}</td>
                                     <td>

@@ -296,7 +296,7 @@ export default function StudentClasses() {
                     
                     <div className="student-course-info">
                       <p>
-                        <strong>Teacher:</strong> {enrollment.course.teacher.user.fname} {enrollment.course.teacher.user.lname}
+                        <strong>Teacher:</strong> {enrollment.course.teacher?.user?.fname || 'N/A'} {enrollment.course.teacher?.user?.lname || ''}
                       </p>
                       <p>
                         <strong>Course ID:</strong> {enrollment.course.courseId}
