@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Table(name = "enrollment",
     uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"studentId", "courseId"})
+        @UniqueConstraint(columnNames = {"studentId", "offeredCourseId"})
     }
 )
 public class Enrollment {
@@ -24,8 +24,9 @@ public class Enrollment {
     private Student student;
 
     @ManyToOne
-    @JoinColumn(name = "courseId", nullable = false)
-    private Course course;
+    @JoinColumn(name = "offeredCourseId", nullable = false)
+    private OfferedCourse offeredCourse;
 
     private LocalDate dateEnrolled;
+    private String status; // ACTIVE, DROPPED, COMPLETED
 }

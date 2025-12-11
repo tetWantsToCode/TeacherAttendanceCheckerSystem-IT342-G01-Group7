@@ -6,6 +6,9 @@ export default function CourseList({ refreshKey }) {
   const [error, setError] = useState('');
   const [editingCourse, setEditingCourse] = useState(null);
   const [teachers, setTeachers] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [sortBy, setSortBy] = useState('name'); // name, code, units, type
+  const [filterStatus, setFilterStatus] = useState('all'); // all, active, inactive
 
   useEffect(() => {
     fetchCourses();
@@ -137,6 +140,52 @@ export default function CourseList({ refreshKey }) {
       ) : courses.length === 0 ? (
         <p>No courses available. Create your first course!</p>
       ) : (
+        <>
+          {/* Search, Sort, and Filter Controls */}
+          <div style={{ marginBottom: '20px', display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '10px' }}>
+            <input
+              type="text"
+              placeholder="Search by course name, code..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              style={{
+                padding: '10px',
+                borderRadius: '6px',
+                border: '1px solid #ccc',
+                fontSize: '14px'
+              }}
+            />
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              style={{
+                padding: '10px',
+                borderRadius: '6px',
+                border: '1px solid #ccc',
+                fontSize: '14px'
+              }}
+            >
+              <option value="name">Sort: Course Name</option>
+              <option value="code">Sort: Course Code</option>
+              <option value="units">Sort: Units</option>
+              <option value="type">Sort: Type</option>
+            </select>
+            <select
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value)}
+              style={{
+                padding: '10px',
+                borderRadius: '6px',
+                border: '1px solid #ccc',
+                fontSize: '14px'
+              }}
+            >
+              <option value="all">All Courses</option>
+              <option value="active">Active Only</option>
+              <option value="inactive">Inactive Only</option>
+            </select>
+          </div>
+          
         <div style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', background: '#ffffff', boxShadow: '0 2px 6px rgba(0,0,0,0.08)', borderRadius: '8px', overflow: 'hidden' }}>
             <thead>
@@ -150,7 +199,28 @@ export default function CourseList({ refreshKey }) {
               </tr>
             </thead>
             <tbody>
-              {courses.map(course => (
+              {courses
+                .filter(course => {
+                  const search = searchTerm.toLowerCase();
+                  const matchesSearch = course.courseName?.toLowerCase().includes(search) ||
+                                       course.courseCode?.toLowerCase().includes(search);
+                  const matchesStatus = filterStatus === 'all' ||
+                                       (filterStatus === 'active' && course.isActive) ||
+                                       (filterStatus === 'inactive' && !course.isActive);
+                  return matchesSearch && matchesStatus;
+                })
+                .sort((a, b) => {
+                  if (sortBy === 'name') {
+                    return (a.courseName || '').localeCompare(b.courseName || '');
+                  } else if (sortBy === 'code') {
+                    return (a.courseCode || '').localeCompare(b.courseCode || '');
+                  } else if (sortBy === 'units') {
+                    return (a.units || 0) - (b.units || 0);
+                  } else {
+                    return (a.courseType || '').localeCompare(b.courseType || '');
+                  }
+                })
+                .map(course => (
                 <tr key={course.courseId} style={{ borderBottom: '1px solid #eee' }}>
                   <td style={{ padding: '12px' }}>{course.courseCode || 'N/A'}</td>
                   <td style={{ padding: '12px' }}>{course.courseName}</td>
@@ -191,6 +261,7 @@ export default function CourseList({ refreshKey }) {
             </tbody>
           </table>
         </div>
+        </>
       )}
 
       {/* Edit Modal */}

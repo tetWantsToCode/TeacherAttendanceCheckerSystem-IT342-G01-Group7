@@ -17,6 +17,9 @@ const OfferedCourseManagement = () => {
         section: '',
         units: ''
     });
+    const [searchTerm, setSearchTerm] = useState('');
+    const [sortBy, setSortBy] = useState('course'); // course, teacher, section, semester
+    const [filterSemester, setFilterSemester] = useState('all');
 
     const semesters = ['FIRST_SEM', 'SECOND_SEM', 'SUMMER'];
 
@@ -234,18 +237,11 @@ const OfferedCourseManagement = () => {
                                 value={formData.semester}
                                 onChange={(e) => setFormData({ ...formData, semester: e.target.value })}
                                 required
-                                disabled={!!formData.course}
-                                style={formData.course ? { backgroundColor: '#f0f0f0', cursor: 'not-allowed' } : {}}
                             >
                                 {semesters.map(sem => (
                                     <option key={sem} value={sem}>{sem.replace('_', ' ')}</option>
                                 ))}
                             </select>
-                            {formData.course && (
-                                <small style={{ color: '#666', display: 'block', marginTop: '5px' }}>
-                                    Auto-filled from course. Clear course to edit manually.
-                                </small>
-                            )}
                         </div>
 
                         <div className="form-group">
@@ -294,6 +290,53 @@ const OfferedCourseManagement = () => {
 
             <div className="table-container">
                 <h3>Offered Courses List</h3>
+                
+                {/* Search, Sort, and Filter Controls */}
+                <div style={{ marginBottom: '20px', display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '10px' }}>
+                    <input
+                        type="text"
+                        placeholder="Search by course name, teacher, section..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        style={{
+                            padding: '10px',
+                            borderRadius: '6px',
+                            border: '1px solid #ccc',
+                            fontSize: '14px'
+                        }}
+                    />
+                    <select
+                        value={sortBy}
+                        onChange={(e) => setSortBy(e.target.value)}
+                        style={{
+                            padding: '10px',
+                            borderRadius: '6px',
+                            border: '1px solid #ccc',
+                            fontSize: '14px'
+                        }}
+                    >
+                        <option value="course">Sort: Course Name</option>
+                        <option value="teacher">Sort: Teacher</option>
+                        <option value="section">Sort: Section</option>
+                        <option value="semester">Sort: Semester</option>
+                    </select>
+                    <select
+                        value={filterSemester}
+                        onChange={(e) => setFilterSemester(e.target.value)}
+                        style={{
+                            padding: '10px',
+                            borderRadius: '6px',
+                            border: '1px solid #ccc',
+                            fontSize: '14px'
+                        }}
+                    >
+                        <option value="all">All Semesters</option>
+                        {semesters.map(sem => (
+                            <option key={sem} value={sem}>{sem.replace('_', ' ')}</option>
+                        ))}
+                    </select>
+                </div>
+                
                 <table>
                     <thead>
                         <tr>
@@ -315,7 +358,30 @@ const OfferedCourseManagement = () => {
                                 </td>
                             </tr>
                         ) : (
-                            offeredCourses.map(oc => (
+                            offeredCourses
+                                .filter(oc => {
+                                    const search = searchTerm.toLowerCase();
+                                    const matchesSearch = oc.course?.courseName?.toLowerCase().includes(search) ||
+                                                         oc.teacher?.user?.fname?.toLowerCase().includes(search) ||
+                                                         oc.teacher?.user?.lname?.toLowerCase().includes(search) ||
+                                                         oc.section?.toLowerCase().includes(search);
+                                    const matchesSemester = filterSemester === 'all' || oc.semester === filterSemester;
+                                    return matchesSearch && matchesSemester;
+                                })
+                                .sort((a, b) => {
+                                    if (sortBy === 'course') {
+                                        return (a.course?.courseName || '').localeCompare(b.course?.courseName || '');
+                                    } else if (sortBy === 'teacher') {
+                                        const nameA = `${a.teacher?.user?.fname} ${a.teacher?.user?.lname}`;
+                                        const nameB = `${b.teacher?.user?.fname} ${b.teacher?.user?.lname}`;
+                                        return nameA.localeCompare(nameB);
+                                    } else if (sortBy === 'section') {
+                                        return (a.section || '').localeCompare(b.section || '');
+                                    } else {
+                                        return (a.semester || '').localeCompare(b.semester || '');
+                                    }
+                                })
+                                .map(oc => (
                                 <tr key={oc.offeredCourseId}>
                                     <td>{oc.course?.courseCode || 'N/A'}</td>
                                     <td>{oc.course?.courseName || 'N/A'}</td>

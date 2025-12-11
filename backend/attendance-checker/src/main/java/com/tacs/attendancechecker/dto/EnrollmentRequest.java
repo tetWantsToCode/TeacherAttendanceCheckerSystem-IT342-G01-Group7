@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class EnrollmentRequest {
     private Integer studentId;
-    private Integer courseId;
+    private Integer offeredCourseId;
     private String status; // ACTIVE, DROPPED, COMPLETED
 }

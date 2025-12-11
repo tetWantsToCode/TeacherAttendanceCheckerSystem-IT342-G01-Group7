@@ -10,6 +10,8 @@ const DepartmentManagement = () => {
         departmentCode: '',
         departmentName: ''
     });
+    const [searchTerm, setSearchTerm] = useState('');
+    const [sortBy, setSortBy] = useState('code'); // code, name
 
     useEffect(() => {
         fetchDepartments();
@@ -125,6 +127,36 @@ const DepartmentManagement = () => {
 
             <div className="table-container">
                 <h3>Departments List</h3>
+                
+                {/* Search and Sort Controls */}
+                <div style={{ marginBottom: '20px', display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '10px' }}>
+                    <input
+                        type="text"
+                        placeholder="Search by department code or name..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        style={{
+                            padding: '10px',
+                            borderRadius: '6px',
+                            border: '1px solid #ccc',
+                            fontSize: '14px'
+                        }}
+                    />
+                    <select
+                        value={sortBy}
+                        onChange={(e) => setSortBy(e.target.value)}
+                        style={{
+                            padding: '10px',
+                            borderRadius: '6px',
+                            border: '1px solid #ccc',
+                            fontSize: '14px'
+                        }}
+                    >
+                        <option value="code">Sort: Code (A-Z)</option>
+                        <option value="name">Sort: Name (A-Z)</option>
+                    </select>
+                </div>
+                
                 <table>
                     <thead>
                         <tr>
@@ -139,7 +171,20 @@ const DepartmentManagement = () => {
                                 <td colSpan="3" style={{ textAlign: 'center' }}>No departments found</td>
                             </tr>
                         ) : (
-                            departments.map(dept => (
+                            departments
+                                .filter(dept => {
+                                    const search = searchTerm.toLowerCase();
+                                    return dept.departmentCode?.toLowerCase().includes(search) ||
+                                           dept.departmentName?.toLowerCase().includes(search);
+                                })
+                                .sort((a, b) => {
+                                    if (sortBy === 'code') {
+                                        return (a.departmentCode || '').localeCompare(b.departmentCode || '');
+                                    } else {
+                                        return (a.departmentName || '').localeCompare(b.departmentName || '');
+                                    }
+                                })
+                                .map(dept => (
                                 <tr key={dept.departmentId}>
                                     <td>{dept.departmentCode}</td>
                                     <td>{dept.departmentName}</td>
