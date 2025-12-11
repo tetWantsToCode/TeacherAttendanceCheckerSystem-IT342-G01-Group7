@@ -79,7 +79,7 @@ export default function StudentClasses() {
 
   const handleCourseClick = (enrollment) => {
     setSelectedCourse(enrollment);
-    fetchAttendanceForCourse(enrollment.course.courseId);
+    fetchAttendanceForCourse(enrollment.offeredCourse?.course?.courseId);
   };
 
   const handleBackToClasses = () => {
@@ -287,19 +287,22 @@ export default function StudentClasses() {
                     </div>
                     
                     <h3>
-                      {enrollment.course.courseName}
+                      {enrollment.offeredCourse?.course?.courseName || 'Course Name'}
                     </h3>
                     
                     <p className="student-course-description">
-                      {enrollment.course.description}
+                      {enrollment.offeredCourse?.course?.description || ''}
                     </p>
                     
                     <div className="student-course-info">
                       <p>
-                        <strong>Teacher:</strong> {enrollment.course.teacher?.user?.fname || 'N/A'} {enrollment.course.teacher?.user?.lname || ''}
+                        <strong>Teacher:</strong> {enrollment.offeredCourse?.teacher?.user?.fname || 'N/A'} {enrollment.offeredCourse?.teacher?.user?.lname || ''}
                       </p>
                       <p>
-                        <strong>Course ID:</strong> {enrollment.course.courseId}
+                        <strong>Course ID:</strong> {enrollment.offeredCourse?.course?.courseId || 'N/A'}
+                      </p>
+                      <p>
+                        <strong>Section:</strong> {enrollment.offeredCourse?.section || 'N/A'}
                       </p>
                     </div>
                   </div>
@@ -321,9 +324,12 @@ export default function StudentClasses() {
           </button>
 
           <div className="student-course-header">
-            <h3>{selectedCourse.course.courseName}</h3>
+            <h3>{selectedCourse.offeredCourse?.course?.courseName || 'Course'}</h3>
             <p>
-              <strong>Teacher:</strong> {selectedCourse.course.teacher.user.fname} {selectedCourse.course.teacher.user.lname}
+              <strong>Teacher:</strong> {selectedCourse.offeredCourse?.teacher?.user?.fname || 'N/A'} {selectedCourse.offeredCourse?.teacher?.user?.lname || ''}
+            </p>
+            <p>
+              <strong>Section:</strong> {selectedCourse.offeredCourse?.section || 'N/A'} | <strong>Semester:</strong> {selectedCourse.offeredCourse?.semester || 'N/A'}
             </p>
           </div>
 

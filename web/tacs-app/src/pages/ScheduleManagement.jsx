@@ -16,6 +16,10 @@ const ScheduleManagement = () => {
         classroom: '',
         isActive: true
     });
+    const [searchTerm, setSearchTerm] = useState('');
+    const [sortBy, setSortBy] = useState('course'); // course, teacher, day, time
+    const [filterDay, setFilterDay] = useState('all');
+    const [filterStatus, setFilterStatus] = useState('all');
 
     const daysOfWeek = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'];
 
@@ -291,6 +295,67 @@ const ScheduleManagement = () => {
 
             <div className="table-container">
                 <h3>Schedules List</h3>
+                
+                {/* Search, Sort, and Filter Controls */}
+                <div style={{ marginBottom: '20px', display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: '10px' }}>
+                    <input
+                        type="text"
+                        placeholder="Search by course, teacher, classroom..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        style={{
+                            padding: '10px',
+                            borderRadius: '6px',
+                            border: '1px solid #ccc',
+                            fontSize: '14px'
+                        }}
+                    />
+                    <select
+                        value={sortBy}
+                        onChange={(e) => setSortBy(e.target.value)}
+                        style={{
+                            padding: '10px',
+                            borderRadius: '6px',
+                            border: '1px solid #ccc',
+                            fontSize: '14px'
+                        }}
+                    >
+                        <option value="course">Sort: Course</option>
+                        <option value="teacher">Sort: Teacher</option>
+                        <option value="day">Sort: Day</option>
+                        <option value="time">Sort: Time</option>
+                    </select>
+                    <select
+                        value={filterDay}
+                        onChange={(e) => setFilterDay(e.target.value)}
+                        style={{
+                            padding: '10px',
+                            borderRadius: '6px',
+                            border: '1px solid #ccc',
+                            fontSize: '14px'
+                        }}
+                    >
+                        <option value="all">All Days</option>
+                        {daysOfWeek.map(day => (
+                            <option key={day} value={day}>{day}</option>
+                        ))}
+                    </select>
+                    <select
+                        value={filterStatus}
+                        onChange={(e) => setFilterStatus(e.target.value)}
+                        style={{
+                            padding: '10px',
+                            borderRadius: '6px',
+                            border: '1px solid #ccc',
+                            fontSize: '14px'
+                        }}
+                    >
+                        <option value="all">All Status</option>
+                        <option value="active">Active Only</option>
+                        <option value="inactive">Inactive Only</option>
+                    </select>
+                </div>
+                
                 <table>
                     <thead>
                         <tr>
@@ -309,7 +374,34 @@ const ScheduleManagement = () => {
                                 <td colSpan="7" style={{ textAlign: 'center' }}>No schedules found</td>
                             </tr>
                         ) : (
-                            schedules.map(schedule => (
+                            schedules
+                                .filter(schedule => {
+                                    const search = searchTerm.toLowerCase();
+                                    const matchesSearch = schedule.offeredCourse?.course?.courseName?.toLowerCase().includes(search) ||
+                                                         schedule.offeredCourse?.teacher?.user?.fname?.toLowerCase().includes(search) ||
+                                                         schedule.offeredCourse?.teacher?.user?.lname?.toLowerCase().includes(search) ||
+                                                         schedule.classroom?.roomNumber?.toLowerCase().includes(search);
+                                    const matchesDay = filterDay === 'all' || schedule.dayOfWeek === filterDay;
+                                    const matchesStatus = filterStatus === 'all' ||
+                                                         (filterStatus === 'active' && schedule.isActive) ||
+                                                         (filterStatus === 'inactive' && !schedule.isActive);
+                                    return matchesSearch && matchesDay && matchesStatus;
+                                })
+                                .sort((a, b) => {
+                                    if (sortBy === 'course') {
+                                        return (a.offeredCourse?.course?.courseName || '').localeCompare(b.offeredCourse?.course?.courseName || '');
+                                    } else if (sortBy === 'teacher') {
+                                        const nameA = `${a.offeredCourse?.teacher?.user?.fname} ${a.offeredCourse?.teacher?.user?.lname}`;
+                                        const nameB = `${b.offeredCourse?.teacher?.user?.fname} ${b.offeredCourse?.teacher?.user?.lname}`;
+                                        return nameA.localeCompare(nameB);
+                                    } else if (sortBy === 'day') {
+                                        const dayOrder = { 'MONDAY': 1, 'TUESDAY': 2, 'WEDNESDAY': 3, 'THURSDAY': 4, 'FRIDAY': 5, 'SATURDAY': 6, 'SUNDAY': 7 };
+                                        return (dayOrder[a.dayOfWeek] || 0) - (dayOrder[b.dayOfWeek] || 0);
+                                    } else {
+                                        return (a.startTime || '').localeCompare(b.startTime || '');
+                                    }
+                                })
+                                .map(schedule => (
                                 <tr key={schedule.scheduleId}>
                                     <td>{schedule.offeredCourse?.course?.courseName || 'N/A'}</td>
                                     <td>

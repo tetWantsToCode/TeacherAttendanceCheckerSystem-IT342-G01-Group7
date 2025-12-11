@@ -12,6 +12,9 @@ const ClassroomManagement = () => {
         capacity: '',
         roomType: 'LECTURE'
     });
+    const [searchTerm, setSearchTerm] = useState('');
+    const [sortBy, setSortBy] = useState('room'); // room, building, capacity, type
+    const [filterType, setFilterType] = useState('all');
 
     const roomTypes = ['LECTURE', 'LABORATORY', 'COMPUTER_LAB', 'LIBRARY', 'AUDITORIUM', 'GYM', 'OTHER'];
 
@@ -163,6 +166,53 @@ const ClassroomManagement = () => {
 
             <div className="table-container">
                 <h3>Classrooms List</h3>
+                
+                {/* Search, Sort, and Filter Controls */}
+                <div style={{ marginBottom: '20px', display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '10px' }}>
+                    <input
+                        type="text"
+                        placeholder="Search by room number, building..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        style={{
+                            padding: '10px',
+                            borderRadius: '6px',
+                            border: '1px solid #ccc',
+                            fontSize: '14px'
+                        }}
+                    />
+                    <select
+                        value={sortBy}
+                        onChange={(e) => setSortBy(e.target.value)}
+                        style={{
+                            padding: '10px',
+                            borderRadius: '6px',
+                            border: '1px solid #ccc',
+                            fontSize: '14px'
+                        }}
+                    >
+                        <option value="room">Sort: Room Number</option>
+                        <option value="building">Sort: Building</option>
+                        <option value="capacity">Sort: Capacity</option>
+                        <option value="type">Sort: Room Type</option>
+                    </select>
+                    <select
+                        value={filterType}
+                        onChange={(e) => setFilterType(e.target.value)}
+                        style={{
+                            padding: '10px',
+                            borderRadius: '6px',
+                            border: '1px solid #ccc',
+                            fontSize: '14px'
+                        }}
+                    >
+                        <option value="all">All Room Types</option>
+                        {roomTypes.map(type => (
+                            <option key={type} value={type}>{type.replace('_', ' ')}</option>
+                        ))}
+                    </select>
+                </div>
+                
                 <table>
                     <thead>
                         <tr>
@@ -179,7 +229,26 @@ const ClassroomManagement = () => {
                                 <td colSpan="5" style={{ textAlign: 'center' }}>No classrooms found</td>
                             </tr>
                         ) : (
-                            classrooms.map(room => (
+                            classrooms
+                                .filter(room => {
+                                    const search = searchTerm.toLowerCase();
+                                    const matchesSearch = room.roomNumber?.toLowerCase().includes(search) ||
+                                                         room.building?.toLowerCase().includes(search);
+                                    const matchesType = filterType === 'all' || room.roomType === filterType;
+                                    return matchesSearch && matchesType;
+                                })
+                                .sort((a, b) => {
+                                    if (sortBy === 'room') {
+                                        return (a.roomNumber || '').localeCompare(b.roomNumber || '');
+                                    } else if (sortBy === 'building') {
+                                        return (a.building || '').localeCompare(b.building || '');
+                                    } else if (sortBy === 'capacity') {
+                                        return (a.capacity || 0) - (b.capacity || 0);
+                                    } else {
+                                        return (a.roomType || '').localeCompare(b.roomType || '');
+                                    }
+                                })
+                                .map(room => (
                                 <tr key={room.classroomId}>
                                     <td>{room.roomNumber}</td>
                                     <td>{room.building}</td>
