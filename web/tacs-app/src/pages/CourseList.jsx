@@ -189,13 +189,13 @@ export default function CourseList({ refreshKey }) {
         <div style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', background: '#ffffff', boxShadow: '0 2px 6px rgba(0,0,0,0.08)', borderRadius: '8px', overflow: 'hidden' }}>
             <thead>
-              <tr style={{ background: '#1e293b', color: 'white' }}>
-                <th style={{ padding: '12px', textAlign: 'left' }}>Code</th>
-                <th style={{ padding: '12px', textAlign: 'left' }}>Course Name</th>
-                <th style={{ padding: '12px', textAlign: 'left' }}>Units</th>
-                <th style={{ padding: '12px', textAlign: 'left' }}>Type</th>
-                <th style={{ padding: '12px', textAlign: 'left' }}>Status</th>
-                <th style={{ padding: '12px', textAlign: 'left' }}>Actions</th>
+              <tr style={{ background: '#3F72AF', color: 'white' }}>
+                <th style={{ padding: '14px 16px', textAlign: 'left', fontWeight: '600', width: '10%' }}>Code</th>
+                <th style={{ padding: '14px 16px', textAlign: 'left', fontWeight: '600', width: '30%' }}>Name</th>
+                <th style={{ padding: '14px 16px', textAlign: 'left', fontWeight: '600', width: '10%' }}>Units</th>
+                <th style={{ padding: '14px 16px', textAlign: 'left', fontWeight: '600', width: '15%' }}>Type</th>
+                <th style={{ padding: '14px 16px', textAlign: 'left', fontWeight: '600', width: '10%' }}>Status</th>
+                <th style={{ padding: '14px 16px', textAlign: 'left', fontWeight: '600', width: '25%' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -222,22 +222,24 @@ export default function CourseList({ refreshKey }) {
                 })
                 .map(course => (
                 <tr key={course.courseId} style={{ borderBottom: '1px solid #eee' }}>
-                  <td style={{ padding: '12px' }}>{course.courseCode || 'N/A'}</td>
-                  <td style={{ padding: '12px' }}>{course.courseName}</td>
-                  <td style={{ padding: '12px' }}>{course.units || 'N/A'}</td>
-                  <td style={{ padding: '12px' }}>{course.courseType || 'N/A'}</td>
-                  <td style={{ padding: '12px' }}>{course.isActive ? 'Active' : 'Inactive'}</td>
-                  <td style={{ padding: '12px' }}>
+                  <td style={{ padding: '14px 16px', verticalAlign: 'middle', width: '10%' }}>{course.courseCode || 'N/A'}</td>
+                  <td style={{ padding: '14px 16px', verticalAlign: 'middle', width: '30%' }}>{course.courseName}</td>
+                  <td style={{ padding: '14px 16px', verticalAlign: 'middle', width: '10%' }}>{course.units || 'N/A'}</td>
+                  <td style={{ padding: '14px 16px', verticalAlign: 'middle', width: '15%' }}>{course.courseType || 'N/A'}</td>
+                  <td style={{ padding: '14px 16px', verticalAlign: 'middle', width: '10%' }}>{course.isActive ? 'Active' : 'Inactive'}</td>
+                  <td style={{ padding: '14px 16px', verticalAlign: 'middle', width: '25%' }}>
                     <button
                       onClick={() => handleEdit(course)}
                       style={{
-                        padding: '6px 12px',
-                        background: '#4CAF50',
+                        padding: '8px 16px',
+                        background: '#10b981',
                         color: 'white',
                         border: 'none',
-                        borderRadius: '4px',
+                        borderRadius: '6px',
                         cursor: 'pointer',
-                        marginRight: '8px'
+                        marginRight: '8px',
+                        fontWeight: '500',
+                        fontSize: '14px'
                       }}
                     >
                       Edit
@@ -245,12 +247,14 @@ export default function CourseList({ refreshKey }) {
                     <button
                       onClick={() => handleDelete(course.courseId)}
                       style={{
-                        padding: '6px 12px',
-                        background: '#f44336',
+                        padding: '8px 16px',
+                        background: '#ef4444',
                         color: 'white',
                         border: 'none',
-                        borderRadius: '4px',
-                        cursor: 'pointer'
+                        borderRadius: '6px',
+                        cursor: 'pointer',
+                        fontWeight: '500',
+                        fontSize: '14px'
                       }}
                     >
                       Delete

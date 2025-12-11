@@ -340,20 +340,20 @@ const OfferedCourseManagement = () => {
                 <table>
                     <thead>
                         <tr>
-                            <th>Course Code</th>
-                            <th>Course Name</th>
-                            <th>Teacher</th>
-                            <th>Classroom</th>
-                            <th>Section</th>
-                            <th>Semester</th>
-                            <th>Units</th>
-                            <th>Actions</th>
+                            <th style={{ padding: '14px 16px', textAlign: 'left', fontWeight: '600', width: '10%' }}>Course Code</th>
+                            <th style={{ padding: '14px 16px', textAlign: 'left', fontWeight: '600', width: '20%' }}>Course Name</th>
+                            <th style={{ padding: '14px 16px', textAlign: 'left', fontWeight: '600', width: '15%' }}>Teacher</th>
+                            <th style={{ padding: '14px 16px', textAlign: 'left', fontWeight: '600', width: '12%' }}>Classroom</th>
+                            <th style={{ padding: '14px 16px', textAlign: 'left', fontWeight: '600', width: '8%' }}>Section</th>
+                            <th style={{ padding: '14px 16px', textAlign: 'left', fontWeight: '600', width: '10%' }}>Semester</th>
+                            <th style={{ padding: '14px 16px', textAlign: 'left', fontWeight: '600', width: '5%' }}>Units</th>
+                            <th style={{ padding: '14px 16px', textAlign: 'left', fontWeight: '600', width: '20%' }}>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {offeredCourses.length === 0 ? (
                             <tr>
-                                <td colSpan="8" style={{ textAlign: 'center' }}>
+                                <td colSpan="8" style={{ textAlign: 'center', padding: '14px 16px' }}>
                                     No offered courses found. Create one to enable class scheduling.
                                 </td>
                             </tr>
@@ -383,14 +383,14 @@ const OfferedCourseManagement = () => {
                                 })
                                 .map(oc => (
                                 <tr key={oc.offeredCourseId}>
-                                    <td>{oc.course?.courseCode || 'N/A'}</td>
-                                    <td>{oc.course?.courseName || 'N/A'}</td>
-                                    <td>{oc.teacher?.user?.fname} {oc.teacher?.user?.lname}</td>
-                                    <td>{oc.classroom?.roomNumber} - {oc.classroom?.building}</td>
-                                    <td>{oc.section || 'N/A'}</td>
-                                    <td>{oc.semester}</td>
-                                    <td>{oc.units}</td>
-                                    <td>
+                                    <td style={{ padding: '14px 16px', verticalAlign: 'middle', width: '10%' }}>{oc.course?.courseCode || 'N/A'}</td>
+                                    <td style={{ padding: '14px 16px', verticalAlign: 'middle', width: '20%' }}>{oc.course?.courseName || 'N/A'}</td>
+                                    <td style={{ padding: '14px 16px', verticalAlign: 'middle', width: '15%' }}>{oc.teacher?.user?.fname} {oc.teacher?.user?.lname}</td>
+                                    <td style={{ padding: '14px 16px', verticalAlign: 'middle', width: '12%' }}>{oc.classroom?.roomNumber} - {oc.classroom?.building}</td>
+                                    <td style={{ padding: '14px 16px', verticalAlign: 'middle', width: '8%' }}>{oc.section || 'N/A'}</td>
+                                    <td style={{ padding: '14px 16px', verticalAlign: 'middle', width: '10%' }}>{oc.semester}</td>
+                                    <td style={{ padding: '14px 16px', verticalAlign: 'middle', width: '5%' }}>{oc.units}</td>
+                                    <td style={{ padding: '14px 16px', verticalAlign: 'middle', width: '20%' }}>
                                         <button onClick={() => handleEdit(oc)} className="btn-edit">
                                             Edit
                                         </button>

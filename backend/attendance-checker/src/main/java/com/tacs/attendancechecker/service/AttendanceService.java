@@ -47,7 +47,7 @@ public class AttendanceService {
 
     // Get enrolled students for a course
     public List<EnrolledStudentResponse> getEnrolledStudents(Integer courseId) {
-        List<Enrollment> enrollments = enrollmentRepository.findByCourseCourseId(courseId);
+        List<Enrollment> enrollments = enrollmentRepository.findByOfferedCourseCourseCourseId(courseId);
         return enrollments.stream()
                 .filter(e -> "ACTIVE".equalsIgnoreCase(e.getStudent().getEnrollmentStatus()))
                 .map(this::mapToEnrolledStudentResponse)
@@ -109,8 +109,8 @@ public class AttendanceService {
                 } else {
                     // Course no longer has teacher - cannot auto-create session
                     // Sessions must be created through proper workflow with OfferedCourse
-                    throw new RuntimeException("No attendance session found for course " + course.getCourseId() 
-                        + " on date " + request.getDate() + ". Please create a session first.");
+                    throw new RuntimeException("No attendance session found for course " + course.getCourseId()
+                            + " on date " + request.getDate() + ". Please create a session first.");
                 }
             }
             attendance.setSession(session);
@@ -155,7 +155,7 @@ public class AttendanceService {
         // Course no longer has teacher - teacher info is in OfferedCourse
         // This method is used by getTeacherCourses which gets courses via OfferedCourse
         // Teacher info should be set by caller if needed
-        
+
         return response;
     }
 

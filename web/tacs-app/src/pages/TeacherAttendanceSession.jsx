@@ -429,10 +429,10 @@ export default function TeacherAttendanceSession() {
           gap: '10px', 
           marginBottom: '20px',
           padding: '20px',
-          background: 'linear-gradient(135deg, #ff7849 0%, #ff5722 100%)',
+          background: 'linear-gradient(135deg, #3F72AF 0%, #2b5a8f 100%)',
           borderRadius: '12px',
           color: 'white',
-          boxShadow: '0 4px 15px rgba(255, 120, 73, 0.3)'
+          boxShadow: '0 4px 15px rgba(63, 114, 175, 0.3)'
         }}>
           <BookIcon size={32} />
           <div>
@@ -531,8 +531,8 @@ export default function TeacherAttendanceSession() {
                     height: '50px',
                     borderRadius: '12px',
                     background: selectedCourse?.courseId === course.courseId
-                      ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-                      : 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+                      ? 'linear-gradient(135deg, #3F72AF 0%, #2b5a8f 100%)'
+                      : 'linear-gradient(135deg, #3F72AF 0%, #2b5a8f 100%)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -619,10 +619,10 @@ export default function TeacherAttendanceSession() {
             alignItems: 'center', 
             marginBottom: '20px',
             padding: '20px',
-            background: 'linear-gradient(135deg, #ff7849 0%, #ff5722 100%)',
+            background: 'linear-gradient(135deg, #3F72AF 0%, #2b5a8f 100%)',
             borderRadius: '12px',
             color: 'white',
-            boxShadow: '0 4px 15px rgba(255, 120, 73, 0.3)'
+            boxShadow: '0 4px 15px rgba(63, 114, 175, 0.3)'
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <CalendarIcon size={32} />
@@ -638,7 +638,7 @@ export default function TeacherAttendanceSession() {
               style={{
                 padding: '12px 24px',
                 background: 'white',
-                color: '#ff5722',
+                color: '#3F72AF',
                 border: 'none',
                 borderRadius: '8px',
                 cursor: 'pointer',

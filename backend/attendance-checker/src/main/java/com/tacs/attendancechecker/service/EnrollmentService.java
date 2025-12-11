@@ -63,6 +63,13 @@ public class EnrollmentService {
         return enrollmentRepository.findByOfferedCourseOfferedCourseId(offeredCourseId);
     }
 
+    public Enrollment updateEnrollment(Integer enrollmentId, String status) {
+        Enrollment enrollment = enrollmentRepository.findById(enrollmentId)
+                .orElseThrow(() -> new RuntimeException("Enrollment not found"));
+        enrollment.setStatus(status);
+        return enrollmentRepository.save(enrollment);
+    }
+
     public void deleteEnrollment(Integer enrollmentId) {
         enrollmentRepository.deleteById(enrollmentId);
     }
