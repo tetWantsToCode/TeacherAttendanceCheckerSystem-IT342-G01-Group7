@@ -43,7 +43,24 @@ export default function MyClasses() {
 
       if (response.ok) {
         const data = await response.json();
-        setCourses(data);
+        
+        // Fetch enrollments to get student counts
+        const enrollmentsResult = await api.get('/enrollments');
+        if (enrollmentsResult.success) {
+          // Add enrollment count to each course
+          const coursesWithCounts = data.map(course => {
+            const courseEnrollments = enrollmentsResult.data.filter(
+              enrollment => enrollment.offeredCourse?.course?.courseId === course.courseId
+            );
+            return {
+              ...course,
+              enrollmentCount: courseEnrollments.length
+            };
+          });
+          setCourses(coursesWithCounts);
+        } else {
+          setCourses(data);
+        }
       } else {
         setError('Failed to fetch your courses.');
       }
@@ -92,6 +109,12 @@ export default function MyClasses() {
     setError('');
     await fetchEnrolledStudents(course.courseId);
     await fetchEnrollments(course.courseId);
+  };
+
+  // Get enrollment count for a specific course
+  const getEnrollmentCount = (courseId) => {
+    // This will be calculated when we fetch all courses with their enrollments
+    return courses.find(c => c.courseId === courseId)?.enrollmentCount || 0;
   };
 
   const handleBackToCourses = () => {
@@ -236,7 +259,7 @@ export default function MyClasses() {
                     <h3 className="course-card-title">{course.courseName}</h3>
                     <p className="course-card-description">{course.description}</p>
                     <div className="course-card-id">
-                      <strong>Course ID:</strong> {course.courseId}
+                      <strong>Students Enrolled:</strong> {course.enrollmentCount || 0}
                     </div>
                   </div>
                 ))}
