@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../css/AdminDashboard.css';
+import { BookIcon, CalendarIcon, ClipboardIcon, UsersIcon, TrashIcon, SaveIcon, LockIcon, AlertIcon, PlusIcon, XIcon, SparklesIcon, InboxIcon, CheckCircleIcon, XCircleIcon, BookOpenIcon } from '../components/Icons';
 
 export default function TeacherAttendanceSession() {
   const [courses, setCourses] = useState([]);
@@ -404,7 +405,9 @@ export default function TeacherAttendanceSession() {
 
   return (
     <div className="admin-container">
-      <h2>📋 Attendance Management (Session-Based)</h2>
+      <h2 style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <ClipboardIcon size={28} /> Attendance Management (Session-Based)
+      </h2>
 
       {error && (
         <div style={{ background: '#fee', color: '#c33', padding: '10px', borderRadius: '6px', marginBottom: '15px' }}>
@@ -431,7 +434,7 @@ export default function TeacherAttendanceSession() {
           color: 'white',
           boxShadow: '0 4px 15px rgba(255, 120, 73, 0.3)'
         }}>
-          <span style={{ fontSize: '32px' }}>📚</span>
+          <BookIcon size={32} />
           <div>
             <h3 style={{ margin: 0, fontSize: '24px', fontWeight: 'bold' }}>Step 1: Select Your Course</h3>
             <p style={{ margin: '5px 0 0 0', fontSize: '14px', opacity: 0.9 }}>
@@ -453,7 +456,7 @@ export default function TeacherAttendanceSession() {
             borderRadius: '12px',
             border: '2px dashed #ffc107'
           }}>
-            <div style={{ fontSize: '64px', marginBottom: '15px' }}>📭</div>
+            <div style={{ marginBottom: '15px' }}><InboxIcon size={64} /></div>
             <h4 style={{ margin: '0 0 10px 0', color: '#856404' }}>No Courses Assigned</h4>
             <p style={{ margin: 0, color: '#856404' }}>Please contact your administrator to assign courses to your account.</p>
           </div>
@@ -513,7 +516,7 @@ export default function TeacherAttendanceSession() {
                     alignItems: 'center',
                     gap: '4px'
                   }}>
-                    ✓ Selected
+                    <CheckCircleIcon size={16} /> Selected
                   </div>
                 )}
                 
@@ -536,7 +539,7 @@ export default function TeacherAttendanceSession() {
                     fontSize: '24px',
                     boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
                   }}>
-                    📖
+                    <BookOpenIcon size={24} />
                   </div>
                   <div style={{ flex: 1 }}>
                     <div style={{
@@ -589,7 +592,7 @@ export default function TeacherAttendanceSession() {
                       borderRadius: '12px',
                       fontWeight: '500'
                     }}>
-                      📅 {course.semester?.replace('_', ' ')}
+                      <CalendarIcon size={16} /> {course.semester?.replace('_', ' ')}
                     </span>
                     <span style={{ 
                       background: '#edf2f7', 
@@ -597,7 +600,7 @@ export default function TeacherAttendanceSession() {
                       borderRadius: '12px',
                       fontWeight: '500'
                     }}>
-                      🎓 {course.schoolYear}
+                      <CalendarIcon size={16} /> {course.schoolYear}
                     </span>
                   </div>
                 )}
@@ -616,13 +619,13 @@ export default function TeacherAttendanceSession() {
             alignItems: 'center', 
             marginBottom: '20px',
             padding: '20px',
-            background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+            background: 'linear-gradient(135deg, #ff7849 0%, #ff5722 100%)',
             borderRadius: '12px',
             color: 'white',
-            boxShadow: '0 4px 15px rgba(240, 147, 251, 0.3)'
+            boxShadow: '0 4px 15px rgba(255, 120, 73, 0.3)'
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <span style={{ fontSize: '32px' }}>📅</span>
+              <CalendarIcon size={32} />
               <div>
                 <h3 style={{ margin: 0, fontSize: '24px', fontWeight: 'bold' }}>Step 2: Manage Sessions</h3>
                 <p style={{ margin: '5px 0 0 0', fontSize: '14px', opacity: 0.9 }}>
@@ -635,7 +638,7 @@ export default function TeacherAttendanceSession() {
               style={{
                 padding: '12px 24px',
                 background: 'white',
-                color: '#f5576c',
+                color: '#ff5722',
                 border: 'none',
                 borderRadius: '8px',
                 cursor: 'pointer',
@@ -656,7 +659,7 @@ export default function TeacherAttendanceSession() {
                 e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
               }}
             >
-              <span style={{ fontSize: '18px' }}>{showSessionForm ? '✕' : '+'}</span>
+              {showSessionForm ? <XIcon size={18} /> : <PlusIcon size={18} />}
               {showSessionForm ? 'Cancel' : 'Create New Session'}
             </button>
           </div>
@@ -671,7 +674,7 @@ export default function TeacherAttendanceSession() {
               border: '2px solid #f093fb'
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
-                <span style={{ fontSize: '24px' }}>✨</span>
+                <SparklesIcon size={24} />
                 <h4 style={{ margin: 0, fontSize: '20px', color: '#2d3748' }}>Create New Attendance Session</h4>
               </div>
               <form onSubmit={handleCreateSession}>
@@ -820,7 +823,7 @@ export default function TeacherAttendanceSession() {
                       </td>
                       <td>
                         <span className={session.isFinalized ? 'status-inactive' : 'status-active'}>
-                          {session.isFinalized ? '🔒 Finalized' : '📝 Open'}
+                          {session.isFinalized ? 'Finalized' : 'Open'}
                         </span>
                       </td>
                       <td style={{ fontSize: '13px', color: '#666' }}>{session.remarks || '-'}</td>
@@ -835,7 +838,7 @@ export default function TeacherAttendanceSession() {
                             className="btn-primary"
                             style={{ padding: '6px 12px', fontSize: '13px' }}
                           >
-                            {session.isFinalized ? '📊 View' : '✏️ Edit'}
+                            {session.isFinalized ? 'View' : 'Edit'}
                           </button>
                           <button
                             onClick={(e) => {
@@ -852,7 +855,7 @@ export default function TeacherAttendanceSession() {
                               cursor: 'pointer'
                             }}
                           >
-                            🗑️ Delete
+                            <TrashIcon size={16} /> Delete
                           </button>
                         </div>
                       </td>
@@ -881,7 +884,7 @@ export default function TeacherAttendanceSession() {
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                 <span style={{ fontSize: '32px' }}>
-                  {selectedSession.isFinalized ? '📊' : '✍️'}
+                  {selectedSession.isFinalized ? '' : ''}
                 </span>
                 <h3 style={{ margin: 0, fontSize: '24px', fontWeight: 'bold' }}>
                   {selectedSession.isFinalized ? 'Attendance History' : 'Step 3: Mark Attendance'}
@@ -917,7 +920,7 @@ export default function TeacherAttendanceSession() {
                 borderRadius: '10px',
                 backdropFilter: 'blur(10px)'
               }}>
-                <div style={{ fontSize: '12px', opacity: 0.9, marginBottom: '4px' }}>📅 Date</div>
+                <div style={{ fontSize: '12px', opacity: 0.9, marginBottom: '4px' }}><CalendarIcon size={12} /> Date</div>
                 <div style={{ fontSize: '16px', fontWeight: 'bold' }}>
                   {formatDate(selectedSession.date)}
                 </div>
@@ -941,7 +944,7 @@ export default function TeacherAttendanceSession() {
                 borderRadius: '10px',
                 backdropFilter: 'blur(10px)'
               }}>
-                <div style={{ fontSize: '12px', opacity: 0.9, marginBottom: '4px' }}>📚 Type</div>
+                <div style={{ fontSize: '12px', opacity: 0.9, marginBottom: '4px' }}><BookIcon size={12} /> Type</div>
                 <div style={{ fontSize: '16px', fontWeight: 'bold' }}>
                   {selectedSession.sessionType}
                 </div>
@@ -953,7 +956,7 @@ export default function TeacherAttendanceSession() {
                 borderRadius: '10px',
                 backdropFilter: 'blur(10px)'
               }}>
-                <div style={{ fontSize: '12px', opacity: 0.9, marginBottom: '4px' }}>👥 Students</div>
+                <div style={{ fontSize: '12px', opacity: 0.9, marginBottom: '4px' }}><UsersIcon size={12} /> Students</div>
                 <div style={{ fontSize: '16px', fontWeight: 'bold' }}>
                   {students.length} enrolled
                 </div>
@@ -974,7 +977,9 @@ export default function TeacherAttendanceSession() {
                   <div style={{ fontSize: '24px', fontWeight: 'bold' }}>
                     {Object.values(attendanceRecords).filter(r => r.status === 'PRESENT').length}
                   </div>
-                  <div style={{ fontSize: '12px', opacity: 0.9 }}>✅ Present</div>
+                  <div style={{ fontSize: '12px', opacity: 0.9, display: 'flex', alignItems: 'center', gap: '5px' }}>
+                    <CheckCircleIcon size={14} /> Present
+                  </div>
                 </div>
                 <div style={{ textAlign: 'center' }}>
                   <div style={{ fontSize: '24px', fontWeight: 'bold' }}>
@@ -986,19 +991,21 @@ export default function TeacherAttendanceSession() {
                   <div style={{ fontSize: '24px', fontWeight: 'bold' }}>
                     {Object.values(attendanceRecords).filter(r => r.status === 'ABSENT').length}
                   </div>
-                  <div style={{ fontSize: '12px', opacity: 0.9 }}>❌ Absent</div>
+                  <div style={{ fontSize: '12px', opacity: 0.9, display: 'flex', alignItems: 'center', gap: '5px' }}>
+                    <XCircleIcon size={14} /> Absent
+                  </div>
                 </div>
                 <div style={{ textAlign: 'center' }}>
                   <div style={{ fontSize: '24px', fontWeight: 'bold' }}>
                     {Object.values(attendanceRecords).filter(r => r.status === 'EXCUSED').length}
                   </div>
-                  <div style={{ fontSize: '12px', opacity: 0.9 }}>📝 Excused</div>
+                  <div style={{ fontSize: '12px', opacity: 0.9 }}><ClipboardIcon size={12} /> Excused</div>
                 </div>
                 <div style={{ textAlign: 'center' }}>
                   <div style={{ fontSize: '24px', fontWeight: 'bold' }}>
                     {((Object.values(attendanceRecords).filter(r => r.status === 'PRESENT' || r.status === 'LATE').length / students.length) * 100).toFixed(1)}%
                   </div>
-                  <div style={{ fontSize: '12px', opacity: 0.9 }}>📈 Attendance Rate</div>
+                  <div style={{ fontSize: '12px', opacity: 0.9 }}>Attendance Rate</div>
                 </div>
               </div>
             )}
@@ -1049,10 +1056,18 @@ export default function TeacherAttendanceSession() {
                             fontWeight: 'bold',
                             display: 'inline-block'
                           }}>
-                            {record.status === 'PRESENT' && '✅ Present'}
+                            {record.status === 'PRESENT' && (
+                              <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                                <CheckCircleIcon size={16} /> Present
+                              </span>
+                            )}
                             {record.status === 'LATE' && '⏰ Late'}
-                            {record.status === 'ABSENT' && '❌ Absent'}
-                            {record.status === 'EXCUSED' && '📝 Excused'}
+                            {record.status === 'ABSENT' && (
+                              <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                                <XCircleIcon size={16} /> Absent
+                              </span>
+                            )}
+                            {record.status === 'EXCUSED' && 'Excused'}
                             {!record.status && '— Not Marked'}
                           </span>
                         ) : (
@@ -1067,10 +1082,10 @@ export default function TeacherAttendanceSession() {
                             }}
                           >
                             <option value="">Select...</option>
-                            <option value="PRESENT">✅ Present</option>
+                            <option value="PRESENT">Present</option>
                             <option value="LATE">⏰ Late</option>
-                            <option value="ABSENT">❌ Absent</option>
-                            <option value="EXCUSED">📝 Excused</option>
+                            <option value="ABSENT">Absent</option>
+                            <option value="EXCUSED">Excused</option>
                           </select>
                         )}
                       </td>
@@ -1120,7 +1135,7 @@ export default function TeacherAttendanceSession() {
                   fontWeight: '600'
                 }}
               >
-                ✅ Mark All Present
+                <CheckCircleIcon size={16} /> Mark All Present
               </button>
               
               <button
@@ -1129,7 +1144,11 @@ export default function TeacherAttendanceSession() {
                 className="btn-primary"
                 style={{ padding: '12px 30px' }}
               >
-                {loading ? 'Saving...' : '💾 Save Attendance'}
+                {loading ? 'Saving...' : (
+                  <>
+                    <SaveIcon size={16} /> Save Attendance
+                  </>
+                )}
               </button>
 
               <button
@@ -1138,7 +1157,7 @@ export default function TeacherAttendanceSession() {
                 className="btn-warning"
                 style={{ padding: '12px 30px' }}
               >
-                🔒 Finalize Session
+                <LockIcon size={16} /> Finalize Session
               </button>
             </div>
           )}
@@ -1151,7 +1170,10 @@ export default function TeacherAttendanceSession() {
               border: '1px solid #ffc107',
               borderRadius: '6px' 
             }}>
-              <strong>⚠️ This session has been finalized.</strong> Attendance records are locked and cannot be modified.
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <AlertIcon size={20} />
+                <span><strong>This session has been finalized.</strong> Attendance records are locked and cannot be modified.</span>
+              </div>
             </div>
           )}
         </div>

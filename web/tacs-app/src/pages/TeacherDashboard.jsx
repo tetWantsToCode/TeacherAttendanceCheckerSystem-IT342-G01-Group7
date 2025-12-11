@@ -4,13 +4,14 @@ import MyClasses from './MyClasses';
 import TeacherAttendanceSession from './TeacherAttendanceSession';
 import TeacherProfile from './Profile';
 import TeacherSettings from './TeacherSettings';
+import { ClipboardIcon, BookIcon, UsersIcon, SettingsIcon, LogoutIcon } from '../components/Icons';
 
 const sections = [
-  { key: 'classes', name: 'My Classes' },
-  { key: 'attendance', name: '📋 Attendance (Sessions)' },
-  { key: 'profile', name: 'Profile' },
-  { key: 'settings', name: 'Settings' },
-  { key: 'logout', name: 'Logout' }
+  { key: 'classes', name: 'My Classes', icon: BookIcon },
+  { key: 'attendance', name: 'Attendance (Sessions)', icon: ClipboardIcon },
+  { key: 'profile', name: 'Profile', icon: UsersIcon },
+  { key: 'settings', name: 'Settings', icon: SettingsIcon },
+  { key: 'logout', name: 'Logout', icon: LogoutIcon }
 ];
 
 export default function TeacherDashboard() {
@@ -66,7 +67,14 @@ export default function TeacherDashboard() {
                       : () => setActiveSection(section.key)
                   }
                 >
-                  {section.name}
+                  {section.icon ? (
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <section.icon size={18} />
+                      {section.name}
+                    </span>
+                  ) : (
+                    section.name
+                  )}
                 </li>
               ))}
             </ul>

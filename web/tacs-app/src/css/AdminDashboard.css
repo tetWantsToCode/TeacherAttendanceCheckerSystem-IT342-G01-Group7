@@ -4,7 +4,7 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: #f7f9fb;
+  background: #F9F7F7;
   display: flex;
   flex-direction: column;
   margin: 0;
@@ -17,11 +17,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: linear-gradient(135deg, #ff7849 0%, #ff5722 100%);
+  background: linear-gradient(135deg, #112D4E 0%, #3F72AF 100%);
   color: #fff;
   padding: 1.2rem 2.5rem 1.2rem 2rem;
   font-size: 1.25rem;
-  box-shadow: 0 4px 20px rgba(255, 120, 73, 0.25);
+  box-shadow: 0 4px 20px rgba(17, 45, 78, 0.25);
   width: 100%;
   border-radius: 0;
   box-sizing: border-box;
@@ -47,10 +47,10 @@
 
 .sidebar {
   width: 220px;
-  background: #f4f6fa;
-  color: #2d3748;
+  background: #DBE2EF;
+  color: #112D4E;
   padding: 2rem 1rem;
-  box-shadow: 1px 0 8px rgba(44, 62, 80, 0.04);
+  box-shadow: 1px 0 8px rgba(17, 45, 78, 0.08);
   height: calc(100vh - 64px);
   min-height: 0;
   border-radius: 0;
@@ -85,9 +85,9 @@
 
 .sidebar li.active,
 .sidebar li:hover {
-  background: linear-gradient(135deg, #ff7849 0%, #ff5722 100%);
+  background: linear-gradient(135deg, #3F72AF 0%, #112D4E 100%);
   color: #fff;
-  box-shadow: 0 4px 15px rgba(255, 120, 73, 0.25);
+  box-shadow: 0 4px 15px rgba(63, 114, 175, 0.3);
   transform: translateX(4px);
   transition: all 0.3s ease;
 }
@@ -95,7 +95,7 @@
 .main-content {
   flex: 1;
   padding: 2.5rem 3rem;
-  background: #f0f2f5;
+  background: #ffffff;
   border-radius: 16px;
   margin: 2rem 2rem 2rem 0;
   box-shadow: 0 2px 12px rgba(44, 62, 80, 0.07);
@@ -112,7 +112,7 @@
 .dashboard-welcome h1 {
   font-size: 2.2rem;
   margin-bottom: 2rem;
-  color: #25364a;
+  color: #112D4E;
   font-weight: 600;
   letter-spacing: 0.5px;
 }
@@ -127,18 +127,18 @@
 .card {
   background: #ffffff;
   border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(44, 62, 80, 0.08);
+  box-shadow: 0 2px 6px rgba(17, 45, 78, 0.1);
   padding: 1.5rem 1rem;
   font-size: 1.08rem;
-  color: #25364a;
+  color: #112D4E;
   text-align: center;
   transition: box-shadow 0.18s, background 0.18s, transform 0.18s;
-  border: 1px solid #e8eaed;
+  border: 1px solid #DBE2EF;
 }
 
 .card:hover {
-  box-shadow: 0 4px 16px rgba(44, 62, 80, 0.1);
-  background: #eaf0fa;
+  box-shadow: 0 4px 16px rgba(63, 114, 175, 0.15);
+  background: #DBE2EF;
   transform: translateY(-2px) scale(1.03);
 }
 
@@ -148,7 +148,7 @@
 }
 
 .admin-container h2 {
-  color: #25364a;
+  color: #112D4E;
   margin-bottom: 1rem;
   font-size: 1.8rem;
 }
@@ -170,7 +170,7 @@
   display: block;
   margin-bottom: 0.5rem;
   font-weight: 600;
-  color: #25364a;
+  color: #112D4E;
 }
 
 .form-group input,
@@ -188,7 +188,7 @@
 .form-group select:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #25364a;
+  border-color: #3F72AF;
 }
 
 .form-actions {
@@ -198,7 +198,7 @@
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #ff7849 0%, #ff5722 100%) !important;
+  background: linear-gradient(135deg, #3F72AF 0%, #112D4E 100%) !important;
   color: white !important;
   padding: 0.75rem 1.5rem;
   border: none;
@@ -207,12 +207,12 @@
   font-size: 1rem;
   font-weight: 600;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 15px rgba(255, 120, 73, 0.3);
+  box-shadow: 0 4px 15px rgba(63, 114, 175, 0.3);
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(255, 120, 73, 0.4);
+  box-shadow: 0 8px 25px rgba(63, 114, 175, 0.4);
 }
 
 .btn-secondary {
@@ -307,7 +307,7 @@
 }
 
 .table-container thead {
-  background: linear-gradient(135deg, #ff7849 0%, #ff5722 100%);
+  background: linear-gradient(135deg, #112D4E 0%, #3F72AF 100%);
   color: white;
 }
 

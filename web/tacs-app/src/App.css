@@ -1,10 +1,10 @@
-/* Modern Orange Gradient Theme */
+/* Modern Blue Gradient Theme */
 :root {
-  --primary-gradient: linear-gradient(135deg, #ff7849 0%, #ff5722 100%);
-  --secondary-gradient: linear-gradient(135deg, #ff9a56 0%, #ff6b6b 100%);
-  --light-gradient: linear-gradient(135deg, #fff5f0 0%, #ffe5d9 100%);
-  --card-shadow: 0 8px 30px rgba(255, 120, 73, 0.15);
-  --card-shadow-hover: 0 15px 45px rgba(255, 120, 73, 0.25);
+  --primary-gradient: linear-gradient(135deg, #3F72AF 0%, #112D4E 100%);
+  --secondary-gradient: linear-gradient(135deg, #DBE2EF 0%, #3F72AF 100%);
+  --light-gradient: linear-gradient(135deg, #F9F7F7 0%, #DBE2EF 100%);
+  --card-shadow: 0 8px 30px rgba(17, 45, 78, 0.15);
+  --card-shadow-hover: 0 15px 45px rgba(63, 114, 175, 0.25);
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -65,13 +65,13 @@
   padding: 12px 24px;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 8px 20px rgba(255, 120, 73, 0.25);
+  box-shadow: 0 8px 20px rgba(63, 114, 175, 0.3);
   transition: var(--transition);
 }
 
 .btn-gradient:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 30px rgba(255, 120, 73, 0.35);
+  box-shadow: 0 12px 30px rgba(63, 114, 175, 0.4);
 }
 
 .btn-gradient:active {
@@ -90,10 +90,10 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, #ff7849 0%, #ff5722 100%);
+  background: linear-gradient(135deg, #3F72AF 0%, #112D4E 100%);
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, #ff5722 0%, #e64a19 100%);
+  background: linear-gradient(135deg, #112D4E 0%, #1a3d63 100%);
 }
