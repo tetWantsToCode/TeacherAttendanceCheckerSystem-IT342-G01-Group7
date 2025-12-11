@@ -18,6 +18,8 @@ export default function StudentProfile() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [passwordSuccess, setPasswordSuccess] = useState('');
 
   // Fetch user profile data on component mount
   useEffect(() => {
@@ -69,16 +71,16 @@ export default function StudentProfile() {
 
   const handleSubmitPassword = async (e) => {
     e.preventDefault();
-    setError('');
-    setSuccessMessage('');
+    setPasswordError('');
+    setPasswordSuccess('');
     
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      setError('New passwords do not match!');
+      setPasswordError('New passwords do not match!');
       return;
     }
 
     if (passwordData.newPassword.length < 8) {
-      setError('Password must be at least 8 characters long!');
+      setPasswordError('Password must be at least 8 characters long!');
       return;
     }
 
@@ -101,11 +103,11 @@ export default function StudentProfile() {
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.message || 'Failed to change password');
+        setPasswordError(data.message || 'Failed to change password');
         return;
       }
 
-      setSuccessMessage('Password changed successfully!');
+      setPasswordSuccess('Password changed successfully!');
       
       // Reset form
       setPasswordData({
@@ -117,10 +119,10 @@ export default function StudentProfile() {
       // Close form after 2 seconds
       setTimeout(() => {
         setShowPasswordForm(false);
-        setSuccessMessage('');
+        setPasswordSuccess('');
       }, 2000);
     } catch (err) {
-      setError('Error changing password: ' + err.message);
+      setPasswordError('Error changing password: ' + err.message);
     }
   };
 
@@ -274,6 +276,20 @@ export default function StudentProfile() {
               <div className="profile-password-form">
                 <h3 className="profile-form-title">Change Password</h3>
                 
+                {passwordError && (
+                  <div className="profile-alert profile-alert-error">
+                    <span>⚠️</span>
+                    {passwordError}
+                  </div>
+                )}
+
+                {passwordSuccess && (
+                  <div className="profile-alert profile-alert-success">
+                    <span>✓</span>
+                    {passwordSuccess}
+                  </div>
+                )}
+                
                 <div className="profile-input-group">
                   <label className="profile-input-label">Current Password</label>
                   <div className="profile-password-input-wrapper">
@@ -290,8 +306,19 @@ export default function StudentProfile() {
                       type="button"
                       onClick={() => togglePasswordVisibility('current')}
                       className="profile-eye-button"
+                      title={showPasswords.current ? 'Hide password' : 'Show password'}
                     >
-                      {showPasswords.current ? '🙈' : '👁️'}
+                      {showPasswords.current ? (
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                          <line x1="1" y1="1" x2="23" y2="23"/>
+                        </svg>
+                      ) : (
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                          <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                      )}
                     </button>
                   </div>
                 </div>
@@ -313,8 +340,19 @@ export default function StudentProfile() {
                       type="button"
                       onClick={() => togglePasswordVisibility('new')}
                       className="profile-eye-button"
+                      title={showPasswords.new ? 'Hide password' : 'Show password'}
                     >
-                      {showPasswords.new ? '🙈' : '👁️'}
+                      {showPasswords.new ? (
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                          <line x1="1" y1="1" x2="23" y2="23"/>
+                        </svg>
+                      ) : (
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                          <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                      )}
                     </button>
                   </div>
                 </div>
@@ -335,8 +373,19 @@ export default function StudentProfile() {
                       type="button"
                       onClick={() => togglePasswordVisibility('confirm')}
                       className="profile-eye-button"
+                      title={showPasswords.confirm ? 'Hide password' : 'Show password'}
                     >
-                      {showPasswords.confirm ? '🙈' : '👁️'}
+                      {showPasswords.confirm ? (
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                          <line x1="1" y1="1" x2="23" y2="23"/>
+                        </svg>
+                      ) : (
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                          <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                      )}
                     </button>
                   </div>
                 </div>
@@ -359,7 +408,8 @@ export default function StudentProfile() {
                         newPassword: '',
                         confirmPassword: ''
                       });
-                      setError('');
+                      setPasswordError('');
+                      setPasswordSuccess('');
                     }}
                   >
                     Cancel
