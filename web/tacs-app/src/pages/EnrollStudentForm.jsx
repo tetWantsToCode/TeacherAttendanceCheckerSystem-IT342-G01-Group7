@@ -368,7 +368,7 @@ export default function EnrollStudentForm() {
               disabled={loading}
               style={{
                 padding: '12px',
-                background: loading ? '#ccc' : '#25364a',
+                background: loading ? '#ccc' : '#3F72AF',
                 color: 'white',
                 border: 'none',
                 borderRadius: '6px',

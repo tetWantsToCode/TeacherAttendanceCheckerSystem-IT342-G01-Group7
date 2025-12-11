@@ -109,7 +109,7 @@ export default function AddTeacherForm({ onSuccess }) {
           ))}
         </select>
       </div>
-      <button type="submit" style={{ background: '#10b981', color: '#fff', border: 'none', borderRadius: '6px', padding: '0.5rem 1.2rem', cursor: 'pointer', boxShadow: '0 2px 4px rgba(16, 185, 129, 0.3)', transition: 'all 0.2s' }}>Add Teacher</button>
+      <button type="submit" style={{ background: '#3F72AF', color: '#fff', border: 'none', borderRadius: '6px', padding: '0.5rem 1.2rem', cursor: 'pointer', transition: 'all 0.2s' }}>Add Teacher</button>
     </form>
   );
 }
