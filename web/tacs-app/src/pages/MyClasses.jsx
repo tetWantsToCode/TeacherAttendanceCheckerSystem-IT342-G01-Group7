@@ -6,13 +6,15 @@ export default function MyClasses() {
   const [courses, setCourses] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [students, setStudents] = useState([]);
+  const [enrollments, setEnrollments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [teacherId, setTeacherId] = useState(null);
   const [showManageStudents, setShowManageStudents] = useState(false);
   const [allStudents, setAllStudents] = useState([]);
-  const [enrollments, setEnrollments] = useState([]);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [studentToRemove, setStudentToRemove] = useState(null);
 
   useEffect(() => {
     const authData = JSON.parse(localStorage.getItem('auth'));
@@ -56,6 +58,8 @@ export default function MyClasses() {
   const fetchEnrolledStudents = async (courseId) => {
     setLoading(true);
     setError('');
+    setStudents([]);
+    
     try {
       const authData = JSON.parse(localStorage.getItem('auth'));
       const token = authData?.token;
@@ -71,49 +75,23 @@ export default function MyClasses() {
         const data = await response.json();
         setStudents(data);
       } else {
-        setError('No students enrolled in this course');
+        // Don't set error for empty student list - just leave students array empty
         setStudents([]);
       }
     } catch (err) {
-      setError('Error loading students');
+      console.error('Error loading students:', err);
+      setStudents([]);
     } finally {
       setLoading(false);
     }
   };
 
-  const fetchExistingAttendance = async (courseId, date) => {
-    try {
-      const authData = JSON.parse(localStorage.getItem('auth'));
-      const token = authData?.token;
-
-      const response = await fetch(`http://localhost:8080/api/attendance/course/${courseId}/date/${date}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        const records = {};
-        data.forEach(record => {
-          records[record.studentId] = {
-            status: record.status,
-            remarks: record.remarks || '',
-            timeIn: record.timeIn || ''
-          };
-        });
-        setAttendanceRecords(records);
-      }
-    } catch (err) {
-      console.error('Error loading existing attendance:', err);
-    }
-  };
-
-  const handleCourseSelect = (course) => {
+  const handleCourseSelect = async (course) => {
     setSelectedCourse(course);
     setSuccess('');
-    fetchEnrolledStudents(course.courseId);
+    setError('');
+    await fetchEnrolledStudents(course.courseId);
+    await fetchEnrollments(course.courseId);
   };
 
   const handleBackToCourses = () => {
@@ -121,90 +99,6 @@ export default function MyClasses() {
     setStudents([]);
     setSuccess('');
     setError('');
-  };
-
-  const handleStatusChange = (studentId, status) => {
-    setAttendanceRecords(prev => ({
-      ...prev,
-      [studentId]: {
-        ...prev[studentId],
-        status: status,
-        timeIn: status === 'PRESENT' || status === 'LATE' ? new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' }) : ''
-      }
-    }));
-  };
-
-  const handleRemarksChange = (studentId, remarks) => {
-    setAttendanceRecords(prev => ({
-      ...prev,
-      [studentId]: {
-        ...prev[studentId],
-        remarks: remarks
-      }
-    }));
-  };
-
-  const handleTimeInChange = (studentId, timeIn) => {
-    setAttendanceRecords(prev => ({
-      ...prev,
-      [studentId]: {
-        ...prev[studentId],
-        timeIn: timeIn
-      }
-    }));
-  };
-
-  const handleDateChange = (newDate) => {
-    setAttendanceDate(newDate);
-    if (selectedCourse) {
-      fetchExistingAttendance(selectedCourse.courseId, newDate);
-    }
-  };
-
-  const handleSubmitAttendance = async () => {
-    if (!selectedCourse) {
-      setError('Please select a course first');
-      return;
-    }
-
-    setLoading(true);
-    setError('');
-    setSuccess('');
-
-    try {
-      const authData = JSON.parse(localStorage.getItem('auth'));
-      const token = authData?.token;
-
-      const promises = students.map(student => {
-        const record = attendanceRecords[student.studentId];
-        if (record && record.status) {
-          return fetch('http://localhost:8080/api/attendance/mark', {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              studentId: student.studentId,
-              courseId: selectedCourse.courseId,
-              date: attendanceDate,
-              status: record.status,
-              remarks: record.remarks || '',
-              timeIn: record.timeIn || null
-            })
-          });
-        }
-        return null;
-      }).filter(p => p !== null);
-
-      await Promise.all(promises);
-      setSuccess('Attendance saved successfully!');
-      setTimeout(() => setSuccess(''), 3000);
-    } catch (err) {
-      setError('Error saving attendance: ' + err.message);
-    } finally {
-      setLoading(false);
-    }
   };
 
   const fetchAllStudents = async () => {
@@ -215,9 +109,12 @@ export default function MyClasses() {
   };
 
   const fetchEnrollments = async (courseId) => {
-    const result = await api.get(`/enrollments/course/${courseId}`);
+    const result = await api.get(`/enrollments`);
     if (result.success) {
-      setEnrollments(result.data);
+      const courseEnrollments = result.data.filter(enrollment => 
+        enrollment.offeredCourse?.course?.courseId === courseId
+      );
+      setEnrollments(courseEnrollments);
     }
   };
 
@@ -231,10 +128,18 @@ export default function MyClasses() {
     setError('');
     setSuccess('');
     
+    const offeredCoursesResult = await api.get(`/offered-courses/course/${selectedCourse.courseId}`);
+    
+    if (!offeredCoursesResult.success || offeredCoursesResult.data.length === 0) {
+      setError('No offered course found for this course. Please create an offered course first.');
+      return;
+    }
+    
+    const offeredCourseId = offeredCoursesResult.data[0].offeredCourseId;
+    
     const result = await api.post('/enrollments', {
       studentId: studentId,
-      courseId: selectedCourse.courseId,
-      enrollmentDate: new Date().toISOString().split('T')[0],
+      offeredCourseId: offeredCourseId,
       status: 'ACTIVE'
     });
 
@@ -249,14 +154,16 @@ export default function MyClasses() {
   };
 
   const handleRemoveStudent = async (enrollmentId) => {
+    setStudentToRemove(enrollmentId);
+    setShowConfirmDialog(true);
+  };
+
+  const confirmRemoveStudent = async () => {
     setError('');
     setSuccess('');
-    
-    if (!confirm('Are you sure you want to remove this student from the course?')) {
-      return;
-    }
+    setShowConfirmDialog(false);
 
-    const result = await api.delete(`/enrollments/${enrollmentId}`);
+    const result = await api.delete(`/enrollments/${studentToRemove}`);
 
     if (result.success) {
       setSuccess('Student removed successfully!');
@@ -266,6 +173,13 @@ export default function MyClasses() {
     } else {
       setError(result.error || 'Failed to remove student');
     }
+    
+    setStudentToRemove(null);
+  };
+
+  const cancelRemoveStudent = () => {
+    setShowConfirmDialog(false);
+    setStudentToRemove(null);
   };
 
   return (
@@ -289,7 +203,6 @@ export default function MyClasses() {
         </div>
       )}
 
-      {/* Course Selection View */}
       {!selectedCourse && (
         <div>
           {loading ? (
@@ -333,13 +246,9 @@ export default function MyClasses() {
         </div>
       )}
 
-      {/* Student List View */}
       {selectedCourse && (
         <div>
-          <button
-            onClick={handleBackToCourses}
-            className="back-button"
-          >
+          <button onClick={handleBackToCourses} className="back-button">
             <span>←</span> Back to Courses
           </button>
 
@@ -355,166 +264,99 @@ export default function MyClasses() {
               <div className="loading-spinner"></div>
               <p>Loading students...</p>
             </div>
-          ) : students.length === 0 ? (
-            <div className="warning-state">
-              <h3 className="warning-state-title">No Students Enrolled</h3>
-              <p className="warning-state-text">
-                There are no students enrolled in this course yet.
-              </p>
-              <button
-                onClick={handleManageStudents}
-                style={{
-                  background: '#3b82f6',
-                  color: 'white',
-                  border: 'none',
-                  padding: '0.75rem 1.5rem',
-                  borderRadius: '6px',
-                  cursor: 'pointer',
-                  fontSize: '1rem',
-                  fontWeight: '500',
-                  marginTop: '1rem'
-                }}
-              >
-                ➕ Add Students to Course
-              </button>
-            </div>
           ) : (
             <>
               <div className="students-header">
                 <h2 className="students-title">Enrolled Students</h2>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                  <span className="students-count">{students.length} Students</span>
-                  <button
-                    onClick={handleManageStudents}
-                    style={{
-                      background: '#3b82f6',
-                      color: 'white',
-                      border: 'none',
-                      padding: '0.5rem 1rem',
-                      borderRadius: '6px',
-                      cursor: 'pointer',
-                      fontSize: '0.9rem',
-                      fontWeight: '500'
-                    }}
-                  >
+                <div className="students-header-actions">
+                  <span className="students-count">{enrollments.length} Student{enrollments.length !== 1 ? 's' : ''}</span>
+                  <button onClick={handleManageStudents} className="manage-students-button-small">
                     ➕ Manage Students
                   </button>
                 </div>
               </div>
               
-              <div className="attendance-table-wrapper">
-                <table className="attendance-table">
-                  <thead>
-                    <tr>
-                      <th>#</th>
-                      <th>Student Name</th>
-                      <th>Email</th>
-                      <th>Program</th>
-                      <th>Year Level</th>
-                      <th>Student ID</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {students.map((student, index) => (
-                      <tr key={student.studentId}>
-                        <td className="student-number">{index + 1}</td>
-                        <td className="student-name">{student.studentName}</td>
-                        <td className="student-email">{student.email}</td>
-                        <td style={{ padding: '12px', color: '#6366f1', fontWeight: '500' }}>
-                          {student.program || 'N/A'}
-                        </td>
-                        <td style={{ padding: '12px', textAlign: 'center' }}>
-                          Year {student.yearLevel}
-                        </td>
-                        <td style={{ padding: '12px', textAlign: 'center' }}>
-                          {student.studentNumber || 'N/A'}
-                        </td>
+              {enrollments.length === 0 ? (
+                <div className="warning-state">
+                  <h3 className="warning-state-title">No Students Enrolled</h3>
+                  <p className="warning-state-text">
+                    There are no students enrolled in this course yet. Click "Manage Students" to add students to this course.
+                  </p>
+                </div>
+              ) : (
+                <div className="attendance-table-wrapper">
+                  <table className="attendance-table">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Student Name</th>
+                        <th>Email</th>
+                        <th>Program</th>
+                        <th>Year Level</th>
+                        <th>Student ID</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                    </thead>
+                    <tbody>
+                      {enrollments.map((enrollment, index) => (
+                        <tr key={enrollment.enrollmentId}>
+                          <td className="student-number">{index + 1}</td>
+                          <td className="student-name">
+                            {enrollment.student?.user?.fname} {enrollment.student?.user?.lname}
+                          </td>
+                          <td className="student-email">{enrollment.student?.user?.email || 'N/A'}</td>
+                          <td className="student-program">{enrollment.student?.program || 'N/A'}</td>
+                          <td className="student-year">Year {enrollment.student?.yearLevel || 'N/A'}</td>
+                          <td className="student-id">{enrollment.student?.studentNumber || 'N/A'}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </>
           )}
         </div>
       )}
 
-      {/* Manage Students Modal */}
       {showManageStudents && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: 'rgba(0,0,0,0.5)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 1000
-        }}>
-          <div style={{
-            background: 'white',
-            borderRadius: '12px',
-            padding: '2rem',
-            maxWidth: '800px',
-            width: '90%',
-            maxHeight: '80vh',
-            overflow: 'auto',
-            boxShadow: '0 20px 60px rgba(0,0,0,0.3)'
-          }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-              <h2 style={{ margin: 0, color: '#1f2937' }}>Manage Students - {selectedCourse?.courseName}</h2>
-              <button
-                onClick={() => setShowManageStudents(false)}
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  fontSize: '1.5rem',
-                  cursor: 'pointer',
-                  color: '#6b7280'
-                }}
-              >
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h2 className="modal-title">Manage Students - {selectedCourse?.courseName}</h2>
+              <button onClick={() => setShowManageStudents(false)} className="modal-close">
                 ✕
               </button>
             </div>
 
-            {/* Enrolled Students Section */}
-            <div style={{ marginBottom: '2rem' }}>
-              <h3 style={{ color: '#059669', marginBottom: '1rem' }}>✓ Currently Enrolled ({enrollments.length})</h3>
+            <div className="modal-section">
+              <h3 className="section-heading section-heading-enrolled">
+                ✓ Currently Enrolled ({enrollments.length})
+              </h3>
               {enrollments.length === 0 ? (
-                <p style={{ color: '#6b7280', fontStyle: 'italic' }}>No students enrolled yet</p>
+                <p className="empty-text">No students enrolled yet</p>
               ) : (
-                <div style={{ maxHeight: '200px', overflow: 'auto', border: '1px solid #e5e7eb', borderRadius: '6px' }}>
-                  <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                    <thead style={{ background: '#f9fafb', position: 'sticky', top: 0 }}>
+                <div className="table-scroll-container">
+                  <table className="modal-table">
+                    <thead>
                       <tr>
-                        <th style={{ padding: '0.75rem', textAlign: 'left', borderBottom: '1px solid #e5e7eb' }}>Name</th>
-                        <th style={{ padding: '0.75rem', textAlign: 'left', borderBottom: '1px solid #e5e7eb' }}>Year & Section</th>
-                        <th style={{ padding: '0.75rem', textAlign: 'center', borderBottom: '1px solid #e5e7eb' }}>Action</th>
+                        <th>Name</th>
+                        <th>Year & Section</th>
+                        <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
                       {enrollments.map(enrollment => (
-                        <tr key={enrollment.enrollmentId} style={{ borderBottom: '1px solid #f3f4f6' }}>
-                          <td style={{ padding: '0.75rem' }}>
+                        <tr key={enrollment.enrollmentId}>
+                          <td>
                             {enrollment.student?.user?.fname} {enrollment.student?.user?.lname}
                           </td>
-                          <td style={{ padding: '0.75rem', color: '#6b7280' }}>
+                          <td className="muted-text">
                             Year {enrollment.student?.yearLevel} - {enrollment.student?.section || 'N/A'}
                           </td>
-                          <td style={{ padding: '0.75rem', textAlign: 'center' }}>
+                          <td className="action-cell">
                             <button
                               onClick={() => handleRemoveStudent(enrollment.enrollmentId)}
-                              style={{
-                                background: '#ef4444',
-                                color: 'white',
-                                border: 'none',
-                                padding: '0.4rem 0.8rem',
-                                borderRadius: '4px',
-                                cursor: 'pointer',
-                                fontSize: '0.85rem'
-                              }}
+                              className="action-button action-button-remove"
                             >
                               Remove
                             </button>
@@ -527,46 +369,39 @@ export default function MyClasses() {
               )}
             </div>
 
-            {/* Available Students Section */}
-            <div>
-              <h3 style={{ color: '#3b82f6', marginBottom: '1rem' }}>➕ Available Students</h3>
+            <div className="modal-section">
+              <h3 className="section-heading section-heading-available">
+                ➕ Available Students
+              </h3>
               {allStudents.filter(student => 
                 !enrollments.some(e => e.student?.studentId === student.studentId)
               ).length === 0 ? (
-                <p style={{ color: '#6b7280', fontStyle: 'italic' }}>All students are already enrolled</p>
+                <p className="empty-text">All students are already enrolled</p>
               ) : (
-                <div style={{ maxHeight: '200px', overflow: 'auto', border: '1px solid #e5e7eb', borderRadius: '6px' }}>
-                  <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                    <thead style={{ background: '#f9fafb', position: 'sticky', top: 0 }}>
+                <div className="table-scroll-container">
+                  <table className="modal-table">
+                    <thead>
                       <tr>
-                        <th style={{ padding: '0.75rem', textAlign: 'left', borderBottom: '1px solid #e5e7eb' }}>Name</th>
-                        <th style={{ padding: '0.75rem', textAlign: 'left', borderBottom: '1px solid #e5e7eb' }}>Year & Section</th>
-                        <th style={{ padding: '0.75rem', textAlign: 'center', borderBottom: '1px solid #e5e7eb' }}>Action</th>
+                        <th>Name</th>
+                        <th>Year & Section</th>
+                        <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
                       {allStudents
                         .filter(student => !enrollments.some(e => e.student?.studentId === student.studentId))
                         .map(student => (
-                          <tr key={student.studentId} style={{ borderBottom: '1px solid #f3f4f6' }}>
-                            <td style={{ padding: '0.75rem' }}>
+                          <tr key={student.studentId}>
+                            <td>
                               {student.user?.fname} {student.user?.lname}
                             </td>
-                            <td style={{ padding: '0.75rem', color: '#6b7280' }}>
+                            <td className="muted-text">
                               Year {student.yearLevel} - {student.section || 'N/A'}
                             </td>
-                            <td style={{ padding: '0.75rem', textAlign: 'center' }}>
+                            <td className="action-cell">
                               <button
                                 onClick={() => handleAddStudent(student.studentId)}
-                                style={{
-                                  background: '#10b981',
-                                  color: 'white',
-                                  border: 'none',
-                                  padding: '0.4rem 0.8rem',
-                                  borderRadius: '4px',
-                                  cursor: 'pointer',
-                                  fontSize: '0.85rem'
-                                }}
+                                className="action-button action-button-add"
                               >
                                 Add
                               </button>
@@ -577,6 +412,26 @@ export default function MyClasses() {
                   </table>
                 </div>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Confirm Remove Dialog */}
+      {showConfirmDialog && (
+        <div className="modal-overlay">
+          <div className="confirm-dialog">
+            <h3 className="confirm-dialog-title">Remove Student</h3>
+            <p className="confirm-dialog-message">
+              Are you sure you want to remove this student from the course?
+            </p>
+            <div className="confirm-dialog-actions">
+              <button onClick={cancelRemoveStudent} className="confirm-button confirm-button-cancel">
+                Cancel
+              </button>
+              <button onClick={confirmRemoveStudent} className="confirm-button confirm-button-confirm">
+                Remove
+              </button>
             </div>
           </div>
         </div>
